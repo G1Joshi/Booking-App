@@ -65,4 +65,13 @@ class HotelService implements CrudService<Hotel> {
       "WHERE id = '$id'",
     );
   }
+
+  Future<List<Hotel>> search(String col, String? query) async {
+    final result = await connection.mappedResultsQuery(
+      "SELECT * FROM $table "
+      "WHERE $col iLIKE '%$query%'",
+    );
+    final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
+    return data;
+  }
 }

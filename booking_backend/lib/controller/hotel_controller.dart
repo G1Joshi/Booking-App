@@ -56,4 +56,18 @@ class HotelController {
     await hotelService.delete(id);
     return Response(statusCode: HttpStatus.noContent);
   }
+
+  static Future<Response> search(RequestContext context) async {
+    final hotelService = context.read<HotelService>();
+    final query = context.request.uri.queryParameters;
+    var hotel = <Hotel>[];
+    if (query['name'] != null) {
+      hotel = await hotelService.search('name', query['name']);
+    } else if (query['city'] != null) {
+      hotel = await hotelService.search('city', query['city']);
+    } else if (query['country'] != null) {
+      hotel = await hotelService.search('country', query['country']);
+    }
+    return Response.json(body: hotel);
+  }
 }
