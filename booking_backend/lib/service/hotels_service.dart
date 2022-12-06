@@ -1,77 +1,68 @@
-// ignore_for_file: lines_longer_than_80_chars, prefer_single_quotes
-
-import 'package:booking_backend/models.dart/hotel_model.dart';
-import 'package:booking_backend/service/crud_service.dart';
+import 'package:booking_backend/database/tables.dart';
+import 'package:booking_backend/models/hotels_model.dart';
 import 'package:postgres/postgres.dart';
-import 'package:uuid/uuid.dart';
 
-class HotelService implements CrudService<Hotel> {
-  HotelService(this.connection) : table = 'hotels';
+class HotelService {
+  HotelService(this.connection);
 
   final PostgreSQLConnection connection;
-  final String table;
 
-  @override
-  Future<Hotel> create(Hotel hotel) async {
-    final id = const Uuid().v4();
-    final createdHotel = hotel.copyWith(id: id);
-    await connection.query(
-      "INSERT INTO $table "
-      "VALUES (@id, @name, @phone, @email, @address, @pincode, @city, @country, @rooms, @rating)",
-      substitutionValues: createdHotel.toJson(),
+  Future<HotelModel> create(HotelModel hotel) async {
+    final result = await connection.query(
+      "SELECT nextval('${Tables.hotels}_id_seq')",
     );
-    return createdHotel;
-  }
-
-  @override
-  Future<Hotel?> read(String id) async {
-    final result = await connection.mappedResultsQuery(
-      "SELECT * FROM $table "
-      "WHERE id = '$id'",
-    );
-    final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
-    return data.first;
-  }
-
-  @override
-  Future<List<Hotel>> readAll() async {
-    final result = await connection.mappedResultsQuery(
-      "SELECT * FROM $table",
-    );
-    final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
-    return data;
-  }
-
-  @override
-  Future<Hotel> update(String id, Hotel hotel) async {
-    var values = "";
-    hotel.toJson().forEach((key, value) {
-      if (values != "") values += ', ';
-      values += "$key = '$value'";
-    });
-
-    await connection.query(
-      "UPDATE $table "
-      "SET $values "
-      "WHERE id = '$id'",
-    );
+    final id = result.first.first as int;
+    await Hotel.create(connection, hotel.hotel?.copyWith(id: id));
+    await Address.create(connection, hotel.address?.copyWith(hotel_id: id));
+    await Contact.create(connection, hotel.contact?.copyWith(hotel_id: id));
+    await Booking.create(connection, hotel.booking?.copyWith(hotel_id: id));
+    await Details.create(connection, hotel.details?.copyWith(hotel_id: id));
     return hotel;
   }
 
-  @override
-  Future<void> delete(String id) async {
-    await connection.query(
-      "DELETE FROM $table "
-      "WHERE id = '$id'",
+  Future<HotelModel?> read(String id) async {
+    return HotelModel(
+      hotel: await Hotel.read(connection, id),
+      details: await Details.read(connection, id),
+      address: await Address.read(connection, id),
+      contact: await Contact.read(connection, id),
+      booking: await Booking.read(connection, id),
     );
+  }
+
+  Future<List<Hotel>> readAll() async {
+    final result = await connection.mappedResultsQuery(
+      'SELECT * FROM ${Tables.hotels}',
+    );
+    final data = result.map((e) => Hotel.fromJson(e[Tables.hotels]!)).toList();
+    return data;
+  }
+
+  Future<HotelModel> update(int id, HotelModel hotel) async {
+    await Hotel.update(connection, hotel.hotel, id.toString());
+    await Address.update(connection, hotel.address, id.toString());
+    await Contact.update(connection, hotel.contact, id.toString());
+    await Booking.update(connection, hotel.booking, id.toString());
+    await Details.update(connection, hotel.details, id.toString());
+    return hotel;
+  }
+
+  Future<void> delete(String id) async {
+    await Future.wait([
+      Details.delete(connection, id),
+      Booking.delete(connection, id),
+      Contact.delete(connection, id),
+      Address.delete(connection, id),
+      Hotel.delete(connection, id),
+    ]);
   }
 
   Future<List<Hotel>> search(String col, String? query) async {
     final result = await connection.mappedResultsQuery(
-      "SELECT * FROM $table "
+      'SELECT * FROM ${Tables.hotels} '
       "WHERE $col iLIKE '%$query%'",
     );
-    final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
+    final data = result.map((e) => Hotel.fromJson(e[Tables.hotels]!)).toList();
     return data;
   }
 }

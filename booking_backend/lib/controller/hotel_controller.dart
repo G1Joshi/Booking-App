@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:booking_backend/models.dart/hotel_model.dart';
+import 'package:booking_backend/models/hotels_model.dart';
 import 'package:booking_backend/service/hotels_service.dart';
 import 'package:dart_frog/dart_frog.dart';
 
@@ -13,7 +13,7 @@ class HotelController {
 
   static Future<Response> post(RequestContext context) async {
     final hotelService = context.read<HotelService>();
-    final hotel = Hotel.fromJson(
+    final hotel = HotelModel.fromJson(
       await context.request.json() as Map<String, dynamic>,
     );
     return Response.json(
@@ -30,22 +30,38 @@ class HotelController {
 
   static Future<Response> putById(RequestContext context, String id) async {
     final hotelService = context.read<HotelService>();
+    final response = await context.request.json() as Map<String, dynamic>;
     final hotel = await hotelService.read(id);
-    final updatedHotel = Hotel.fromJson(
-      await context.request.json() as Map<String, dynamic>,
-    );
+    final updatedHotel =
+        Hotel.fromJson(response['hotel'] as Map<String, dynamic>);
+    final updatedAddress =
+        Address.fromJson(response['address'] as Map<String, dynamic>);
+    final updatedContact =
+        Contact.fromJson(response['contact'] as Map<String, dynamic>);
+    final updatedBooking =
+        Booking.fromJson(response['booking'] as Map<String, dynamic>);
+    final updatedDetails =
+        Details.fromJson(response['details'] as Map<String, dynamic>);
     final newHotel = await hotelService.update(
-      id,
+      int.parse(id),
       hotel!.copyWith(
-        name: updatedHotel.name,
-        phone: updatedHotel.phone,
-        email: updatedHotel.email,
-        address: updatedHotel.address,
-        pincode: updatedHotel.pincode,
-        city: updatedHotel.city,
-        country: updatedHotel.country,
-        rooms: updatedHotel.rooms,
-        rating: updatedHotel.rating,
+        hotel: updatedHotel.copyWith(id: hotel.hotel?.id),
+        address: updatedAddress.copyWith(
+          id: hotel.address?.id,
+          hotel_id: hotel.address?.hotel_id,
+        ),
+        contact: updatedContact.copyWith(
+          id: hotel.contact?.id,
+          hotel_id: hotel.contact?.hotel_id,
+        ),
+        booking: updatedBooking.copyWith(
+          id: hotel.booking?.id,
+          hotel_id: hotel.booking?.hotel_id,
+        ),
+        details: updatedDetails.copyWith(
+          id: hotel.details?.id,
+          hotel_id: hotel.details?.hotel_id,
+        ),
       ),
     );
     return Response.json(body: newHotel);
