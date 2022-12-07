@@ -69,3 +69,9 @@ CREATE TABLE IF NOT EXISTS rooms (
     room_images text [],
     hotel_id INTEGER REFERENCES hotels (id)
 );
+CREATE TABLE IF NOT EXISTS localities (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    latitude REAL,
+    longitude REAL
+);

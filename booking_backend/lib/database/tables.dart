@@ -6,4 +6,5 @@ class Tables {
   static String get hotels => 'hotels';
   static String get reviews => 'reviews';
   static String get rooms => 'rooms';
+  static String get localities => 'localities';
 }
