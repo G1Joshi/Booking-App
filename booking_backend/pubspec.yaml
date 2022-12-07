@@ -7,9 +7,9 @@ environment:
   sdk: ">=2.18.0 <3.0.0"
 
 dependencies:
-  dart_frog: ^0.3.0
+  dart_frog: ^0.3.1
   postgres: ^2.5.2
   uuid: ^3.0.7
 
-dev_dependencies:
+dev_dependencies: 
   very_good_analysis: ^3.1.0
