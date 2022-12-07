@@ -77,7 +77,10 @@ class HotelController {
     final hotelService = context.read<HotelService>();
     final query = context.request.uri.queryParameters;
     var hotel = <Hotel>[];
-    if (query['name'] != null) {
+    if (query['locality'] != null) {
+      final distance = int.tryParse(query['distance'] ?? '10') ?? 10;
+      hotel = await hotelService.searchByLocality(query['locality'], distance);
+    } else if (query['name'] != null) {
       hotel = await hotelService.search('name', query['name']);
     } else if (query['city'] != null) {
       hotel = await hotelService.search('city', query['city']);

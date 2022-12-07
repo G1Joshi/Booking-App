@@ -70,6 +70,18 @@ class HotelService {
     return data;
   }
 
+  Future<List<Hotel>> searchByLocality(String? locality, int distance) async {
+    final result = await connection.mappedResultsQuery(
+      'SELECT * FROM ${Tables.hotels} '
+      'WHERE id in ( '
+      'SELECT h.hotel_id FROM ${Tables.address} h '
+      'JOIN ${Tables.localities} l ON distance(h.latitude, h.longitude, l.latitude, l.longitude) < $distance '
+      "WHERE l.name iLIKE '%$locality%' );",
+    );
+    final data = result.map((e) => Hotel.fromJson(e[Tables.hotels]!)).toList();
+    return data;
+  }
+
   Future<Reviews> addReview(Reviews review, String id) async {
     await Reviews.create(connection, review.copyWith(hotel_id: int.parse(id)));
     return review;
