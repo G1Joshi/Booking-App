@@ -27,6 +27,8 @@ class HotelService {
       address: await Address.read(connection, id),
       contact: await Contact.read(connection, id),
       booking: await Booking.read(connection, id),
+      reviews: await Reviews.read(connection, id),
+      rooms: await Room.read(connection, id),
     );
   }
 
@@ -49,10 +51,12 @@ class HotelService {
 
   Future<void> delete(String id) async {
     await Future.wait([
+      Reviews.delete(connection, id),
       Details.delete(connection, id),
       Booking.delete(connection, id),
       Contact.delete(connection, id),
       Address.delete(connection, id),
+      Room.delete(connection, id),
       Hotel.delete(connection, id),
     ]);
   }
@@ -64,5 +68,15 @@ class HotelService {
     );
     final data = result.map((e) => Hotel.fromJson(e[Tables.hotels]!)).toList();
     return data;
+  }
+
+  Future<Reviews> addReview(Reviews review, String id) async {
+    await Reviews.create(connection, review.copyWith(hotel_id: int.parse(id)));
+    return review;
+  }
+
+  Future<Room> addRoom(Room room, String id) async {
+    await Room.create(connection, room.copyWith(hotel_id: int.parse(id)));
+    return room;
   }
 }

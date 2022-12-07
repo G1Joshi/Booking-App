@@ -2,38 +2,50 @@
 
 part of './hotels_model.dart';
 
-class Details {
-  static String table = Tables.details;
+class Room {
+  static String table = Tables.rooms;
   int? id;
+  String category;
+  String? description;
+  int price;
+  int count;
+  int occupancy;
   List<String> amenities;
-  List<String> rules;
-  List<String> preferences;
-  List<String> hotel_images;
+  List<String> room_images;
   int? hotel_id;
 
-  Details({
+  Room({
     this.id,
+    required this.category,
+    this.description,
+    required this.price,
+    required this.count,
+    required this.occupancy,
     required this.amenities,
-    required this.rules,
-    required this.preferences,
-    required this.hotel_images,
+    required this.room_images,
     required this.hotel_id,
   });
 
-  Details copyWith({
+  Room copyWith({
     int? id,
+    String? category,
+    String? description,
+    int? price,
+    int? count,
+    int? occupancy,
     List<String>? amenities,
-    List<String>? rules,
-    List<String>? preferences,
-    List<String>? hotel_images,
+    List<String>? room_images,
     int? hotel_id,
   }) {
-    return Details(
+    return Room(
       id: id ?? this.id,
+      category: category ?? this.category,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      count: count ?? this.count,
+      occupancy: occupancy ?? this.occupancy,
       amenities: amenities ?? this.amenities,
-      rules: rules ?? this.rules,
-      preferences: preferences ?? this.preferences,
-      hotel_images: hotel_images ?? this.hotel_images,
+      room_images: room_images ?? this.room_images,
       hotel_id: hotel_id ?? this.hotel_id,
     );
   }
@@ -41,28 +53,35 @@ class Details {
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,
+      'category': category,
+      'description': description,
+      'price': price,
+      'count': count,
+      'occupancy': occupancy,
       'amenities': amenities,
-      'rules': rules,
-      'preferences': preferences,
-      'hotel_images': hotel_images,
+      'room_images': room_images,
       'hotel_id': hotel_id,
     };
   }
 
-  factory Details.fromJson(Map<String, dynamic> json) {
-    return Details(
+  factory Room.fromJson(Map<String, dynamic> json) {
+    return Room(
       id: json['id'] != null ? json['id'] as int : null,
-      amenities: List<String>.from(json['amenities'] as List<dynamic>),
-      rules: List<String>.from(json['rules'] as List<dynamic>),
-      preferences: List<String>.from(json['preferences'] as List<dynamic>),
-      hotel_images: List<String>.from(json['hotel_images'] as List<dynamic>),
+      category: json['category'] as String,
+      description:
+          json['description'] != null ? json['description'] as String : null,
+      price: json['price'] as int,
+      count: json['count'] as int,
+      occupancy: json['occupancy'] as int,
+      amenities: List<String>.from(json['amenities'] as List),
+      room_images: List<String>.from(json['room_images'] as List),
       hotel_id: json['hotel_id'] != null ? json['hotel_id'] as int : null,
     );
   }
 
   static Future<void> create(
     PostgreSQLConnection connection,
-    Details? data,
+    Room? data,
   ) async {
     var keys = '';
     var values = '';
@@ -83,7 +102,7 @@ class Details {
     );
   }
 
-  static Future<Details> read(
+  static Future<List<Room>> read(
     PostgreSQLConnection connection,
     String id,
   ) async {
@@ -91,22 +110,18 @@ class Details {
       'SELECT * FROM $table '
       "WHERE hotel_id = '$id'",
     );
-    final data = result.map((e) => Details.fromJson(e[table]!)).toList();
-    return data.first;
+    final data = result.map((e) => Room.fromJson(e[table]!)).toList();
+    return data;
   }
 
   static Future<void> update(
     PostgreSQLConnection connection,
-    Details? data,
+    Room? data,
     String id,
   ) async {
     var values = '';
     data?.toJson().forEach((key, value) {
       if (values != '') values += ', ';
-      if (!key.contains('id')) {
-        value = value.toString().replaceAll('[', '{');
-        value = value.toString().replaceAll(']', '}');
-      }
       values += "$key = '$value'";
     });
 

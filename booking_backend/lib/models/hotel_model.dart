@@ -10,7 +10,7 @@ class Hotel {
   String property_type;
   String chain;
   String category;
-  double rating;
+  num rating;
   int rooms_starting_price;
   String cover_image;
 
@@ -33,7 +33,7 @@ class Hotel {
     String? property_type,
     String? chain,
     String? category,
-    double? rating,
+    num? rating,
     int? rooms_starting_price,
     String? cover_image,
   }) {
@@ -72,7 +72,7 @@ class Hotel {
       property_type: json['property_type'] as String,
       chain: json['chain'] as String,
       category: json['category'] as String,
-      rating: json['rating'] as double,
+      rating: json['rating'] as num,
       rooms_starting_price: json['rooms_starting_price'] as int,
       cover_image: json['cover_image'] as String,
     );

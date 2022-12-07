@@ -8,6 +8,8 @@ part 'booking_model.dart';
 part 'contact_model.dart';
 part 'details_model.dart';
 part 'hotel_model.dart';
+part 'reviews_model.dart';
+part 'room_model.dart';
 
 class HotelModel {
   Hotel? hotel;
@@ -15,6 +17,8 @@ class HotelModel {
   Contact? contact;
   Booking? booking;
   Details? details;
+  List<Reviews>? reviews;
+  List<Room>? rooms;
 
   HotelModel({
     this.hotel,
@@ -22,6 +26,8 @@ class HotelModel {
     this.contact,
     this.booking,
     this.details,
+    this.reviews,
+    this.rooms,
   });
 
   HotelModel copyWith({
@@ -30,6 +36,8 @@ class HotelModel {
     Contact? contact,
     Booking? booking,
     Details? details,
+    List<Reviews>? reviews,
+    List<Room>? rooms,
   }) {
     return HotelModel(
       hotel: hotel ?? this.hotel,
@@ -37,6 +45,8 @@ class HotelModel {
       contact: contact ?? this.contact,
       booking: booking ?? this.booking,
       details: details ?? this.details,
+      reviews: reviews ?? this.reviews,
+      rooms: rooms ?? this.rooms,
     );
   }
 
@@ -47,6 +57,8 @@ class HotelModel {
       'contact': contact?.toJson(),
       'booking': booking?.toJson(),
       'details': details?.toJson(),
+      'reviews': reviews?.map((x) => x.toJson()).toList(),
+      'rooms': rooms?.map((x) => x.toJson()).toList(),
     };
   }
 
@@ -66,6 +78,20 @@ class HotelModel {
           : null,
       details: json['details'] != null
           ? Details.fromJson(json['details'] as Map<String, dynamic>)
+          : null,
+      reviews: json['reviews'] != null
+          ? List<Reviews>.from(
+              (json['reviews'] as List<int>).map<Reviews?>(
+                (x) => Reviews.fromJson(x as Map<String, dynamic>),
+              ),
+            )
+          : null,
+      rooms: json['rooms'] != null
+          ? List<Room>.from(
+              (json['rooms'] as List<int>).map<Room?>(
+                (x) => Room.fromJson(x as Map<String, dynamic>),
+              ),
+            )
           : null,
     );
   }

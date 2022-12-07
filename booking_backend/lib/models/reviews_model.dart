@@ -2,38 +2,38 @@
 
 part of './hotels_model.dart';
 
-class Details {
-  static String table = Tables.details;
+class Reviews {
+  static String table = Tables.reviews;
   int? id;
-  List<String> amenities;
-  List<String> rules;
-  List<String> preferences;
-  List<String> hotel_images;
+  String name;
+  num rating;
+  String review;
+  List<String> guest_images;
   int? hotel_id;
 
-  Details({
+  Reviews({
     this.id,
-    required this.amenities,
-    required this.rules,
-    required this.preferences,
-    required this.hotel_images,
+    required this.name,
+    required this.rating,
+    required this.review,
+    required this.guest_images,
     required this.hotel_id,
   });
 
-  Details copyWith({
+  Reviews copyWith({
     int? id,
-    List<String>? amenities,
-    List<String>? rules,
-    List<String>? preferences,
-    List<String>? hotel_images,
+    String? name,
+    num? rating,
+    String? review,
+    List<String>? guest_images,
     int? hotel_id,
   }) {
-    return Details(
+    return Reviews(
       id: id ?? this.id,
-      amenities: amenities ?? this.amenities,
-      rules: rules ?? this.rules,
-      preferences: preferences ?? this.preferences,
-      hotel_images: hotel_images ?? this.hotel_images,
+      name: name ?? this.name,
+      rating: rating ?? this.rating,
+      review: review ?? this.review,
+      guest_images: guest_images ?? this.guest_images,
       hotel_id: hotel_id ?? this.hotel_id,
     );
   }
@@ -41,28 +41,28 @@ class Details {
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,
-      'amenities': amenities,
-      'rules': rules,
-      'preferences': preferences,
-      'hotel_images': hotel_images,
+      'name': name,
+      'rating': rating,
+      'review': review,
+      'guest_images': guest_images,
       'hotel_id': hotel_id,
     };
   }
 
-  factory Details.fromJson(Map<String, dynamic> json) {
-    return Details(
+  factory Reviews.fromJson(Map<String, dynamic> json) {
+    return Reviews(
       id: json['id'] != null ? json['id'] as int : null,
-      amenities: List<String>.from(json['amenities'] as List<dynamic>),
-      rules: List<String>.from(json['rules'] as List<dynamic>),
-      preferences: List<String>.from(json['preferences'] as List<dynamic>),
-      hotel_images: List<String>.from(json['hotel_images'] as List<dynamic>),
+      name: json['name'] as String,
+      rating: json['rating'] as num,
+      review: json['review'] as String,
+      guest_images: List<String>.from(json['guest_images'] as List<dynamic>),
       hotel_id: json['hotel_id'] != null ? json['hotel_id'] as int : null,
     );
   }
 
   static Future<void> create(
     PostgreSQLConnection connection,
-    Details? data,
+    Reviews? data,
   ) async {
     var keys = '';
     var values = '';
@@ -83,7 +83,7 @@ class Details {
     );
   }
 
-  static Future<Details> read(
+  static Future<List<Reviews>> read(
     PostgreSQLConnection connection,
     String id,
   ) async {
@@ -91,22 +91,18 @@ class Details {
       'SELECT * FROM $table '
       "WHERE hotel_id = '$id'",
     );
-    final data = result.map((e) => Details.fromJson(e[table]!)).toList();
-    return data.first;
+    final data = result.map((e) => Reviews.fromJson(e[table]!)).toList();
+    return data;
   }
 
   static Future<void> update(
     PostgreSQLConnection connection,
-    Details? data,
+    Reviews? data,
     String id,
   ) async {
     var values = '';
     data?.toJson().forEach((key, value) {
       if (values != '') values += ', ';
-      if (!key.contains('id')) {
-        value = value.toString().replaceAll('[', '{');
-        value = value.toString().replaceAll(']', '}');
-      }
       values += "$key = '$value'";
     });
 
