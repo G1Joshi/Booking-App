@@ -4,14 +4,14 @@ import 'dart:io';
 import 'package:booking_backend/controller/hotel_controller.dart';
 import 'package:dart_frog/dart_frog.dart';
 
-FutureOr<Response> onRequest(RequestContext context, String id) {
+FutureOr<Response> onRequest(RequestContext context, String hotelId) {
   switch (context.request.method) {
     case HttpMethod.get:
-      return HotelController.getById(context, id);
+      return HotelController.getHotel(context, hotelId);
     case HttpMethod.put:
-      return HotelController.putById(context, id);
+      return HotelController.updateHotel(context, hotelId);
     case HttpMethod.delete:
-      return HotelController.deleteById(context, id);
+      return HotelController.deleteHotel(context, hotelId);
     case HttpMethod.post:
     case HttpMethod.head:
     case HttpMethod.options:

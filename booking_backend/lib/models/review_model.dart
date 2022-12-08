@@ -2,7 +2,7 @@
 
 part of './hotels_model.dart';
 
-class Reviews {
+class Review {
   static String table = Tables.reviews;
   int? id;
   String name;
@@ -11,7 +11,7 @@ class Reviews {
   List<String> guest_images;
   int? hotel_id;
 
-  Reviews({
+  Review({
     this.id,
     required this.name,
     required this.rating,
@@ -20,7 +20,7 @@ class Reviews {
     required this.hotel_id,
   });
 
-  Reviews copyWith({
+  Review copyWith({
     int? id,
     String? name,
     num? rating,
@@ -28,7 +28,7 @@ class Reviews {
     List<String>? guest_images,
     int? hotel_id,
   }) {
-    return Reviews(
+    return Review(
       id: id ?? this.id,
       name: name ?? this.name,
       rating: rating ?? this.rating,
@@ -49,8 +49,8 @@ class Reviews {
     };
   }
 
-  factory Reviews.fromJson(Map<String, dynamic> json) {
-    return Reviews(
+  factory Review.fromJson(Map<String, dynamic> json) {
+    return Review(
       id: json['id'] != null ? json['id'] as int : null,
       name: json['name'] as String,
       rating: json['rating'] as num,
@@ -62,7 +62,7 @@ class Reviews {
 
   static Future<void> create(
     PostgreSQLConnection connection,
-    Reviews? data,
+    Review? data,
   ) async {
     var keys = '';
     var values = '';
@@ -83,7 +83,20 @@ class Reviews {
     );
   }
 
-  static Future<List<Reviews>> read(
+  static Future<Review> read(
+    PostgreSQLConnection connection,
+    String hotelId,
+    String reviewId,
+  ) async {
+    final result = await connection.mappedResultsQuery(
+      'SELECT * FROM $table '
+      "WHERE hotel_id = '$hotelId' AND id = '$reviewId'",
+    );
+    final data = result.map((e) => Review.fromJson(e[table]!)).toList();
+    return data.first;
+  }
+
+  static Future<List<Review>> readAll(
     PostgreSQLConnection connection,
     String id,
   ) async {
@@ -91,29 +104,45 @@ class Reviews {
       'SELECT * FROM $table '
       "WHERE hotel_id = '$id'",
     );
-    final data = result.map((e) => Reviews.fromJson(e[table]!)).toList();
+    final data = result.map((e) => Review.fromJson(e[table]!)).toList();
     return data;
   }
 
   static Future<void> update(
     PostgreSQLConnection connection,
-    Reviews? data,
-    String id,
+    Review? data,
+    String hotelId,
+    String reviewId,
   ) async {
     var values = '';
     data?.toJson().forEach((key, value) {
       if (values != '') values += ', ';
+      if (!key.contains('id')) {
+        value = value.toString().replaceAll('[', '{');
+        value = value.toString().replaceAll(']', '}');
+      }
       values += "$key = '$value'";
     });
 
     await connection.query(
       'UPDATE $table '
       'SET $values '
-      "WHERE hotel_id = '$id'",
+      "WHERE hotel_id = '$hotelId' AND id = '$reviewId'",
     );
   }
 
   static Future<void> delete(
+    PostgreSQLConnection connection,
+    String hotelId,
+    String reviewId,
+  ) async {
+    await connection.query(
+      'DELETE FROM $table '
+      "WHERE hotel_id = '$hotelId' AND id = '$reviewId'",
+    );
+  }
+
+  static Future<void> deleteAll(
     PostgreSQLConnection connection,
     String id,
   ) async {

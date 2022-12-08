@@ -78,6 +78,14 @@ class Hotel {
     );
   }
 
+  static Future<int> getId(PostgreSQLConnection connection) async {
+    final result = await connection.query(
+      "SELECT nextval('${table}_id_seq')",
+    );
+    final id = result.first.first as int;
+    return id;
+  }
+
   static Future<void> create(
     PostgreSQLConnection connection,
     Hotel? data,
@@ -111,6 +119,14 @@ class Hotel {
     return data.first;
   }
 
+  static Future<List<Hotel>> readAll(PostgreSQLConnection connection) async {
+    final result = await connection.mappedResultsQuery(
+      'SELECT * FROM ${Tables.hotels}',
+    );
+    final data = result.map((e) => Hotel.fromJson(e[Tables.hotels]!)).toList();
+    return data;
+  }
+
   static Future<void> update(
     PostgreSQLConnection connection,
     Hotel? data,
@@ -137,5 +153,34 @@ class Hotel {
       'DELETE FROM $table '
       "WHERE id = '$id'",
     );
+  }
+
+  static Future<List<Hotel>> search(
+    PostgreSQLConnection connection,
+    String col,
+    String? query,
+  ) async {
+    final result = await connection.mappedResultsQuery(
+      'SELECT * FROM $table '
+      "WHERE $col iLIKE '%$query%'",
+    );
+    final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
+    return data;
+  }
+
+  static Future<List<Hotel>> searchByLocality(
+    PostgreSQLConnection connection,
+    String? locality,
+    int distance,
+  ) async {
+    final result = await connection.mappedResultsQuery(
+      'SELECT * FROM $table '
+      'WHERE id in ( '
+      'SELECT h.hotel_id FROM ${Tables.address} h '
+      'JOIN ${Tables.localities} l ON distance(h.latitude, h.longitude, l.latitude, l.longitude) < $distance '
+      "WHERE l.name iLIKE '%$locality%' );",
+    );
+    final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
+    return data;
   }
 }

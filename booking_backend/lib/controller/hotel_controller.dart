@@ -5,15 +5,15 @@ import 'package:booking_backend/service/hotels_service.dart';
 import 'package:dart_frog/dart_frog.dart';
 
 class HotelController {
-  static Future<Response> get(RequestContext context) async {
+  static Future<Response> getAllHotels(RequestContext context) async {
     final hotelService = context.read<HotelService>();
     final hotels = await hotelService.readAll();
     return Response.json(body: hotels);
   }
 
-  static Future<Response> post(RequestContext context) async {
+  static Future<Response> addHotel(RequestContext context) async {
     final hotelService = context.read<HotelService>();
-    final hotel = HotelModel.fromJson(
+    final hotel = HotelsModel.fromJson(
       await context.request.json() as Map<String, dynamic>,
     );
     return Response.json(
@@ -22,13 +22,16 @@ class HotelController {
     );
   }
 
-  static Future<Response> getById(RequestContext context, String id) async {
+  static Future<Response> getHotel(
+    RequestContext context,
+    String id,
+  ) async {
     final hotelService = context.read<HotelService>();
     final hotel = await hotelService.read(id);
     return Response.json(body: hotel);
   }
 
-  static Future<Response> putById(RequestContext context, String id) async {
+  static Future<Response> updateHotel(RequestContext context, String id) async {
     final hotelService = context.read<HotelService>();
     final response = await context.request.json() as Map<String, dynamic>;
     final hotel = await hotelService.read(id);
@@ -67,13 +70,13 @@ class HotelController {
     return Response.json(body: newHotel);
   }
 
-  static Future<Response> deleteById(RequestContext context, String id) async {
+  static Future<Response> deleteHotel(RequestContext context, String id) async {
     final hotelService = context.read<HotelService>();
     await hotelService.delete(id);
     return Response(statusCode: HttpStatus.noContent);
   }
 
-  static Future<Response> search(RequestContext context) async {
+  static Future<Response> searchHotels(RequestContext context) async {
     final hotelService = context.read<HotelService>();
     final query = context.request.uri.queryParameters;
     var hotel = <Hotel>[];

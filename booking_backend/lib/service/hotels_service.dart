@@ -1,4 +1,3 @@
-import 'package:booking_backend/database/tables.dart';
 import 'package:booking_backend/models/hotels_model.dart';
 import 'package:postgres/postgres.dart';
 
@@ -7,11 +6,8 @@ class HotelService {
 
   final PostgreSQLConnection connection;
 
-  Future<HotelModel> create(HotelModel hotel) async {
-    final result = await connection.query(
-      "SELECT nextval('${Tables.hotels}_id_seq')",
-    );
-    final id = result.first.first as int;
+  Future<HotelsModel> create(HotelsModel hotel) async {
+    final id = await Hotel.getId(connection);
     await Hotel.create(connection, hotel.hotel?.copyWith(id: id));
     await Address.create(connection, hotel.address?.copyWith(hotel_id: id));
     await Contact.create(connection, hotel.contact?.copyWith(hotel_id: id));
@@ -20,27 +16,24 @@ class HotelService {
     return hotel;
   }
 
-  Future<HotelModel?> read(String id) async {
-    return HotelModel(
+  Future<HotelsModel?> read(String id) async {
+    return HotelsModel(
       hotel: await Hotel.read(connection, id),
       details: await Details.read(connection, id),
       address: await Address.read(connection, id),
       contact: await Contact.read(connection, id),
       booking: await Booking.read(connection, id),
-      reviews: await Reviews.read(connection, id),
-      rooms: await Room.read(connection, id),
+      reviews: await Review.readAll(connection, id),
+      rooms: await Room.readAll(connection, id),
     );
   }
 
   Future<List<Hotel>> readAll() async {
-    final result = await connection.mappedResultsQuery(
-      'SELECT * FROM ${Tables.hotels}',
-    );
-    final data = result.map((e) => Hotel.fromJson(e[Tables.hotels]!)).toList();
-    return data;
+    final hotels = await Hotel.readAll(connection);
+    return hotels;
   }
 
-  Future<HotelModel> update(int id, HotelModel hotel) async {
+  Future<HotelsModel> update(int id, HotelsModel hotel) async {
     await Hotel.update(connection, hotel.hotel, id.toString());
     await Address.update(connection, hotel.address, id.toString());
     await Contact.update(connection, hotel.contact, id.toString());
@@ -51,44 +44,23 @@ class HotelService {
 
   Future<void> delete(String id) async {
     await Future.wait([
-      Reviews.delete(connection, id),
+      Review.deleteAll(connection, id),
       Details.delete(connection, id),
       Booking.delete(connection, id),
       Contact.delete(connection, id),
       Address.delete(connection, id),
-      Room.delete(connection, id),
+      Room.deleteAll(connection, id),
       Hotel.delete(connection, id),
     ]);
   }
 
   Future<List<Hotel>> search(String col, String? query) async {
-    final result = await connection.mappedResultsQuery(
-      'SELECT * FROM ${Tables.hotels} '
-      "WHERE $col iLIKE '%$query%'",
-    );
-    final data = result.map((e) => Hotel.fromJson(e[Tables.hotels]!)).toList();
-    return data;
+    final hotels = await Hotel.search(connection, col, query);
+    return hotels;
   }
 
   Future<List<Hotel>> searchByLocality(String? locality, int distance) async {
-    final result = await connection.mappedResultsQuery(
-      'SELECT * FROM ${Tables.hotels} '
-      'WHERE id in ( '
-      'SELECT h.hotel_id FROM ${Tables.address} h '
-      'JOIN ${Tables.localities} l ON distance(h.latitude, h.longitude, l.latitude, l.longitude) < $distance '
-      "WHERE l.name iLIKE '%$locality%' );",
-    );
-    final data = result.map((e) => Hotel.fromJson(e[Tables.hotels]!)).toList();
-    return data;
-  }
-
-  Future<Reviews> addReview(Reviews review, String id) async {
-    await Reviews.create(connection, review.copyWith(hotel_id: int.parse(id)));
-    return review;
-  }
-
-  Future<Room> addRoom(Room room, String id) async {
-    await Room.create(connection, room.copyWith(hotel_id: int.parse(id)));
-    return room;
+    final hotels = await Hotel.searchByLocality(connection, locality, distance);
+    return hotels;
   }
 }

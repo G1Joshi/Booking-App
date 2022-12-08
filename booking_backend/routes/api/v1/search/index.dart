@@ -6,7 +6,7 @@ import 'package:dart_frog/dart_frog.dart';
 
 FutureOr<Response> onRequest(RequestContext context) {
   if (context.request.method == HttpMethod.get) {
-    return HotelController.search(context);
+    return HotelController.searchHotels(context);
   } else {
     return Response(statusCode: HttpStatus.methodNotAllowed);
   }
