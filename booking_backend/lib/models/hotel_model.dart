@@ -195,4 +195,35 @@ class Hotel {
     final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
     return data;
   }
+
+  static Future<List<Hotel>> searchByDate(
+    PostgreSQLConnection connection,
+    String checkin,
+    String checkout,
+    int rooms,
+  ) async {
+    final result = await connection.mappedResultsQuery(
+      'SELECT * FROM hotels '
+      'where id in ( '
+      '        SELECT hotel_id '
+      '        FROM ( '
+      '                SELECT r.id, r.hotel_id, '
+      '                    CASE '
+      '                        WHEN ( '
+      "                            b.checkin BETWEEN '$checkin' AND '$checkout' "
+      "                            OR b.checkout BETWEEN '$checkin' AND '$checkout' "
+      "                            OR '$checkin' BETWEEN b.checkin AND b.checkout "
+      "                            OR '$checkout' BETWEEN b.checkin AND b.checkout "
+      '                        ) THEN r.count - COALESCE(SUM(b.rooms), 0) '
+      '                        ELSE r.count '
+      '                    END AS available_rooms '
+      '                FROM rooms r LEFT JOIN booking b on r.id = b.room_id '
+      '                GROUP BY r.id, b.checkin, b.checkout '
+      '            ) AS subquery '
+      '        WHERE available_rooms >= $rooms '
+      '    )',
+    );
+    final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
+    return data;
+  }
 }

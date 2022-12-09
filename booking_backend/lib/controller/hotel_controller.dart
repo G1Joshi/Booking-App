@@ -41,8 +41,7 @@ class HotelController {
         Address.fromJson(response['address'] as Map<String, dynamic>);
     final updatedContact =
         Contact.fromJson(response['contact'] as Map<String, dynamic>);
-    final updatedBooking =
-        Booking.fromJson(response['booking'] as Map<String, dynamic>);
+
     final updatedDetails =
         Details.fromJson(response['details'] as Map<String, dynamic>);
     final newHotel = await hotelService.update(
@@ -56,10 +55,6 @@ class HotelController {
         contact: updatedContact.copyWith(
           id: hotel.contact?.id,
           hotel_id: hotel.contact?.hotel_id,
-        ),
-        booking: updatedBooking.copyWith(
-          id: hotel.booking?.id,
-          hotel_id: hotel.booking?.hotel_id,
         ),
         details: updatedDetails.copyWith(
           id: hotel.details?.id,
@@ -80,10 +75,7 @@ class HotelController {
     final hotelService = context.read<HotelService>();
     final query = context.request.uri.queryParameters;
     var hotel = <Hotel>[];
-    if (query['locality'] != null) {
-      final distance = int.tryParse(query['distance'] ?? '10') ?? 10;
-      hotel = await hotelService.searchByLocality(query['locality'], distance);
-    } else if (query['name'] != null) {
+    if (query['name'] != null) {
       hotel = await hotelService.search('name', query['name']);
     } else if (query['city'] != null) {
       hotel = await hotelService.search('city', query['city']);
@@ -94,9 +86,19 @@ class HotelController {
     } else if (query['property_type'] != null) {
       hotel =
           await hotelService.search('property_type', query['property_type']);
+    } else if (query['locality'] != null) {
+      final distance = int.tryParse(query['distance'] ?? '10') ?? 10;
+      hotel = await hotelService.searchByLocality(query['locality'], distance);
     } else if (query['rating'] != null) {
       final rating = num.tryParse(query['rating'] ?? '0') ?? 0;
       hotel = await hotelService.searchByRating(rating);
+    } else if (query['checkin'] != null && query['checkout'] != null) {
+      final rooms = int.tryParse(query['rooms'] ?? '0') ?? 0;
+      hotel = await hotelService.searchByDate(
+        query['checkin'].toString(),
+        query['checkout'].toString(),
+        rooms,
+      );
     }
     return Response.json(body: hotel);
   }

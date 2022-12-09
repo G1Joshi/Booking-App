@@ -15,7 +15,6 @@ class HotelsModel {
   Hotel? hotel;
   Address? address;
   Contact? contact;
-  Booking? booking;
   Details? details;
   List<Review>? reviews;
   List<Room>? rooms;
@@ -24,7 +23,6 @@ class HotelsModel {
     this.hotel,
     this.address,
     this.contact,
-    this.booking,
     this.details,
     this.reviews,
     this.rooms,
@@ -34,7 +32,6 @@ class HotelsModel {
     Hotel? hotel,
     Address? address,
     Contact? contact,
-    Booking? booking,
     Details? details,
     List<Review>? reviews,
     List<Room>? rooms,
@@ -43,7 +40,6 @@ class HotelsModel {
       hotel: hotel ?? this.hotel,
       address: address ?? this.address,
       contact: contact ?? this.contact,
-      booking: booking ?? this.booking,
       details: details ?? this.details,
       reviews: reviews ?? this.reviews,
       rooms: rooms ?? this.rooms,
@@ -55,7 +51,6 @@ class HotelsModel {
       'hotel': hotel?.toJson(),
       'address': address?.toJson(),
       'contact': contact?.toJson(),
-      'booking': booking?.toJson(),
       'details': details?.toJson(),
       'reviews': reviews?.map((x) => x.toJson()).toList(),
       'rooms': rooms?.map((x) => x.toJson()).toList(),
@@ -72,9 +67,6 @@ class HotelsModel {
           : null,
       contact: json['contact'] != null
           ? Contact.fromJson(json['contact'] as Map<String, dynamic>)
-          : null,
-      booking: json['booking'] != null
-          ? Booking.fromJson(json['booking'] as Map<String, dynamic>)
           : null,
       details: json['details'] != null
           ? Details.fromJson(json['details'] as Map<String, dynamic>)

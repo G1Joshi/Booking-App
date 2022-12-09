@@ -11,7 +11,6 @@ class HotelService {
     await Hotel.create(connection, hotel.hotel?.copyWith(id: id));
     await Address.create(connection, hotel.address?.copyWith(hotel_id: id));
     await Contact.create(connection, hotel.contact?.copyWith(hotel_id: id));
-    await Booking.create(connection, hotel.booking?.copyWith(hotel_id: id));
     await Details.create(connection, hotel.details?.copyWith(hotel_id: id));
     return hotel;
   }
@@ -22,7 +21,6 @@ class HotelService {
       details: await Details.read(connection, id),
       address: await Address.read(connection, id),
       contact: await Contact.read(connection, id),
-      booking: await Booking.read(connection, id),
       reviews: await Review.readAll(connection, id),
       rooms: await Room.readAll(connection, id),
     );
@@ -37,7 +35,6 @@ class HotelService {
     await Hotel.update(connection, hotel.hotel, id.toString());
     await Address.update(connection, hotel.address, id.toString());
     await Contact.update(connection, hotel.contact, id.toString());
-    await Booking.update(connection, hotel.booking, id.toString());
     await Details.update(connection, hotel.details, id.toString());
     return hotel;
   }
@@ -46,7 +43,6 @@ class HotelService {
     await Future.wait([
       Review.deleteAll(connection, id),
       Details.delete(connection, id),
-      Booking.delete(connection, id),
       Contact.delete(connection, id),
       Address.delete(connection, id),
       Room.deleteAll(connection, id),
@@ -66,6 +62,16 @@ class HotelService {
 
   Future<List<Hotel>> searchByRating(num rating) async {
     final hotels = await Hotel.searchByRating(connection, rating);
+    return hotels;
+  }
+
+  Future<List<Hotel>> searchByDate(
+    String checkin,
+    String checkout,
+    int rooms,
+  ) async {
+    final hotels =
+        await Hotel.searchByDate(connection, checkin, checkout, rooms);
     return hotels;
   }
 }

@@ -5,52 +5,70 @@ part of './hotels_model.dart';
 class Booking {
   static String table = Tables.booking;
   int? id;
+  String name;
   String checkin;
   String checkout;
-  String cancellation;
-  int? hotel_id;
+  int adults;
+  int children;
+  int rooms;
+  int? room_id;
 
   Booking({
     this.id,
+    required this.name,
     required this.checkin,
     required this.checkout,
-    required this.cancellation,
-    this.hotel_id,
+    required this.adults,
+    required this.children,
+    required this.rooms,
+    this.room_id,
   });
 
   Booking copyWith({
     int? id,
+    String? name,
     String? checkin,
     String? checkout,
-    String? cancellation,
-    int? hotel_id,
+    int? adults,
+    int? children,
+    int? rooms,
+    int? room_id,
   }) {
     return Booking(
       id: id ?? this.id,
+      name: name ?? this.name,
       checkin: checkin ?? this.checkin,
       checkout: checkout ?? this.checkout,
-      cancellation: cancellation ?? this.cancellation,
-      hotel_id: hotel_id ?? this.hotel_id,
+      adults: adults ?? this.adults,
+      children: children ?? this.children,
+      rooms: rooms ?? this.rooms,
+      room_id: room_id ?? this.room_id,
     );
   }
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,
+      'name': name,
       'checkin': checkin,
       'checkout': checkout,
-      'cancellation': cancellation,
-      'hotel_id': hotel_id,
+      'adults': adults,
+      'children': children,
+      'rooms': rooms,
+      'room_id': room_id,
     };
   }
 
   factory Booking.fromJson(Map<String, dynamic> json) {
     return Booking(
       id: json['id'] != null ? json['id'] as int : null,
-      checkin: json['checkin'].toString(),
-      checkout: json['checkout'].toString(),
-      cancellation: json['cancellation'] as String,
-      hotel_id: json['hotel_id'] != null ? json['hotel_id'] as int : null,
+      name: json['name'] as String,
+      checkin: json['checkin'] as String,
+      checkout: json['checkout'] as String,
+      adults: json['adults'] as int,
+      children: json['children'] as int,
+      rooms: json['rooms'] as int,
+      room_id: json['room_id'] != null ? json['room_id'] as int : null,
     );
   }
 
@@ -83,7 +101,7 @@ class Booking {
   ) async {
     final result = await connection.mappedResultsQuery(
       'SELECT * FROM $table '
-      "WHERE hotel_id = '$id'",
+      "WHERE room_id = '$id'",
     );
     final data = result.map((e) => Booking.fromJson(e[table]!)).toList();
     return data.first;
@@ -103,7 +121,7 @@ class Booking {
     await connection.query(
       'UPDATE $table '
       'SET $values '
-      "WHERE hotel_id = '$id'",
+      "WHERE room_id = '$id'",
     );
   }
 
@@ -113,7 +131,7 @@ class Booking {
   ) async {
     await connection.query(
       'DELETE FROM $table '
-      "WHERE hotel_id = '$id'",
+      "WHERE room_id = '$id'",
     );
   }
 }

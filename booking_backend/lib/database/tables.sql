@@ -43,13 +43,14 @@ ALTER TABLE contact
 ADD UNIQUE (hotel_id);
 CREATE TABLE IF NOT EXISTS booking (
     id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
     checkin DATE,
     checkout DATE,
-    cancellation VARCHAR(255),
-    hotel_id INTEGER REFERENCES hotels (id)
+    adults INTEGER,
+    children INTEGER,
+    rooms INTEGER,
+    room_id INTEGER REFERENCES rooms (id)
 );
-ALTER TABLE booking
-ADD UNIQUE (hotel_id);
 CREATE TABLE IF NOT EXISTS reviews (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255),
