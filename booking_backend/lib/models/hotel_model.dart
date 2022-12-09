@@ -183,4 +183,16 @@ class Hotel {
     final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
     return data;
   }
+
+  static Future<List<Hotel>> searchByRating(
+    PostgreSQLConnection connection,
+    num rating,
+  ) async {
+    final result = await connection.mappedResultsQuery(
+      'SELECT * FROM $table '
+      "WHERE rating >= '$rating'",
+    );
+    final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
+    return data;
+  }
 }

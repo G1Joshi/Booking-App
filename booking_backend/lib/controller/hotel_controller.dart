@@ -89,6 +89,14 @@ class HotelController {
       hotel = await hotelService.search('city', query['city']);
     } else if (query['country'] != null) {
       hotel = await hotelService.search('country', query['country']);
+    } else if (query['category'] != null) {
+      hotel = await hotelService.search('category', query['category']);
+    } else if (query['property_type'] != null) {
+      hotel =
+          await hotelService.search('property_type', query['property_type']);
+    } else if (query['rating'] != null) {
+      final rating = num.tryParse(query['rating'] ?? '0') ?? 0;
+      hotel = await hotelService.searchByRating(rating);
     }
     return Response.json(body: hotel);
   }

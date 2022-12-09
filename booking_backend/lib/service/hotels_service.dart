@@ -63,4 +63,9 @@ class HotelService {
     final hotels = await Hotel.searchByLocality(connection, locality, distance);
     return hotels;
   }
+
+  Future<List<Hotel>> searchByRating(num rating) async {
+    final hotels = await Hotel.searchByRating(connection, rating);
+    return hotels;
+  }
 }
