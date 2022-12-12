@@ -1,5 +1,4 @@
-import 'package:booking_frontend/counter/counter.dart';
-import 'package:booking_frontend/l10n/l10n.dart';
+import 'package:booking_frontend/app/app.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
@@ -9,14 +8,13 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
-        colorScheme: ColorScheme.fromSwatch(
-          accentColor: const Color(0xFF13B9FF),
+        cardTheme: CardTheme(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
       ),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const CounterPage(),
+      home: const HotelPage(),
     );
   }
 }
