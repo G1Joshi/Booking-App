@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:booking_backend/models/general_response.dart';
 import 'package:booking_backend/models/hotels_model.dart';
 import 'package:booking_backend/service/hotels_service.dart';
 import 'package:dart_frog/dart_frog.dart';
@@ -8,7 +9,12 @@ class HotelController {
   static Future<Response> getAllHotels(RequestContext context) async {
     final hotelService = context.read<HotelService>();
     final hotels = await hotelService.readAll();
-    return Response.json(body: hotels);
+    return Response.json(
+      body: GeneralResponse(
+        status: true,
+        data: hotels,
+      ),
+    );
   }
 
   static Future<Response> addHotel(RequestContext context) async {
@@ -18,7 +24,10 @@ class HotelController {
     );
     return Response.json(
       statusCode: HttpStatus.created,
-      body: await hotelService.create(hotel),
+      body: GeneralResponse(
+        status: true,
+        data: await hotelService.create(hotel),
+      ),
     );
   }
 
@@ -28,7 +37,12 @@ class HotelController {
   ) async {
     final hotelService = context.read<HotelService>();
     final hotel = await hotelService.read(id);
-    return Response.json(body: hotel);
+    return Response.json(
+      body: GeneralResponse(
+        status: true,
+        data: hotel,
+      ),
+    );
   }
 
   static Future<Response> updateHotel(RequestContext context, String id) async {
@@ -62,13 +76,23 @@ class HotelController {
         ),
       ),
     );
-    return Response.json(body: newHotel);
+    return Response.json(
+      body: GeneralResponse(
+        status: true,
+        data: newHotel,
+      ),
+    );
   }
 
   static Future<Response> deleteHotel(RequestContext context, String id) async {
     final hotelService = context.read<HotelService>();
     await hotelService.delete(id);
-    return Response(statusCode: HttpStatus.noContent);
+    return Response.json(
+      statusCode: HttpStatus.noContent,
+      body: GeneralResponse(
+        status: true,
+      ),
+    );
   }
 
   static Future<Response> searchHotels(RequestContext context) async {
@@ -100,6 +124,11 @@ class HotelController {
         rooms,
       );
     }
-    return Response.json(body: hotel);
+    return Response.json(
+      body: GeneralResponse(
+        status: true,
+        data: hotel,
+      ),
+    );
   }
 }

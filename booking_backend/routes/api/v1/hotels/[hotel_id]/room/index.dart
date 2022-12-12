@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:booking_backend/controller/room_controller.dart';
+import 'package:booking_backend/models/general_response.dart';
 import 'package:dart_frog/dart_frog.dart';
 
 FutureOr<Response> onRequest(RequestContext context, String hotelId) {
@@ -14,6 +15,12 @@ FutureOr<Response> onRequest(RequestContext context, String hotelId) {
     case HttpMethod.head:
     case HttpMethod.options:
     case HttpMethod.patch:
-      return Response(statusCode: HttpStatus.methodNotAllowed);
+      return Response.json(
+        statusCode: HttpStatus.methodNotAllowed,
+        body: GeneralResponse(
+          status: false,
+          message: 'Method not allowed',
+        ),
+      );
   }
 }

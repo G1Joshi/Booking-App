@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:booking_backend/models/general_response.dart';
 import 'package:booking_backend/models/hotels_model.dart';
 import 'package:booking_backend/service/review_service.dart';
 import 'package:dart_frog/dart_frog.dart';
@@ -12,7 +13,10 @@ class ReviewController {
     );
     return Response.json(
       statusCode: HttpStatus.created,
-      body: await reviewService.create(review, id),
+      body: GeneralResponse(
+        status: true,
+        data: await reviewService.create(review, id),
+      ),
     );
   }
 
@@ -36,7 +40,12 @@ class ReviewController {
         guest_images: updatedReview.guest_images,
       ),
     );
-    return Response.json(body: newReview);
+    return Response.json(
+      body: GeneralResponse(
+        status: true,
+        data: newReview,
+      ),
+    );
   }
 
   static Future<Response> deleteReview(
@@ -46,6 +55,11 @@ class ReviewController {
   ) async {
     final reviewService = context.read<ReviewService>();
     await reviewService.delete(hotelId, reviewId);
-    return Response(statusCode: HttpStatus.noContent);
+    return Response.json(
+      statusCode: HttpStatus.noContent,
+      body: GeneralResponse(
+        status: true,
+      ),
+    );
   }
 }

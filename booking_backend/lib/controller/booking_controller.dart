@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:booking_backend/models/general_response.dart';
 import 'package:booking_backend/models/hotels_model.dart';
 import 'package:booking_backend/service/booking_service.dart';
 import 'package:dart_frog/dart_frog.dart';
@@ -15,7 +16,10 @@ class BookingController {
     );
     return Response.json(
       statusCode: HttpStatus.created,
-      body: await bookingService.create(booking, roomId),
+      body: GeneralResponse(
+        status: true,
+        data: await bookingService.create(booking, roomId),
+      ),
     );
   }
 
@@ -39,7 +43,12 @@ class BookingController {
         rooms: updatedBooking.rooms,
       ),
     );
-    return Response.json(body: newBooking);
+    return Response.json(
+      body: GeneralResponse(
+        status: true,
+        data: newBooking,
+      ),
+    );
   }
 
   static Future<Response> deleteBooking(
@@ -48,6 +57,11 @@ class BookingController {
   ) async {
     final bookingService = context.read<BookingService>();
     await bookingService.delete(roomId);
-    return Response(statusCode: HttpStatus.noContent);
+    return Response.json(
+      statusCode: HttpStatus.noContent,
+      body: GeneralResponse(
+        status: true,
+      ),
+    );
   }
 }
