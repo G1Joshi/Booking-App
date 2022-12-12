@@ -9,7 +9,7 @@ class Hotel {
   String description;
   String property_type;
   String chain;
-  String category;
+  int star;
   num rating;
   int rooms_starting_price;
   String cover_image;
@@ -20,7 +20,7 @@ class Hotel {
     required this.description,
     required this.property_type,
     required this.chain,
-    required this.category,
+    required this.star,
     required this.rating,
     required this.rooms_starting_price,
     required this.cover_image,
@@ -32,7 +32,7 @@ class Hotel {
     String? description,
     String? property_type,
     String? chain,
-    String? category,
+    int? star,
     num? rating,
     int? rooms_starting_price,
     String? cover_image,
@@ -43,7 +43,7 @@ class Hotel {
       description: description ?? this.description,
       property_type: property_type ?? this.property_type,
       chain: chain ?? this.chain,
-      category: category ?? this.category,
+      star: star ?? this.star,
       rating: rating ?? this.rating,
       rooms_starting_price: rooms_starting_price ?? this.rooms_starting_price,
       cover_image: cover_image ?? this.cover_image,
@@ -57,7 +57,7 @@ class Hotel {
       'description': description,
       'property_type': property_type,
       'chain': chain,
-      'category': category,
+      'star': star,
       'rating': rating,
       'rooms_starting_price': rooms_starting_price,
       'cover_image': cover_image,
@@ -71,7 +71,7 @@ class Hotel {
       description: json['description'] as String,
       property_type: json['property_type'] as String,
       chain: json['chain'] as String,
-      category: json['category'] as String,
+      star: json['star'] as int,
       rating: json['rating'] as num,
       rooms_starting_price: json['rooms_starting_price'] as int,
       cover_image: json['cover_image'] as String,

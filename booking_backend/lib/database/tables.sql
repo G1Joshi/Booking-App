@@ -4,7 +4,7 @@ CREATE TABLE if NOT EXISTS hotels (
     description TEXT,
     property_type VARCHAR(255),
     chain VARCHAR(255),
-    category VARCHAR(255),
+    star INTEGER,
     rating REAL,
     rooms_starting_price INTEGER,
     cover_image VARCHAR(255)
@@ -41,16 +41,6 @@ CREATE TABLE IF NOT EXISTS contact (
 );
 ALTER TABLE contact
 ADD UNIQUE (hotel_id);
-CREATE TABLE IF NOT EXISTS booking (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255),
-    checkin DATE,
-    checkout DATE,
-    adults INTEGER,
-    children INTEGER,
-    rooms INTEGER,
-    room_id INTEGER REFERENCES rooms (id)
-);
 CREATE TABLE IF NOT EXISTS reviews (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255),
@@ -65,10 +55,20 @@ CREATE TABLE IF NOT EXISTS rooms (
     description text,
     price INTEGER,
     count INTEGER,
-    occupancy INTEGER,
+    capacity INTEGER,
     amenities text [],
     room_images text [],
     hotel_id INTEGER REFERENCES hotels (id)
+);
+CREATE TABLE IF NOT EXISTS booking (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    checkin DATE,
+    checkout DATE,
+    adults INTEGER,
+    children INTEGER,
+    rooms INTEGER,
+    room_id INTEGER REFERENCES rooms (id)
 );
 CREATE TABLE IF NOT EXISTS localities (
     id SERIAL PRIMARY KEY,

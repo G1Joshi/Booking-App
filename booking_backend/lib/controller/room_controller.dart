@@ -38,7 +38,7 @@ class RoomController {
         description: updatedRoom.description,
         price: updatedRoom.price,
         count: updatedRoom.count,
-        occupancy: updatedRoom.occupancy,
+        capacity: updatedRoom.capacity,
         amenities: updatedRoom.amenities,
         room_images: updatedRoom.room_images,
       ),

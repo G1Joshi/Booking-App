@@ -9,7 +9,7 @@ class Room {
   String? description;
   int price;
   int count;
-  int occupancy;
+  int capacity;
   List<String> amenities;
   List<String> room_images;
   int? hotel_id;
@@ -20,7 +20,7 @@ class Room {
     this.description,
     required this.price,
     required this.count,
-    required this.occupancy,
+    required this.capacity,
     required this.amenities,
     required this.room_images,
     required this.hotel_id,
@@ -32,7 +32,7 @@ class Room {
     String? description,
     int? price,
     int? count,
-    int? occupancy,
+    int? capacity,
     List<String>? amenities,
     List<String>? room_images,
     int? hotel_id,
@@ -43,7 +43,7 @@ class Room {
       description: description ?? this.description,
       price: price ?? this.price,
       count: count ?? this.count,
-      occupancy: occupancy ?? this.occupancy,
+      capacity: capacity ?? this.capacity,
       amenities: amenities ?? this.amenities,
       room_images: room_images ?? this.room_images,
       hotel_id: hotel_id ?? this.hotel_id,
@@ -57,7 +57,7 @@ class Room {
       'description': description,
       'price': price,
       'count': count,
-      'occupancy': occupancy,
+      'capacity': capacity,
       'amenities': amenities,
       'room_images': room_images,
       'hotel_id': hotel_id,
@@ -72,7 +72,7 @@ class Room {
           json['description'] != null ? json['description'] as String : null,
       price: json['price'] as int,
       count: json['count'] as int,
-      occupancy: json['occupancy'] as int,
+      capacity: json['capacity'] as int,
       amenities: List<String>.from(json['amenities'] as List),
       room_images: List<String>.from(json['room_images'] as List),
       hotel_id: json['hotel_id'] != null ? json['hotel_id'] as int : null,
