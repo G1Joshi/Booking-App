@@ -23,7 +23,7 @@ class Address {
     required this.pincode,
     required this.latitude,
     required this.longitude,
-    required this.hotel_id,
+    this.hotel_id,
   });
 
   Address copyWith({

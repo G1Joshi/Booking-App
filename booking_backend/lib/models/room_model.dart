@@ -23,7 +23,7 @@ class Room {
     required this.capacity,
     required this.amenities,
     required this.room_images,
-    required this.hotel_id,
+    this.hotel_id,
   });
 
   Room copyWith({

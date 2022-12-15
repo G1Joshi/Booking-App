@@ -15,7 +15,7 @@ class Contact {
     required this.phone,
     required this.email,
     required this.website,
-    required this.hotel_id,
+    this.hotel_id,
   });
 
   Contact copyWith({

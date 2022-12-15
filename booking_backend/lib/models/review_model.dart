@@ -17,7 +17,7 @@ class Review {
     required this.rating,
     required this.review,
     required this.guest_images,
-    required this.hotel_id,
+    this.hotel_id,
   });
 
   Review copyWith({

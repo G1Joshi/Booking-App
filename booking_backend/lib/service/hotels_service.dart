@@ -6,8 +6,8 @@ class HotelService {
 
   final PostgreSQLConnection connection;
 
-  Future<HotelsModel> create(HotelsModel hotel) async {
-    final id = await Hotel.getId(connection);
+  Future<HotelsModel> create(HotelsModel hotel, [int? i]) async {
+    final id = i ?? await Hotel.getId(connection);
     await Hotel.create(connection, hotel.hotel?.copyWith(id: id));
     await Address.create(connection, hotel.address?.copyWith(hotel_id: id));
     await Contact.create(connection, hotel.contact?.copyWith(hotel_id: id));

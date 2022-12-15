@@ -17,7 +17,7 @@ class Details {
     required this.rules,
     required this.preferences,
     required this.hotel_images,
-    required this.hotel_id,
+    this.hotel_id,
   });
 
   Details copyWith({
