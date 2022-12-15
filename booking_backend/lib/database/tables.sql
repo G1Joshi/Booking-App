@@ -1,3 +1,15 @@
+CREATE TABLE if NOT EXISTS users (
+    id TEXT PRIMARY KEY,
+    name VARCHAR(255),
+    email VARCHAR(255),
+    profile_image VARCHAR(255),
+    phone BIGINT,
+    date_of_birth DATE,
+    city VARCHAR(255),
+    state VARCHAR(255),
+    country VARCHAR(255),
+    pincode BIGINT
+);
 CREATE TABLE if NOT EXISTS hotels (
     id INTEGER PRIMARY KEY,
     name VARCHAR(255),

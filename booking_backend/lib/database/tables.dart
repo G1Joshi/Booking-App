@@ -1,4 +1,5 @@
 class Tables {
+  static String get users => 'users';
   static String get address => 'address';
   static String get booking => 'booking';
   static String get contact => 'contact';
