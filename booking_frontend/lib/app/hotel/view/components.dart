@@ -5,12 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class SearchBar extends StatelessWidget {
   const SearchBar({super.key});
 
-  static final formKey = GlobalKey<FormState>();
-  static final cityController = TextEditingController();
-  static final checkinController = TextEditingController();
-  static final checkoutController = TextEditingController();
-  static final roomController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -19,7 +13,7 @@ class SearchBar extends StatelessWidget {
         child: Column(
           children: [
             Form(
-              key: formKey,
+              key: context.read<HotelBloc>().formKey,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -27,26 +21,26 @@ class SearchBar extends StatelessWidget {
                     flex: 2,
                     child: InputField(
                       labelText: 'City',
-                      controller: cityController,
+                      controller: context.read<HotelBloc>().cityController,
                     ),
                   ),
                   Expanded(
                     child: InputField(
                       labelText: 'Checkin',
-                      controller: checkinController,
+                      controller: context.read<HotelBloc>().checkinController,
                     ),
                   ),
                   Expanded(
                     child: InputField(
                       labelText: 'Checkout',
-                      controller: checkoutController,
+                      controller: context.read<HotelBloc>().checkoutController,
                     ),
                   ),
                   Expanded(
                     flex: 2,
                     child: InputField(
                       labelText: 'Rooms',
-                      controller: roomController,
+                      controller: context.read<HotelBloc>().roomController,
                     ),
                   ),
                 ],
@@ -62,15 +56,13 @@ class SearchBar extends StatelessWidget {
                   builder: (context, state) {
                     return ElevatedButton(
                       onPressed: () {
-                        if (formKey.currentState?.validate() ?? false) {
-                          context.read<HotelBloc>().add(
-                                SearchHotel(
-                                  city: cityController.text,
-                                  checkin: checkinController.text,
-                                  checkout: checkinController.text,
-                                  rooms: int.parse(roomController.text),
-                                ),
-                              );
+                        if (context
+                                .read<HotelBloc>()
+                                .formKey
+                                .currentState
+                                ?.validate() ??
+                            false) {
+                          context.read<HotelBloc>().add(const SearchHotel());
                         }
                       },
                       child: state is HotelsLoaded

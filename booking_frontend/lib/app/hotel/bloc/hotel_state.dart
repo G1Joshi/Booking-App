@@ -20,3 +20,9 @@ class HotelsLoaded extends HotelState {
 
   final List<Hotel> hotels;
 }
+
+class HotelDetailsLoaded extends HotelState {
+  const HotelDetailsLoaded(this.hotel);
+
+  final HotelDetails hotel;
+}

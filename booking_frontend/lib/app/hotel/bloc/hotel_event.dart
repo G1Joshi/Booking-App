@@ -12,15 +12,11 @@ class GetAllHotels extends HotelEvent {
 }
 
 class SearchHotel extends HotelEvent {
-  const SearchHotel({
-    required this.city,
-    required this.checkin,
-    required this.checkout,
-    required this.rooms,
-  });
+  const SearchHotel();
+}
 
-  final String city;
-  final String checkin;
-  final String checkout;
-  final int rooms;
+class GetHotelDetails extends HotelEvent {
+  const GetHotelDetails(this.id);
+
+  final int id;
 }
