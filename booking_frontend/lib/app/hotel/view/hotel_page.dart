@@ -25,55 +25,79 @@ class HotelView extends StatefulWidget {
 class _HotelViewState extends State<HotelView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.blue.shade900,
-              Colors.blue.shade700,
-              Colors.blue.shade500
-            ],
-          ),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is SignedOut) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute<HotelPage>(
+              builder: (context) => const AuthPage(),
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(
+              onPressed: () {
+                context.read<AuthBloc>().add(const SignOut());
+              },
+              icon: const Icon(Icons.logout),
+            ),
+          ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const SearchBar(),
-                const SizedBox(height: 32),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(32),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
-                      child: BlocBuilder<HotelBloc, HotelState>(
-                        builder: (context, state) {
-                          if (state is HotelsLoaded) {
-                            if (state.hotels.isEmpty) {
-                              return Center(
-                                child: Text(
-                                  'No Hotels Available',
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue.shade900,
+        body: DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.blue.shade900,
+                Colors.blue.shade700,
+                Colors.blue.shade500
+              ],
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(32, 0, 32, 32),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SearchBar(),
+                  const SizedBox(height: 32),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                        child: BlocBuilder<HotelBloc, HotelState>(
+                          builder: (context, state) {
+                            if (state is HotelsLoaded) {
+                              if (state.hotels.isEmpty) {
+                                return Center(
+                                  child: Text(
+                                    'No Hotels Available',
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue.shade900,
+                                    ),
                                   ),
-                                ),
-                              );
-                            } else {
-                              return hotelsList(state);
+                                );
+                              } else {
+                                return hotelsList(state);
+                              }
                             }
-                          }
-                          return const SizedBox.shrink();
-                        },
+                            return const SizedBox.shrink();
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ),

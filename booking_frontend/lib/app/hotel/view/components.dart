@@ -27,26 +27,26 @@ class SearchBar extends StatelessWidget {
                     flex: 2,
                     child: InputField(
                       labelText: 'City',
-                      cityController: cityController,
+                      controller: cityController,
                     ),
                   ),
                   Expanded(
                     child: InputField(
                       labelText: 'Checkin',
-                      cityController: checkinController,
+                      controller: checkinController,
                     ),
                   ),
                   Expanded(
                     child: InputField(
                       labelText: 'Checkout',
-                      cityController: checkoutController,
+                      controller: checkoutController,
                     ),
                   ),
                   Expanded(
                     flex: 2,
                     child: InputField(
                       labelText: 'Rooms',
-                      cityController: roomController,
+                      controller: roomController,
                     ),
                   ),
                 ],
@@ -90,32 +90,6 @@ class SearchBar extends StatelessWidget {
               ),
             )
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class InputField extends StatelessWidget {
-  const InputField({
-    super.key,
-    required this.labelText,
-    required this.cityController,
-  });
-
-  final TextEditingController cityController;
-  final String labelText;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: cityController,
-      validator: (value) =>
-          value == null || value.isEmpty ? "Value can't be null" : null,
-      decoration: InputDecoration(
-        labelText: labelText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(1),
         ),
       ),
     );

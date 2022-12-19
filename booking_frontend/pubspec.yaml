@@ -13,8 +13,11 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.1
+  flutter_dotenv: ^5.0.2
   flutter_localizations:
     sdk: flutter
+  google_sign_in: ^5.4.2
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   bloc_test: ^9.1.0
@@ -26,3 +29,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - .env
