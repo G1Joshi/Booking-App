@@ -32,12 +32,14 @@ class HotelRepository {
 
   Future<List<Hotel>> search(
     String locality,
+    int distance,
     String checkin,
     String checkout,
     int rooms,
   ) async {
     final queryParameters = {
       'locality': locality,
+      'distance': distance,
       'checkin': checkin,
       'checkout': checkout,
       'rooms': rooms,

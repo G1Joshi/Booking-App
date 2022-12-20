@@ -50,28 +50,21 @@ class HotelService {
     ]);
   }
 
-  Future<List<Hotel>> search(String col, String? query) async {
-    final hotels = await Hotel.search(connection, col, query);
-    return hotels;
-  }
-
-  Future<List<Hotel>> searchByLocality(String? locality, int distance) async {
-    final hotels = await Hotel.searchByLocality(connection, locality, distance);
-    return hotels;
-  }
-
-  Future<List<Hotel>> searchByRating(num rating) async {
-    final hotels = await Hotel.searchByRating(connection, rating);
-    return hotels;
-  }
-
-  Future<List<Hotel>> searchByDate(
+  Future<List<Hotel>> search(
+    String locality,
+    int distance,
     String checkin,
     String checkout,
     int rooms,
   ) async {
-    final hotels =
-        await Hotel.searchByDate(connection, checkin, checkout, rooms);
+    final hotels = await Hotel.search(
+      connection,
+      locality,
+      distance,
+      checkin,
+      checkout,
+      rooms,
+    );
     return hotels;
   }
 }

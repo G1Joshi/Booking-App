@@ -157,71 +157,27 @@ class Hotel {
 
   static Future<List<Hotel>> search(
     PostgreSQLConnection connection,
-    String col,
-    String? query,
-  ) async {
-    final result = await connection.mappedResultsQuery(
-      'SELECT * FROM $table '
-      "WHERE $col iLIKE '%$query%'",
-    );
-    final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
-    return data;
-  }
-
-  static Future<List<Hotel>> searchByLocality(
-    PostgreSQLConnection connection,
-    String? locality,
+    String locality,
     int distance,
-  ) async {
-    final result = await connection.mappedResultsQuery(
-      'SELECT * FROM $table '
-      'WHERE id in ( '
-      'SELECT h.hotel_id FROM ${Tables.address} h '
-      'JOIN ${Tables.localities} l ON distance(h.latitude, h.longitude, l.latitude, l.longitude) < $distance '
-      "WHERE l.name iLIKE '%$locality%' );",
-    );
-    final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
-    return data;
-  }
-
-  static Future<List<Hotel>> searchByRating(
-    PostgreSQLConnection connection,
-    num rating,
-  ) async {
-    final result = await connection.mappedResultsQuery(
-      'SELECT * FROM $table '
-      "WHERE rating >= '$rating'",
-    );
-    final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
-    return data;
-  }
-
-  static Future<List<Hotel>> searchByDate(
-    PostgreSQLConnection connection,
     String checkin,
     String checkout,
     int rooms,
   ) async {
     final result = await connection.mappedResultsQuery(
-      'SELECT * FROM hotels '
+      'SELECT * FROM $table '
       'where id in ( '
-      '        SELECT hotel_id '
-      '        FROM ( '
-      '                SELECT r.id, r.hotel_id, '
-      '                    CASE '
-      '                        WHEN ( '
-      "                            b.checkin BETWEEN '$checkin' AND '$checkout' "
-      "                            OR b.checkout BETWEEN '$checkin' AND '$checkout' "
-      "                            OR '$checkin' BETWEEN b.checkin AND b.checkout "
-      "                            OR '$checkout' BETWEEN b.checkin AND b.checkout "
-      '                        ) THEN r.count - COALESCE(SUM(b.rooms), 0) '
-      '                        ELSE r.count '
-      '                    END AS available_rooms '
-      '                FROM rooms r LEFT JOIN booking b on r.id = b.room_id '
-      '                GROUP BY r.id, b.checkin, b.checkout '
-      '            ) AS subquery '
-      '        WHERE available_rooms >= $rooms '
-      '    )',
+      '   SELECT hotel_id FROM ( SELECT r.id, r.hotel_id, '
+      "   CASE WHEN ( b.checkin BETWEEN '$checkin' AND '$checkout' OR b.checkout BETWEEN '$checkin' AND '$checkout' OR '$checkin' BETWEEN b.checkin AND b.checkout OR '$checkout' BETWEEN b.checkin AND b.checkout ) "
+      '   THEN r.count - COALESCE(SUM(b.rooms), 0) ELSE r.count '
+      '   END AS available_rooms '
+      '   FROM rooms r LEFT JOIN booking b on r.id = b.room_id '
+      '   GROUP BY r.id, b.checkin, b.checkout ) AS subquery '
+      '   WHERE available_rooms >= $rooms '
+      'INTERSECT '
+      '   SELECT h.hotel_id FROM ${Tables.address} h '
+      '   JOIN ${Tables.localities} l ON distance(h.latitude, h.longitude, l.latitude, l.longitude) < $distance '
+      "   WHERE l.name iLIKE '%$locality%' "
+      ')',
     );
     final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
     return data;

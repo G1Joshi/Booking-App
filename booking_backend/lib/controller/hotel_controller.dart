@@ -99,31 +99,13 @@ class HotelController {
     final hotelService = context.read<HotelService>();
     final query = context.request.uri.queryParameters;
     var hotel = <Hotel>[];
-    if (query['name'] != null) {
-      hotel = await hotelService.search('name', query['name']);
-    } else if (query['city'] != null) {
-      hotel = await hotelService.search('city', query['city']);
-    } else if (query['country'] != null) {
-      hotel = await hotelService.search('country', query['country']);
-    } else if (query['category'] != null) {
-      hotel = await hotelService.search('category', query['category']);
-    } else if (query['property_type'] != null) {
-      hotel =
-          await hotelService.search('property_type', query['property_type']);
-    } else if (query['locality'] != null) {
-      final distance = int.tryParse(query['distance'] ?? '10') ?? 10;
-      hotel = await hotelService.searchByLocality(query['locality'], distance);
-    } else if (query['rating'] != null) {
-      final rating = num.tryParse(query['rating'] ?? '0') ?? 0;
-      hotel = await hotelService.searchByRating(rating);
-    } else if (query['checkin'] != null && query['checkout'] != null) {
-      final rooms = int.tryParse(query['rooms'] ?? '0') ?? 0;
-      hotel = await hotelService.searchByDate(
-        query['checkin'].toString(),
-        query['checkout'].toString(),
-        rooms,
-      );
-    }
+    hotel = await hotelService.search(
+      query['locality'].toString(),
+      int.tryParse(query['distance'] ?? '10') ?? 10,
+      query['checkin'].toString(),
+      query['checkout'].toString(),
+      int.tryParse(query['rooms'] ?? '0') ?? 0,
+    );
     return Response.json(
       body: GeneralResponse(
         status: true,

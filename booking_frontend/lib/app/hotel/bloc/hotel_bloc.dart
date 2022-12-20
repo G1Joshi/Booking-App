@@ -18,6 +18,7 @@ class HotelBloc extends Bloc<HotelEvent, HotelState> {
       emit(const HotelLoading());
       hotels = await repository.search(
         cityController.text,
+        int.parse(distanceController.text),
         checkinController.text,
         checkoutController.text,
         int.parse(roomController.text),
@@ -34,6 +35,7 @@ class HotelBloc extends Bloc<HotelEvent, HotelState> {
 
   final formKey = GlobalKey<FormState>();
   final cityController = TextEditingController();
+  final distanceController = TextEditingController();
   final checkinController = TextEditingController();
   final checkoutController = TextEditingController();
   final roomController = TextEditingController();

@@ -26,6 +26,12 @@ class SearchBar extends StatelessWidget {
                   ),
                   Expanded(
                     child: InputField(
+                      labelText: 'Distance',
+                      controller: context.read<HotelBloc>().distanceController,
+                    ),
+                  ),
+                  Expanded(
+                    child: InputField(
                       labelText: 'Checkin',
                       controller: context.read<HotelBloc>().checkinController,
                     ),
@@ -37,7 +43,6 @@ class SearchBar extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    flex: 2,
                     child: InputField(
                       labelText: 'Rooms',
                       controller: context.read<HotelBloc>().roomController,
