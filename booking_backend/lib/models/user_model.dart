@@ -8,7 +8,7 @@ class User {
   String id;
   String name;
   String email;
-  String profile_image;
+  String? profile_image;
   int phone;
   String date_of_birth;
   String city;
@@ -20,7 +20,7 @@ class User {
     required this.id,
     required this.name,
     required this.email,
-    required this.profile_image,
+    this.profile_image,
     required this.phone,
     required this.date_of_birth,
     required this.city,
@@ -75,7 +75,9 @@ class User {
       id: json['id'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
-      profile_image: json['profile_image'] as String,
+      profile_image: json['profile_image'] != null
+          ? json['profile_image'] as String
+          : null,
       phone: json['phone'] as int,
       date_of_birth: json['date_of_birth'] as String,
       city: json['city'] as String,

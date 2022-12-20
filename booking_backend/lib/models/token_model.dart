@@ -1,12 +1,12 @@
 // ignore_for_file: non_constant_identifier_names, sort_constructors_first
 
 class Token {
-  String access_token;
-  String id_token;
+  String? access_token;
+  String? id_token;
 
   Token({
-    required this.access_token,
-    required this.id_token,
+    this.access_token,
+    this.id_token,
   });
 
   Token copyWith({
@@ -28,8 +28,9 @@ class Token {
 
   factory Token.fromJson(Map<String, dynamic> json) {
     return Token(
-      access_token: json['access_token'] as String,
-      id_token: json['id_token'] as String,
+      access_token:
+          json['access_token'] != null ? json['access_token'] as String : null,
+      id_token: json['id_token'] != null ? json['id_token'] as String : null,
     );
   }
 }

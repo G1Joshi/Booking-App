@@ -69,4 +69,18 @@ class AuthController {
       );
     }
   }
+
+  static Future<bool> verify(RequestContext context) async {
+    try {
+      final path = context.request.uri.path;
+      final isAuth = path.contains('/auth/');
+      if (isAuth) return true;
+      final authService = context.read<AuthService>();
+      final headers = context.request.headers;
+      final data = await authService.verify(headers);
+      return data;
+    } catch (e) {
+      return false;
+    }
+  }
 }

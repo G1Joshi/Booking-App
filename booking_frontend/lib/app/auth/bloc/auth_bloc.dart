@@ -78,7 +78,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final idToken = res?.idToken;
         if (accessToken != null && idToken != null) {
           final response = await repository.signIn(
-            Token(accessToken: accessToken, idToken: idToken),
+            Token(idToken: idToken),
           );
           if (response) {
             await Storage.prefs.setString('access_token', accessToken);

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:booking_frontend/config/config.dart';
 import 'package:dio/dio.dart';
 
@@ -9,11 +11,13 @@ class Client {
   late Dio _dio;
 
   void initClient() {
+    final accessToken = Storage.prefs.getString('access_token');
     final dioOptions = BaseOptions(
       baseUrl: baseUrl,
       contentType: Headers.jsonContentType,
       headers: {
         Headers.acceptHeader: Headers.jsonContentType,
+        HttpHeaders.authorizationHeader: 'Bearer $accessToken'
       },
     );
 
