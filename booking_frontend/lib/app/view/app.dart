@@ -7,15 +7,8 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => AuthBloc(),
-        ),
-        BlocProvider(
-          create: (context) => HotelBloc(),
-        ),
-      ],
+    return BlocProvider(
+      create: (context) => AuthBloc(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

@@ -8,8 +8,8 @@ class HotelPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: BlocProvider.of<HotelBloc>(context)..add(const GetAllHotels()),
+    return BlocProvider(
+      create: (context) => HotelBloc()..add(const GetAllHotels()),
       child: const HotelView(),
     );
   }
@@ -119,7 +119,7 @@ class _HotelViewState extends State<HotelView> {
               Navigator.push(
                 context,
                 MaterialPageRoute<HotelDetailsPage>(
-                  builder: (context) => const HotelDetailsPage(),
+                  builder: (context) => HotelDetailsPage(id: hotel.id),
                 ),
               );
             },

@@ -19,7 +19,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(const AuthLoading());
       try {
         if (Storage.prefs.getString('access_token') != null) {
-          await googleSignIn.signInSilently();
+          final data = await googleSignIn.signInSilently();
+          final auth = await data?.authentication;
+          final accessToken = auth?.accessToken;
+          if (accessToken != null) {
+            await Storage.prefs.setString('access_token', accessToken);
+          }
         }
         if (googleSignIn.currentUser != null) {
           emit(const SignedIn());
@@ -73,9 +78,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(const AuthLoading());
       try {
         final data = await googleSignIn.signIn();
-        final res = await data?.authentication;
-        final accessToken = res?.accessToken;
-        final idToken = res?.idToken;
+        final auth = await data?.authentication;
+        final accessToken = auth?.accessToken;
+        final idToken = auth?.idToken;
         if (accessToken != null && idToken != null) {
           final response = await repository.signIn(
             Token(idToken: idToken),

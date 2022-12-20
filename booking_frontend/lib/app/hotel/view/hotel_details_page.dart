@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HotelDetailsPage extends StatelessWidget {
-  const HotelDetailsPage({super.key});
+  const HotelDetailsPage({super.key, required this.id});
+
+  final int id;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: BlocProvider.of<HotelBloc>(context),
+    return BlocProvider(
+      create: (context) => HotelBloc()..add(GetHotelDetails(id)),
       child: const HotelDetailsView(),
     );
   }
@@ -175,7 +177,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                       room.roomImages.first,
                       fit: BoxFit.cover,
                       height: 200,
-                      width: 300,
+                      width: 400,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -187,7 +189,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                           room.roomImages[2],
                           fit: BoxFit.cover,
                           height: 50,
-                          width: 96,
+                          width: 130,
                         ),
                       ),
                       const SizedBox(width: 4),
@@ -197,7 +199,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                           room.roomImages[3],
                           fit: BoxFit.cover,
                           height: 50,
-                          width: 100,
+                          width: 130,
                         ),
                       ),
                       const SizedBox(width: 4),
@@ -207,7 +209,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                           room.roomImages[4],
                           fit: BoxFit.cover,
                           height: 50,
-                          width: 96,
+                          width: 130,
                         ),
                       ),
                     ],
