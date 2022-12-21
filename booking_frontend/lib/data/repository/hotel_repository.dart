@@ -58,4 +58,31 @@ class HotelRepository {
       throw Exception(data.message);
     }
   }
+
+  Future<List<Hotel>> filter(
+    String star,
+    String rating,
+    String propertyType,
+    String budget,
+  ) async {
+    final queryParameters = {
+      if (star != '') 'star': star,
+      if (rating != '') 'rating': rating,
+      if (propertyType != '') 'property_type': propertyType,
+      if (budget != '') 'budget': budget,
+    };
+    final response =
+        await Client().get(path: filterPath, queryParameters: queryParameters);
+    final data = GeneralResponse.fromJson(response);
+
+    if (data.status) {
+      final result = List<Hotel>.from(
+        (data.data as Iterable?)!
+            .map((e) => Hotel.fromJson(e as Map<String, dynamic>)),
+      );
+      return result;
+    } else {
+      throw Exception(data.message);
+    }
+  }
 }

@@ -1,5 +1,5 @@
 import 'package:booking_frontend/app/app.dart';
-import 'package:booking_frontend/data/model/hotel_model.dart';
+import 'package:booking_frontend/data/data.dart';
 import 'package:booking_frontend/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,128 +28,152 @@ class HotelDetailsView extends StatefulWidget {
 class _HotelDetailsViewState extends State<HotelDetailsView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.blue.shade900,
-              Colors.blue.shade700,
-              Colors.blue.shade500
-            ],
-          ),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is SignedOut) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute<HotelPage>(
+              builder: (context) => const AuthPage(),
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(
+              onPressed: () {
+                context.read<AuthBloc>().add(const SignOut());
+              },
+              icon: const Icon(Icons.logout),
+            ),
+          ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: BlocBuilder<HotelBloc, HotelState>(
-                  builder: (context, state) {
-                    if (state is HotelDetailsLoaded) {
-                      final hotel = state.hotel.hotel;
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Card(
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: Image.network(
-                                  hotel.coverImage,
-                                  fit: BoxFit.cover,
-                                  height:
-                                      MediaQuery.of(context).size.height / 1.5,
-                                  width: MediaQuery.of(context).size.width,
+        body: DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.blue.shade900,
+                Colors.blue.shade700,
+                Colors.blue.shade500
+              ],
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: BlocBuilder<HotelBloc, HotelState>(
+                    builder: (context, state) {
+                      if (state is HotelDetailsLoaded) {
+                        final hotel = state.hotel.hotel;
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Card(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Image.network(
+                                    hotel.coverImage,
+                                    fit: BoxFit.cover,
+                                    height: MediaQuery.of(context).size.height /
+                                        1.5,
+                                    width: MediaQuery.of(context).size.width,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                const SizedBox(height: 20),
-                                Row(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(4),
-                                        color: Colors.blue.shade600,
-                                        child: Text(
-                                          '${hotel.rating}',
-                                          style: const TextStyle(
-                                            color: Colors.white,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  const SizedBox(height: 20),
+                                  Row(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(4),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(4),
+                                          color: Colors.blue.shade600,
+                                          child: Text(
+                                            hotel.rating.toStringAsFixed(1),
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      getGrade(hotel.rating),
-                                      style: TextStyle(
-                                        color: Colors.blue.shade600,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    Text(
-                                      hotel.name,
-                                      style: TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.blue.shade900,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Row(
-                                      children: List.generate(
-                                        hotel.star,
-                                        (index) => const Icon(
-                                          Icons.star_rate_rounded,
-                                          size: 16,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                RichText(
-                                  text: TextSpan(
-                                    children: [
-                                      const TextSpan(
-                                        text: 'Rooms Starting From: ',
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        getGrade(hotel.rating),
                                         style: TextStyle(
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: '₹${hotel.roomsStartingPrice}',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.green.shade900,
+                                          color: Colors.blue.shade600,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 32),
-                            roomsList(state.hotel.rooms),
-                          ],
-                        ),
-                      );
-                    }
-                    return const SizedBox.shrink();
-                  },
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        hotel.name,
+                                        style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blue.shade900,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Row(
+                                        children: List.generate(
+                                          hotel.star,
+                                          (index) => const Icon(
+                                            Icons.star_rate_rounded,
+                                            size: 16,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        const TextSpan(
+                                          text: 'Rooms Starting From: ',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: '₹${hotel.roomsStartingPrice}',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.green.shade900,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 32),
+                              roomsList(state.hotel.rooms),
+                            ],
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
                 ),
               ),
             ),
@@ -174,7 +198,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: Image.network(
-                      room.roomImages.first,
+                      room.roomImages[0],
                       fit: BoxFit.cover,
                       height: 200,
                       width: 400,
@@ -183,6 +207,16 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.network(
+                          room.roomImages[1],
+                          fit: BoxFit.cover,
+                          height: 50,
+                          width: 130,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
                       ClipRRect(
                         borderRadius: BorderRadius.circular(16),
                         child: Image.network(
@@ -197,16 +231,6 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                         borderRadius: BorderRadius.circular(16),
                         child: Image.network(
                           room.roomImages[3],
-                          fit: BoxFit.cover,
-                          height: 50,
-                          width: 130,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.network(
-                          room.roomImages[4],
                           fit: BoxFit.cover,
                           height: 50,
                           width: 130,

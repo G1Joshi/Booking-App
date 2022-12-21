@@ -9,13 +9,13 @@ part 'hotel_state.dart';
 class HotelBloc extends Bloc<HotelEvent, HotelState> {
   HotelBloc() : super(const HotelInitial()) {
     on<GetAllHotels>((event, emit) async {
-      emit(const HotelLoading());
+      emit(const HotelsLoading());
       hotels = await repository.readAll();
       emit(HotelsLoaded(hotels));
     });
 
     on<SearchHotel>((event, emit) async {
-      emit(const HotelLoading());
+      emit(const HotelsSearching());
       hotels = await repository.search(
         cityController.text,
         int.parse(distanceController.text),
@@ -26,8 +26,43 @@ class HotelBloc extends Bloc<HotelEvent, HotelState> {
       emit(HotelsLoaded(hotels));
     });
 
+    on<FilterHotel>((event, emit) async {
+      var star = '';
+      var rating = '';
+      var propertyType = '';
+      var budget = '';
+      for (final element in FilterModel.starCategory) {
+        if (element.isSelected) star += ',${element.value}';
+      }
+      for (final element in FilterModel.userRating) {
+        if (element.isSelected) rating += ',${element.value}';
+      }
+      for (final element in FilterModel.propertyType) {
+        if (element.isSelected) propertyType += ',${element.value}';
+      }
+      for (final element in FilterModel.budget) {
+        if (element.isSelected) budget += ',${element.value}';
+      }
+      emit(const HotelsLoading());
+      star = star.split(',').skip(1).join(',');
+      rating = rating.split(',').skip(1).join(',');
+      propertyType = propertyType.split(',').skip(1).join(',');
+      budget = budget.split(',').skip(1).join(',');
+      if (star == '' && rating == '' && propertyType == '' && budget == '') {
+        hotels = await repository.readAll();
+      } else {
+        hotels = hotels = await repository.filter(
+          star,
+          rating,
+          propertyType,
+          budget,
+        );
+      }
+      emit(HotelsLoaded(hotels));
+    });
+
     on<GetHotelDetails>((event, emit) async {
-      emit(const HotelLoading());
+      emit(const HotelsLoading());
       final hotel = await repository.read(event.id);
       emit(HotelDetailsLoaded(hotel));
     });

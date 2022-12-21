@@ -15,6 +15,10 @@ class SearchHotel extends HotelEvent {
   const SearchHotel();
 }
 
+class FilterHotel extends HotelEvent {
+  const FilterHotel();
+}
+
 class GetHotelDetails extends HotelEvent {
   const GetHotelDetails(this.id);
 

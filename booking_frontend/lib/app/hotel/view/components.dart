@@ -1,6 +1,8 @@
 import 'package:booking_frontend/app/app.dart';
+import 'package:booking_frontend/data/data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SearchBar extends StatelessWidget {
   const SearchBar({super.key});
@@ -9,7 +11,7 @@ class SearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Form(
@@ -70,16 +72,16 @@ class SearchBar extends StatelessWidget {
                           context.read<HotelBloc>().add(const SearchHotel());
                         }
                       },
-                      child: state is HotelsLoaded
-                          ? const Text(
+                      child: state is HotelsSearching
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : const Text(
                               'Search',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
-                            )
-                          : const CircularProgressIndicator(
-                              color: Colors.white,
                             ),
                     );
                   },
@@ -89,6 +91,193 @@ class SearchBar extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class FilterTile extends StatefulWidget {
+  const FilterTile({
+    super.key,
+    required this.title,
+    required this.filters,
+  });
+
+  final String title;
+  final List<FilterModel> filters;
+
+  @override
+  State<FilterTile> createState() => _FilterTileState();
+}
+
+class _FilterTileState extends State<FilterTile> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            widget.title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: widget.filters.length,
+          itemBuilder: (context, index) {
+            final data = widget.filters[index];
+            return CheckboxListTile(
+              dense: true,
+              controlAffinity: ListTileControlAffinity.leading,
+              title: Text(data.name),
+              value: data.isSelected,
+              onChanged: (value) => setState(() {
+                data.isSelected = !data.isSelected;
+                context.read<HotelBloc>().add(const FilterHotel());
+              }),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class ShimmerLoader extends StatelessWidget {
+  const ShimmerLoader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Drawer(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: ListView.builder(
+                itemBuilder: (_, __) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        width: 50,
+                        height: 50,
+                        color: Colors.white,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8,
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              width: 120,
+                              height: 10,
+                              color: Colors.white,
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 2,
+                              ),
+                            ),
+                            Container(
+                              width: 80,
+                              height: 10,
+                              color: Colors.white,
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 2,
+                              ),
+                            ),
+                            Container(
+                              width: 40,
+                              height: 10,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 32),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: ListView.builder(
+                itemBuilder: (_, __) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        width: 300,
+                        height: 200,
+                        color: Colors.white,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8,
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              width: MediaQuery.of(context).size.width / 4,
+                              height: 40,
+                              color: Colors.white,
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 2,
+                              ),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 40,
+                              color: Colors.white,
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 2,
+                              ),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width / 3,
+                              height: 40,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

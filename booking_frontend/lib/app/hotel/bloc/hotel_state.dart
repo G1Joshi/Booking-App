@@ -11,8 +11,12 @@ class HotelInitial extends HotelState {
   const HotelInitial();
 }
 
-class HotelLoading extends HotelState {
-  const HotelLoading();
+class HotelsLoading extends HotelState {
+  const HotelsLoading();
+}
+
+class HotelsSearching extends HotelState {
+  const HotelsSearching();
 }
 
 class HotelsLoaded extends HotelState {
