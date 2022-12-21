@@ -182,4 +182,33 @@ class Hotel {
     final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
     return data;
   }
+
+  static Future<List<Hotel>> filter(
+    PostgreSQLConnection connection,
+    String? star,
+    String? rating,
+    String? propertyType,
+    String? budget,
+  ) async {
+    var query = '';
+    if (star != null) {
+      query += 'AND star >= ANY (ARRAY${star.split(',')})';
+    }
+    if (rating != null) {
+      query += 'AND rating >= ANY (ARRAY${rating.split(',')})';
+    }
+    if (propertyType != null) {
+      query +=
+          'AND property_type = ANY (ARRAY${propertyType.split(',').map((w) => "'$w'").toList()})';
+    }
+    if (budget != null) {
+      query += 'AND rooms_starting_price <= ANY (ARRAY${budget.split(',')})';
+    }
+    final result = await connection.mappedResultsQuery(
+      'SELECT * FROM $table '
+      'WHERE ${query.split('AND').skip(1).join('AND')}',
+    );
+    final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
+    return data;
+  }
 }

@@ -67,4 +67,20 @@ class HotelService {
     );
     return hotels;
   }
+
+  Future<List<Hotel>> filter(
+    String? star,
+    String? rating,
+    String? propertyType,
+    String? budget,
+  ) async {
+    final hotels = await Hotel.filter(
+      connection,
+      star,
+      rating,
+      propertyType,
+      budget,
+    );
+    return hotels;
+  }
 }

@@ -6,8 +6,8 @@ class RoomService {
 
   final PostgreSQLConnection connection;
 
-  Future<Room> create(Room room, String id) async {
-    await Room.create(connection, room.copyWith(hotel_id: int.parse(id)));
+  Future<Room> create(Room room, String hotelId) async {
+    await Room.create(connection, room.copyWith(hotel_id: int.parse(hotelId)));
     return room;
   }
 

@@ -113,4 +113,22 @@ class HotelController {
       ),
     );
   }
+
+  static Future<Response> filterHotels(RequestContext context) async {
+    final hotelService = context.read<HotelService>();
+    final query = context.request.uri.queryParameters;
+    var hotel = <Hotel>[];
+    hotel = await hotelService.filter(
+      query['star'],
+      query['rating'],
+      query['property_type'],
+      query['budget'],
+    );
+    return Response.json(
+      body: GeneralResponse(
+        status: true,
+        data: hotel,
+      ),
+    );
+  }
 }
