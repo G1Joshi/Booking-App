@@ -77,17 +77,40 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                         return SingleChildScrollView(
                           child: Column(
                             children: [
-                              Card(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(16),
-                                  child: Image.network(
-                                    hotel.coverImage,
-                                    fit: BoxFit.cover,
-                                    height: MediaQuery.of(context).size.height /
-                                        1.5,
-                                    width: MediaQuery.of(context).size.width,
+                              Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Image.network(
+                                      hotel.coverImage,
+                                      fit: BoxFit.cover,
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              1.5,
+                                      width: MediaQuery.of(context).size.width /
+                                          1.4,
+                                    ),
                                   ),
-                                ),
+                                  const SizedBox(width: 8),
+                                  Column(
+                                    children: [
+                                      hotelImage(
+                                        state.hotel.details.hotelImages[0],
+                                        context,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      hotelImage(
+                                        state.hotel.details.hotelImages[1],
+                                        context,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      hotelImage(
+                                        state.hotel.details.hotelImages[2],
+                                        context,
+                                      ),
+                                    ],
+                                  )
+                                ],
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +142,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 8),
+                                  const SizedBox(height: 12),
                                   Row(
                                     children: [
                                       Text(
@@ -142,7 +165,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                                       )
                                     ],
                                   ),
-                                  const SizedBox(height: 8),
+                                  const SizedBox(height: 12),
                                   RichText(
                                     text: TextSpan(
                                       children: [
@@ -166,10 +189,32 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                                 ],
                               ),
                               const SizedBox(height: 32),
-                              roomsList(state.hotel.rooms),
+                              const Text(
+                                'Select Rooms',
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              roomsList(state.hotel),
+                              const SizedBox(height: 32),
+                              const Text(
+                                'User Ratings & Reviews',
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              reviewsList(state.hotel),
+                              const SizedBox(height: 16),
+                              RatingAndReviewForm(id: state.hotel.hotel.id),
                             ],
                           ),
                         );
+                      } else if (state is HotelsLoading) {
+                        return const ShimmerLoader();
                       }
                       return const SizedBox.shrink();
                     },
@@ -183,13 +228,37 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
     );
   }
 
-  ListView roomsList(List<Room> rooms) {
+  ClipRRect hotelImage(String image, BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Image.network(
+        image,
+        fit: BoxFit.cover,
+        height: MediaQuery.of(context).size.height / (1.5 * 3),
+        width: MediaQuery.of(context).size.width / (1.5 * 3),
+      ),
+    );
+  }
+
+  ClipRRect roomImage(String image) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Image.network(
+        image,
+        fit: BoxFit.cover,
+        height: 50,
+        width: 130,
+      ),
+    );
+  }
+
+  ListView roomsList(HotelDetails hotel) {
     return ListView.separated(
       shrinkWrap: true,
-      itemCount: rooms.length,
+      itemCount: hotel.rooms.length,
       separatorBuilder: (context, index) => const SizedBox(height: 32),
       itemBuilder: (context, index) {
-        final room = rooms[index];
+        final room = hotel.rooms[index];
         return Card(
           child: Row(
             children: [
@@ -207,35 +276,11 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.network(
-                          room.roomImages[1],
-                          fit: BoxFit.cover,
-                          height: 50,
-                          width: 130,
-                        ),
-                      ),
+                      roomImage(room.roomImages[1]),
                       const SizedBox(width: 4),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.network(
-                          room.roomImages[2],
-                          fit: BoxFit.cover,
-                          height: 50,
-                          width: 130,
-                        ),
-                      ),
+                      roomImage(room.roomImages[2]),
                       const SizedBox(width: 4),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.network(
-                          room.roomImages[3],
-                          fit: BoxFit.cover,
-                          height: 50,
-                          width: 130,
-                        ),
-                      ),
+                      roomImage(room.roomImages[3]),
                     ],
                   )
                 ],
@@ -329,6 +374,84 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                 ],
               ),
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  ListView reviewsList(HotelDetails hotel) {
+    return ListView.separated(
+      shrinkWrap: true,
+      itemCount: hotel.reviews.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 32),
+      itemBuilder: (context, index) {
+        final review = hotel.reviews[index];
+        return Card(
+          child: ListTile(
+            isThreeLine: true,
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(review.profileImage),
+              radius: 25,
+            ),
+            title: Row(
+              children: [
+                Text(
+                  review.name,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue.shade900,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        color: Colors.blue.shade600,
+                        child: Text(
+                          review.rating.toStringAsFixed(1),
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      getGrade(review.rating),
+                      style: TextStyle(
+                        color: Colors.blue.shade600,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+            subtitle: Text(
+              review.review,
+              style: const TextStyle(
+                fontSize: 16,
+              ),
+            ),
+            trailing: SizedBox(
+              height: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  context
+                      .read<HotelBloc>()
+                      .add(DeleteReview(hotel.hotel.id, review.id));
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.redAccent),
+                ),
+                child: const Icon(Icons.delete),
+              ),
+            ),
           ),
         );
       },

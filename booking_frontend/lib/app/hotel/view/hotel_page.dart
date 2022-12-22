@@ -207,6 +207,7 @@ class _HotelViewState extends State<HotelView> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
                         Text(
@@ -229,6 +230,7 @@ class _HotelViewState extends State<HotelView> {
                         )
                       ],
                     ),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
                         Container(
@@ -254,6 +256,7 @@ class _HotelViewState extends State<HotelView> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 8),
                     RichText(
                       text: TextSpan(
                         children: [

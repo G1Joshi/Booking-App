@@ -230,6 +230,7 @@ class Review {
   Review({
     required this.id,
     required this.name,
+    required this.profileImage,
     required this.rating,
     required this.review,
     required this.guestImages,
@@ -240,6 +241,7 @@ class Review {
     return Review(
       id: json['id'] as int,
       name: json['name'] as String,
+      profileImage: json['profile_image'] as String,
       rating: json['rating'] as num,
       review: json['review'] as String,
       guestImages: List<String>.from(json['guest_images'] as List<dynamic>),
@@ -249,6 +251,7 @@ class Review {
 
   int id;
   String name;
+  String profileImage;
   num rating;
   String review;
   List<String> guestImages;
@@ -258,6 +261,7 @@ class Review {
     return <String, dynamic>{
       'id': id,
       'name': name,
+      'profile_image': profileImage,
       'rating': rating,
       'review': review,
       'guest_images': guestImages,

@@ -66,15 +66,35 @@ class HotelBloc extends Bloc<HotelEvent, HotelState> {
       final hotel = await repository.read(event.id);
       emit(HotelDetailsLoaded(hotel));
     });
+
+    on<AddReview>((event, emit) async {
+      emit(const HotelsLoading());
+      await repository.addReview(
+        event.hotelId,
+        rating,
+        reviewController.text,
+      );
+      reviewController.clear();
+      add(GetHotelDetails(event.hotelId));
+    });
+
+    on<DeleteReview>((event, emit) async {
+      emit(const HotelsLoading());
+      await repository.deleteReview(event.hotelId, event.reviewId);
+      add(GetHotelDetails(event.hotelId));
+    });
   }
 
   final formKey = GlobalKey<FormState>();
+  final reviewFormKey = GlobalKey<FormState>();
   final cityController = TextEditingController();
   final distanceController = TextEditingController();
   final checkinController = TextEditingController();
   final checkoutController = TextEditingController();
   final roomController = TextEditingController();
+  final reviewController = TextEditingController();
 
   final repository = HotelRepository();
   List<Hotel> hotels = <Hotel>[];
+  double rating = 2.5;
 }

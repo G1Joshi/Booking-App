@@ -16,6 +16,7 @@ dependencies:
   flutter_dotenv: ^5.0.2
   flutter_localizations:
     sdk: flutter
+  flutter_rating_bar: ^4.0.1
   google_sign_in: ^5.4.2
   shared_preferences: ^2.0.15
   shimmer: ^2.0.0

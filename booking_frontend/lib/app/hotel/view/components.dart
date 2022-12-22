@@ -2,6 +2,7 @@ import 'package:booking_frontend/app/app.dart';
 import 'package:booking_frontend/data/data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SearchBar extends StatelessWidget {
@@ -278,6 +279,89 @@ class ShimmerLoader extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class RatingAndReviewForm extends StatefulWidget {
+  const RatingAndReviewForm({super.key, required this.id});
+
+  final int id;
+
+  @override
+  State<RatingAndReviewForm> createState() => _RatingAndReviewFormState();
+}
+
+class _RatingAndReviewFormState extends State<RatingAndReviewForm> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width / 2,
+      ),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Form(
+        key: context.read<HotelBloc>().reviewFormKey,
+        child: Column(
+          children: [
+            RatingBar.builder(
+              initialRating: context.read<HotelBloc>().rating,
+              minRating: 0.5,
+              allowHalfRating: true,
+              itemPadding: const EdgeInsets.symmetric(horizontal: 4),
+              itemBuilder: (context, _) => const Icon(
+                Icons.star,
+                color: Colors.blueAccent,
+              ),
+              onRatingUpdate: (rating) {
+                context.read<HotelBloc>().rating = rating;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              minLines: 2,
+              maxLines: 3,
+              controller: context.read<HotelBloc>().reviewController,
+              validator: (value) =>
+                  value == null || value.isEmpty ? "Value can't be null" : null,
+              decoration: const InputDecoration(
+                labelText: 'Your Review',
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 50,
+              width: 200,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (context
+                            .read<HotelBloc>()
+                            .reviewFormKey
+                            .currentState
+                            ?.validate() ??
+                        false) {
+                      context.read<HotelBloc>().add(AddReview(widget.id));
+                    }
+                  },
+                  child: const Text(
+                    'Submit',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

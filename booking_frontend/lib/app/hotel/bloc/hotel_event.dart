@@ -24,3 +24,16 @@ class GetHotelDetails extends HotelEvent {
 
   final int id;
 }
+
+class AddReview extends HotelEvent {
+  const AddReview(this.hotelId);
+
+  final int hotelId;
+}
+
+class DeleteReview extends HotelEvent {
+  const DeleteReview(this.hotelId, this.reviewId);
+
+  final int hotelId;
+  final int reviewId;
+}
