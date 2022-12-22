@@ -62,4 +62,16 @@ class AuthService {
     return !(tokenInfo.audience != env['clientId'] ||
         tokenInfo.issuedTo != env['clientId']);
   }
+
+  Future<String> getUserID(Map<String, String> headers) async {
+    final accessToken = _getToken(headers);
+    final oAuth = Oauth2Api(http.Client());
+    final tokenInfo = await oAuth.tokeninfo(accessToken: accessToken);
+    return tokenInfo.userId!;
+  }
+
+  Future<User> getUser(Map<String, String> headers) async {
+    final user = await User.read(connection, await getUserID(headers));
+    return user;
+  }
 }

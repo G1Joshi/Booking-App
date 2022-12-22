@@ -8,14 +8,11 @@ import 'package:dart_frog/dart_frog.dart';
 class ReviewController {
   static Future<Response> addReview(RequestContext context, String id) async {
     final reviewService = context.read<ReviewService>();
-    final review = Review.fromJson(
-      await context.request.json() as Map<String, dynamic>,
-    );
     return Response.json(
       statusCode: HttpStatus.created,
       body: GeneralResponse(
         status: true,
-        data: await reviewService.create(review, id),
+        data: await reviewService.create(context, id),
       ),
     );
   }
@@ -56,7 +53,6 @@ class ReviewController {
     final reviewService = context.read<ReviewService>();
     await reviewService.delete(hotelId, reviewId);
     return Response.json(
-      statusCode: HttpStatus.noContent,
       body: GeneralResponse(
         status: true,
       ),

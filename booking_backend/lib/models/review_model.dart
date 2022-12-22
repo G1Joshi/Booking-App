@@ -5,36 +5,44 @@ part of './hotels_model.dart';
 class Review {
   static String table = Tables.reviews;
   int? id;
-  String name;
+  String? name;
+  String? profile_image;
   num rating;
   String review;
-  List<String> guest_images;
+  List<String>? guest_images;
   int? hotel_id;
+  String? user_id;
 
   Review({
     this.id,
-    required this.name,
+    this.name,
+    this.profile_image,
     required this.rating,
     required this.review,
-    required this.guest_images,
+    this.guest_images,
     this.hotel_id,
+    this.user_id,
   });
 
   Review copyWith({
     int? id,
     String? name,
+    String? profile_image,
     num? rating,
     String? review,
     List<String>? guest_images,
     int? hotel_id,
+    String? user_id,
   }) {
     return Review(
       id: id ?? this.id,
       name: name ?? this.name,
+      profile_image: profile_image ?? this.profile_image,
       rating: rating ?? this.rating,
       review: review ?? this.review,
       guest_images: guest_images ?? this.guest_images,
       hotel_id: hotel_id ?? this.hotel_id,
+      user_id: user_id ?? this.user_id,
     );
   }
 
@@ -42,6 +50,7 @@ class Review {
     return <String, dynamic>{
       'id': id,
       'name': name,
+      'profile_image': profile_image,
       'rating': rating,
       'review': review,
       'guest_images': guest_images,
@@ -49,14 +58,46 @@ class Review {
     };
   }
 
+  Map<String, dynamic> toDatabase() {
+    return <String, dynamic>{
+      'id': id,
+      'rating': rating,
+      'review': review,
+      'guest_images': guest_images,
+      'hotel_id': hotel_id,
+      'user_id': user_id,
+    };
+  }
+
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
       id: json['id'] != null ? json['id'] as int : null,
-      name: json['name'] as String,
       rating: json['rating'] as num,
       review: json['review'] as String,
-      guest_images: List<String>.from(json['guest_images'] as List<dynamic>),
+      guest_images: json['guest_images'] != null
+          ? List<String>.from(json['guest_images'] as List<dynamic>)
+          : [],
       hotel_id: json['hotel_id'] != null ? json['hotel_id'] as int : null,
+      user_id: json['user_id'] != null ? json['user_id'] as String : null,
+    );
+  }
+
+  factory Review.fromDatabase(
+    Map<String, dynamic> review,
+    Map<String, dynamic> user,
+  ) {
+    return Review(
+      id: review['id'] != null ? review['id'] as int : null,
+      name: user['name'] != null ? user['name'] as String : null,
+      profile_image: user['profile_image'] != null
+          ? user['profile_image'] as String
+          : null,
+      rating: review['rating'] as num,
+      review: review['review'] as String,
+      guest_images: review['guest_images'] != null
+          ? List<String>.from(review['guest_images'] as List<dynamic>)
+          : [],
+      hotel_id: review['hotel_id'] != null ? review['hotel_id'] as int : null,
     );
   }
 
@@ -66,7 +107,7 @@ class Review {
   ) async {
     var keys = '';
     var values = '';
-    data?.toJson().keys.forEach((key) {
+    data?.toDatabase().keys.forEach((key) {
       if (key != 'id') {
         if (keys != '') {
           keys += ', ';
@@ -79,7 +120,7 @@ class Review {
     await connection.query(
       'INSERT INTO $table ($keys) '
       'VALUES ($values)',
-      substitutionValues: data?.toJson(),
+      substitutionValues: data?.toDatabase(),
     );
   }
 
@@ -101,10 +142,14 @@ class Review {
     String id,
   ) async {
     final result = await connection.mappedResultsQuery(
-      'SELECT * FROM $table '
+      'SELECT r.id, u.name, u.profile_image, r.rating, r.review, r.guest_images, r.hotel_id '
+      'FROM $table r '
+      'JOIN ${Tables.users} u ON r.user_id = u.id '
       "WHERE hotel_id = '$id'",
     );
-    final data = result.map((e) => Review.fromJson(e[table]!)).toList();
+    final data = result
+        .map((e) => Review.fromDatabase(e[table]!, e[Tables.users]!))
+        .toList();
     return data;
   }
 

@@ -79,7 +79,7 @@ class User {
           ? json['profile_image'] as String
           : null,
       phone: json['phone'] as int,
-      date_of_birth: json['date_of_birth'] as String,
+      date_of_birth: json['date_of_birth'].toString(),
       city: json['city'] as String,
       state: json['state'] as String,
       country: json['country'] as String,
@@ -118,5 +118,17 @@ class User {
       'VALUES ($values)',
       substitutionValues: data?.toJson(),
     );
+  }
+
+  static Future<User> read(
+    PostgreSQLConnection connection,
+    String id,
+  ) async {
+    final result = await connection.mappedResultsQuery(
+      'SELECT * FROM $table '
+      "WHERE id = '$id'",
+    );
+    final data = result.map((e) => User.fromJson(e[table]!)).toList();
+    return data.first;
   }
 }
