@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:booking_backend/models/general_response.dart';
-import 'package:booking_backend/models/hotels_model.dart';
+import 'package:booking_backend/models/models.dart';
 import 'package:booking_backend/service/booking_service.dart';
 import 'package:dart_frog/dart_frog.dart';
 
@@ -14,11 +14,11 @@ class BookingController {
     final booking = Booking.fromJson(
       await context.request.json() as Map<String, dynamic>,
     );
+    await bookingService.create(booking, roomId);
     return Response.json(
       statusCode: HttpStatus.created,
       body: GeneralResponse(
         status: true,
-        data: await bookingService.create(booking, roomId),
       ),
     );
   }
@@ -32,7 +32,7 @@ class BookingController {
     final updatedBooking = Booking.fromJson(
       await context.request.json() as Map<String, dynamic>,
     );
-    final newBooking = await bookingService.update(
+    await bookingService.update(
       roomId,
       booking!.copyWith(
         name: updatedBooking.name,
@@ -46,7 +46,6 @@ class BookingController {
     return Response.json(
       body: GeneralResponse(
         status: true,
-        data: newBooking,
       ),
     );
   }

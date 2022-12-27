@@ -1,6 +1,4 @@
-import 'package:booking_backend/models/hotels_model.dart';
-import 'package:booking_backend/service/auth_service.dart';
-import 'package:dart_frog/dart_frog.dart';
+import 'package:booking_backend/models/models.dart';
 import 'package:postgres/postgres.dart';
 
 class ReviewService {
@@ -8,18 +6,9 @@ class ReviewService {
 
   final PostgreSQLConnection connection;
 
-  Future<Review> create(RequestContext context, String id) async {
-    final review = Review.fromJson(
-      await context.request.json() as Map<String, dynamic>,
-    );
-    final authService = context.read<AuthService>();
-    final userId = await authService.getUserID(context.request.headers);
+  Future<void> create(Review review, String id, String userId) async {
     final newReview = review.copyWith(hotel_id: int.parse(id), user_id: userId);
-    await Review.create(
-      connection,
-      newReview,
-    );
-    return newReview;
+    await Review.create(connection, newReview);
   }
 
   Future<Review?> read(String hotelId, String reviewId) async {
@@ -27,13 +16,12 @@ class ReviewService {
     return reviews;
   }
 
-  Future<Review> update(
+  Future<void> update(
     String hotelId,
     String reviewId,
     Review reviews,
   ) async {
     await Review.update(connection, reviews, hotelId, reviewId);
-    return reviews;
   }
 
   Future<void> delete(String hotelId, String reviewId) async {

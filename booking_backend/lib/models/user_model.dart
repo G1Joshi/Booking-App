@@ -1,7 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, sort_constructors_first
 
-import 'package:booking_backend/database/tables.dart';
-import 'package:postgres/postgres.dart';
+part of 'models.dart';
 
 class User {
   static String table = Tables.users;

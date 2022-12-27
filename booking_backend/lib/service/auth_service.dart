@@ -1,6 +1,5 @@
+import 'package:booking_backend/models/models.dart';
 import 'package:booking_backend/models/token_model.dart';
-import 'package:booking_backend/models/user_model.dart';
-import 'package:dart_frog/dart_frog.dart';
 import 'package:dotenv/dotenv.dart';
 import 'package:googleapis/oauth2/v2.dart';
 import 'package:http/http.dart' as http;
@@ -32,22 +31,16 @@ class AuthService {
     return token;
   }
 
-  Future<bool> create(Request request) async {
-    final user = User.fromJson(
-      await request.json() as Map<String, dynamic>,
-    );
+  Future<bool> create(User user) async {
     final userExists = await User.checkAccount(connection, user.id);
     if (userExists) return false;
     await User.create(connection, user);
     return true;
   }
 
-  Future<bool> read(Request request) async {
-    final token = Token.fromJson(
-      await request.json() as Map<String, dynamic>,
-    );
+  Future<bool> read(Token token) async {
     final oAuth = Oauth2Api(http.Client());
-    final tokenInfo = await oAuth.tokeninfo(idToken: token.id_token);
+    final tokenInfo = await oAuth.tokeninfo(idToken: token.idToken);
     final userExists = await User.checkAccount(connection, tokenInfo.userId!);
     if (!userExists) return false;
     return !(tokenInfo.audience != env['clientId'] ||

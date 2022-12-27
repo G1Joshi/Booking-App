@@ -1,18 +1,24 @@
 import 'dart:io';
 
 import 'package:booking_backend/models/general_response.dart';
-import 'package:booking_backend/models/hotels_model.dart';
+import 'package:booking_backend/models/models.dart';
+import 'package:booking_backend/service/auth_service.dart';
 import 'package:booking_backend/service/review_service.dart';
 import 'package:dart_frog/dart_frog.dart';
 
 class ReviewController {
   static Future<Response> addReview(RequestContext context, String id) async {
+    final authService = context.read<AuthService>();
     final reviewService = context.read<ReviewService>();
+    final userId = await authService.getUserID(context.request.headers);
+    final review = Review.fromJson(
+      await context.request.json() as Map<String, dynamic>,
+    );
+    await reviewService.create(review, id, userId);
     return Response.json(
       statusCode: HttpStatus.created,
       body: GeneralResponse(
         status: true,
-        data: await reviewService.create(context, id),
       ),
     );
   }
@@ -27,7 +33,7 @@ class ReviewController {
     final updatedReview = Review.fromJson(
       await context.request.json() as Map<String, dynamic>,
     );
-    final newReview = await reviewService.update(
+    await reviewService.update(
       hotelId,
       reviewId,
       review!.copyWith(
@@ -40,7 +46,6 @@ class ReviewController {
     return Response.json(
       body: GeneralResponse(
         status: true,
-        data: newReview,
       ),
     );
   }

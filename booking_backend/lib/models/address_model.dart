@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, sort_constructors_first
 
-part of './hotels_model.dart';
+part of 'models.dart';
 
 class Address {
   static String table = Tables.address;

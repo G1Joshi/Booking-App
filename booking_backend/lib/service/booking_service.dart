@@ -1,4 +1,4 @@
-import 'package:booking_backend/models/hotels_model.dart';
+import 'package:booking_backend/models/models.dart';
 import 'package:postgres/postgres.dart';
 
 class BookingService {
@@ -6,9 +6,8 @@ class BookingService {
 
   final PostgreSQLConnection connection;
 
-  Future<Booking> create(Booking booking, String id) async {
+  Future<void> create(Booking booking, String id) async {
     await Booking.create(connection, booking.copyWith(room_id: int.parse(id)));
-    return booking;
   }
 
   Future<Booking?> read(String roomId) async {
@@ -16,9 +15,8 @@ class BookingService {
     return booking;
   }
 
-  Future<Booking> update(String roomId, Booking booking) async {
+  Future<void> update(String roomId, Booking booking) async {
     await Booking.update(connection, booking, roomId);
-    return booking;
   }
 
   Future<void> delete(String roomId) async {

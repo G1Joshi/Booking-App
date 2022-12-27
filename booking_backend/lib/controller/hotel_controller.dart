@@ -1,32 +1,32 @@
 import 'dart:io';
 
 import 'package:booking_backend/models/general_response.dart';
-import 'package:booking_backend/models/hotels_model.dart';
+import 'package:booking_backend/models/models.dart';
 import 'package:booking_backend/service/hotels_service.dart';
 import 'package:dart_frog/dart_frog.dart';
 
 class HotelController {
   static Future<Response> getAllHotels(RequestContext context) async {
     final hotelService = context.read<HotelService>();
-    final hotels = await hotelService.readAll();
+    final data = await hotelService.readAll();
     return Response.json(
       body: GeneralResponse(
         status: true,
-        data: hotels,
+        data: data.map((e) => e.toDatabase()).toList(),
       ),
     );
   }
 
   static Future<Response> addHotel(RequestContext context) async {
     final hotelService = context.read<HotelService>();
-    final hotel = HotelsModel.fromJson(
+    final hotel = Hotel.fromJson(
       await context.request.json() as Map<String, dynamic>,
     );
+    await hotelService.create(hotel);
     return Response.json(
       statusCode: HttpStatus.created,
       body: GeneralResponse(
         status: true,
-        data: await hotelService.create(hotel),
       ),
     );
   }
@@ -36,11 +36,11 @@ class HotelController {
     String id,
   ) async {
     final hotelService = context.read<HotelService>();
-    final hotel = await hotelService.read(id);
+    final data = await hotelService.read(id);
     return Response.json(
       body: GeneralResponse(
         status: true,
-        data: hotel,
+        data: data,
       ),
     );
   }
@@ -49,19 +49,25 @@ class HotelController {
     final hotelService = context.read<HotelService>();
     final response = await context.request.json() as Map<String, dynamic>;
     final hotel = await hotelService.read(id);
-    final updatedHotel =
-        Hotel.fromJson(response['hotel'] as Map<String, dynamic>);
+    final updatedHotel = Hotel.fromJson(response);
     final updatedAddress =
         Address.fromJson(response['address'] as Map<String, dynamic>);
     final updatedContact =
         Contact.fromJson(response['contact'] as Map<String, dynamic>);
-
     final updatedDetails =
         Details.fromJson(response['details'] as Map<String, dynamic>);
-    final newHotel = await hotelService.update(
+    await hotelService.update(
       int.parse(id),
       hotel!.copyWith(
-        hotel: updatedHotel.copyWith(id: hotel.hotel?.id),
+        id: updatedHotel.id,
+        name: updatedHotel.name,
+        description: updatedHotel.description,
+        property_type: updatedHotel.property_type,
+        chain: updatedHotel.chain,
+        star: updatedHotel.star,
+        rating: updatedHotel.rating,
+        rooms_starting_price: updatedHotel.rooms_starting_price,
+        cover_image: updatedHotel.cover_image,
         address: updatedAddress.copyWith(
           id: hotel.address?.id,
           hotel_id: hotel.address?.hotel_id,
@@ -79,7 +85,6 @@ class HotelController {
     return Response.json(
       body: GeneralResponse(
         status: true,
-        data: newHotel,
       ),
     );
   }
@@ -98,8 +103,8 @@ class HotelController {
   static Future<Response> searchHotels(RequestContext context) async {
     final hotelService = context.read<HotelService>();
     final query = context.request.uri.queryParameters;
-    var hotel = <Hotel>[];
-    hotel = await hotelService.search(
+    var data = <Hotel>[];
+    data = await hotelService.search(
       query['locality'].toString(),
       int.tryParse(query['distance'] ?? '10') ?? 10,
       query['checkin'].toString(),
@@ -109,7 +114,7 @@ class HotelController {
     return Response.json(
       body: GeneralResponse(
         status: true,
-        data: hotel,
+        data: data,
       ),
     );
   }
@@ -117,8 +122,8 @@ class HotelController {
   static Future<Response> filterHotels(RequestContext context) async {
     final hotelService = context.read<HotelService>();
     final query = context.request.uri.queryParameters;
-    var hotel = <Hotel>[];
-    hotel = await hotelService.filter(
+    var data = <Hotel>[];
+    data = await hotelService.filter(
       query['star'],
       query['rating'],
       query['property_type'],
@@ -127,7 +132,7 @@ class HotelController {
     return Response.json(
       body: GeneralResponse(
         status: true,
-        data: hotel,
+        data: data,
       ),
     );
   }
