@@ -28,5 +28,5 @@ class HotelsLoaded extends HotelState {
 class HotelDetailsLoaded extends HotelState {
   const HotelDetailsLoaded(this.hotel);
 
-  final HotelDetails hotel;
+  final Hotel hotel;
 }

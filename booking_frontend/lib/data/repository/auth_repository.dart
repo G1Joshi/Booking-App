@@ -24,7 +24,7 @@ class AuthRepository {
     final data = GeneralResponse.fromJson(response);
 
     if (data.status) {
-      return data.data as bool? ?? false;
+      return data.status;
     } else {
       throw Exception(data.message);
     }

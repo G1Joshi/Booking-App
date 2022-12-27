@@ -73,7 +73,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                   child: BlocBuilder<HotelBloc, HotelState>(
                     builder: (context, state) {
                       if (state is HotelDetailsLoaded) {
-                        final hotel = state.hotel.hotel;
+                        final hotel = state.hotel;
                         return SingleChildScrollView(
                           child: Column(
                             children: [
@@ -95,17 +95,17 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                                   Column(
                                     children: [
                                       hotelImage(
-                                        state.hotel.details.hotelImages[0],
+                                        state.hotel.details!.hotelImages[0],
                                         context,
                                       ),
                                       const SizedBox(height: 4),
                                       hotelImage(
-                                        state.hotel.details.hotelImages[1],
+                                        state.hotel.details!.hotelImages[1],
                                         context,
                                       ),
                                       const SizedBox(height: 4),
                                       hotelImage(
-                                        state.hotel.details.hotelImages[2],
+                                        state.hotel.details!.hotelImages[2],
                                         context,
                                       ),
                                     ],
@@ -209,7 +209,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                               const SizedBox(height: 16),
                               reviewsList(state.hotel),
                               const SizedBox(height: 16),
-                              RatingAndReviewForm(id: state.hotel.hotel.id),
+                              RatingAndReviewForm(id: state.hotel.id),
                             ],
                           ),
                         );
@@ -252,13 +252,13 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
     );
   }
 
-  ListView roomsList(HotelDetails hotel) {
+  ListView roomsList(Hotel hotel) {
     return ListView.separated(
       shrinkWrap: true,
-      itemCount: hotel.rooms.length,
+      itemCount: hotel.rooms?.length ?? 0,
       separatorBuilder: (context, index) => const SizedBox(height: 32),
       itemBuilder: (context, index) {
-        final room = hotel.rooms[index];
+        final room = hotel.rooms![index];
         return Card(
           child: Row(
             children: [
@@ -380,13 +380,13 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
     );
   }
 
-  ListView reviewsList(HotelDetails hotel) {
+  ListView reviewsList(Hotel hotel) {
     return ListView.separated(
       shrinkWrap: true,
-      itemCount: hotel.reviews.length,
+      itemCount: hotel.reviews?.length ?? 0,
       separatorBuilder: (context, index) => const SizedBox(height: 32),
       itemBuilder: (context, index) {
-        final review = hotel.reviews[index];
+        final review = hotel.reviews![index];
         return Card(
           child: ListTile(
             isThreeLine: true,
@@ -444,7 +444,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                 onPressed: () {
                   context
                       .read<HotelBloc>()
-                      .add(DeleteReview(hotel.hotel.id, review.id));
+                      .add(DeleteReview(hotel.id, review.id));
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.redAccent),

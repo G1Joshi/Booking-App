@@ -17,13 +17,12 @@ class HotelRepository {
     }
   }
 
-  Future<HotelDetails> read(int id) async {
+  Future<Hotel> read(int id) async {
     final response = await Client().get(path: '$hotelsPath/$id');
     final data = GeneralResponse.fromJson(response);
 
     if (data.status) {
-      final result =
-          HotelDetails.fromJson((data.data as Map<String, dynamic>?) ?? {});
+      final result = Hotel.fromJson((data.data as Map<String, dynamic>?) ?? {});
       return result;
     } else {
       throw Exception(data.message);

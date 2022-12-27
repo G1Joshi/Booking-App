@@ -1,51 +1,3 @@
-class HotelDetails {
-  HotelDetails({
-    required this.hotel,
-    required this.address,
-    required this.contact,
-    required this.details,
-    required this.reviews,
-    required this.rooms,
-  });
-
-  factory HotelDetails.fromJson(Map<String, dynamic> map) {
-    return HotelDetails(
-      hotel: Hotel.fromJson(map['hotel'] as Map<String, dynamic>),
-      address: Address.fromJson(map['address'] as Map<String, dynamic>),
-      contact: Contact.fromJson(map['contact'] as Map<String, dynamic>),
-      details: Details.fromJson(map['details'] as Map<String, dynamic>),
-      reviews: List<Review>.from(
-        (map['reviews'] as List<dynamic>).map<Review>(
-          (x) => Review.fromJson(x as Map<String, dynamic>),
-        ),
-      ),
-      rooms: List<Room>.from(
-        (map['rooms'] as List<dynamic>).map<Room>(
-          (x) => Room.fromJson(x as Map<String, dynamic>),
-        ),
-      ),
-    );
-  }
-
-  Hotel hotel;
-  Address address;
-  Contact contact;
-  Details details;
-  List<Review> reviews;
-  List<Room> rooms;
-
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'hotel': hotel.toJson(),
-      'address': address.toJson(),
-      'contact': contact.toJson(),
-      'details': details.toJson(),
-      'reviews': reviews.map((x) => x.toJson()).toList(),
-      'rooms': rooms.map((x) => x.toJson()).toList(),
-    };
-  }
-}
-
 class Hotel {
   Hotel({
     required this.id,
@@ -57,6 +9,11 @@ class Hotel {
     required this.rating,
     required this.roomsStartingPrice,
     required this.coverImage,
+    this.address,
+    this.contact,
+    this.details,
+    this.reviews,
+    this.rooms,
   });
 
   factory Hotel.fromJson(Map<String, dynamic> json) {
@@ -70,6 +27,29 @@ class Hotel {
       rating: json['rating'] as num,
       roomsStartingPrice: json['rooms_starting_price'] as int,
       coverImage: json['cover_image'] as String,
+      address: json['address'] != null
+          ? Address.fromJson(json['address'] as Map<String, dynamic>)
+          : null,
+      contact: json['contact'] != null
+          ? Contact.fromJson(json['contact'] as Map<String, dynamic>)
+          : null,
+      details: json['details'] != null
+          ? Details.fromJson(json['details'] as Map<String, dynamic>)
+          : null,
+      reviews: json['reviews'] != null
+          ? List<Review>.from(
+              (json['reviews'] as List<dynamic>).map(
+                (x) => Review.fromJson(x as Map<String, dynamic>),
+              ),
+            )
+          : null,
+      rooms: json['rooms'] != null
+          ? List<Room>.from(
+              (json['rooms'] as List<dynamic>).map(
+                (x) => Room.fromJson(x as Map<String, dynamic>),
+              ),
+            )
+          : null,
     );
   }
 
@@ -82,6 +62,11 @@ class Hotel {
   num rating;
   int roomsStartingPrice;
   String coverImage;
+  Address? address;
+  Contact? contact;
+  Details? details;
+  List<Review>? reviews;
+  List<Room>? rooms;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -94,6 +79,11 @@ class Hotel {
       'rating': rating,
       'rooms_starting_price': roomsStartingPrice,
       'cover_image': coverImage,
+      'address': address?.toJson(),
+      'contact': contact?.toJson(),
+      'details': details?.toJson(),
+      'reviews': reviews?.map((x) => x.toJson()).toList(),
+      'rooms': rooms?.map((x) => x.toJson()).toList(),
     };
   }
 }
