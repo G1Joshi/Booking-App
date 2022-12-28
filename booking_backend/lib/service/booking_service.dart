@@ -6,20 +6,23 @@ class BookingService {
 
   final PostgreSQLConnection connection;
 
-  Future<void> create(Booking booking, String id) async {
-    await Booking.create(connection, booking.copyWith(room_id: int.parse(id)));
+  Future<void> create(Booking booking, String roomId, String userId) async {
+    await Booking.create(
+      connection,
+      booking.copyWith(room_id: int.parse(roomId), user_id: userId),
+    );
   }
 
-  Future<Booking?> read(String roomId) async {
-    final booking = await Booking.read(connection, roomId);
+  Future<Booking?> read(String roomId, String bookingId) async {
+    final booking = await Booking.read(connection, roomId, bookingId);
     return booking;
   }
 
-  Future<void> update(String roomId, Booking booking) async {
-    await Booking.update(connection, booking, roomId);
+  Future<void> update(String roomId, String bookingId, Booking booking) async {
+    await Booking.update(connection, booking, roomId, bookingId);
   }
 
-  Future<void> delete(String roomId) async {
-    await Booking.delete(connection, roomId);
+  Future<void> delete(String roomId, String bookingId) async {
+    await Booking.delete(connection, roomId, bookingId);
   }
 }

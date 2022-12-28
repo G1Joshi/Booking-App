@@ -248,7 +248,7 @@ class Hotel {
       "   CASE WHEN ( b.checkin BETWEEN '$checkin' AND '$checkout' OR b.checkout BETWEEN '$checkin' AND '$checkout' OR '$checkin' BETWEEN b.checkin AND b.checkout OR '$checkout' BETWEEN b.checkin AND b.checkout ) "
       '   THEN r.count - COALESCE(SUM(b.rooms), 0) ELSE r.count '
       '   END AS available_rooms '
-      '   FROM rooms r LEFT JOIN booking b on r.id = b.room_id '
+      '   FROM ${Tables.rooms} r LEFT JOIN ${Tables.bookings} b on r.id = b.room_id '
       '   GROUP BY r.id, b.checkin, b.checkout ) AS subquery '
       '   WHERE available_rooms >= $rooms '
       'INTERSECT '

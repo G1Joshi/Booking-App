@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:booking_backend/models/general_response.dart';
 import 'package:booking_backend/models/models.dart';
+import 'package:booking_backend/service/auth_service.dart';
 import 'package:booking_backend/service/booking_service.dart';
 import 'package:dart_frog/dart_frog.dart';
 
@@ -10,11 +11,13 @@ class BookingController {
     RequestContext context,
     String roomId,
   ) async {
+    final authService = context.read<AuthService>();
     final bookingService = context.read<BookingService>();
+    final userId = await authService.getUserID(context.request.headers);
     final booking = Booking.fromJson(
       await context.request.json() as Map<String, dynamic>,
     );
-    await bookingService.create(booking, roomId);
+    await bookingService.create(booking, roomId, userId);
     return Response.json(
       statusCode: HttpStatus.created,
       body: GeneralResponse(
@@ -26,20 +29,20 @@ class BookingController {
   static Future<Response> updateBooking(
     RequestContext context,
     String roomId,
+    String bookingId,
   ) async {
     final bookingService = context.read<BookingService>();
-    final booking = await bookingService.read(roomId);
+    final booking = await bookingService.read(roomId, bookingId);
     final updatedBooking = Booking.fromJson(
       await context.request.json() as Map<String, dynamic>,
     );
     await bookingService.update(
       roomId,
+      bookingId,
       booking!.copyWith(
-        name: updatedBooking.name,
         checkin: updatedBooking.checkin,
         checkout: updatedBooking.checkout,
-        adults: updatedBooking.adults,
-        children: updatedBooking.children,
+        guests: updatedBooking.guests,
         rooms: updatedBooking.rooms,
       ),
     );
@@ -53,11 +56,11 @@ class BookingController {
   static Future<Response> deleteBooking(
     RequestContext context,
     String roomId,
+    String bookingId,
   ) async {
     final bookingService = context.read<BookingService>();
-    await bookingService.delete(roomId);
+    await bookingService.delete(roomId, bookingId);
     return Response.json(
-      statusCode: HttpStatus.noContent,
       body: GeneralResponse(
         status: true,
       ),

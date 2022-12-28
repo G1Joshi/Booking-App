@@ -9,13 +9,15 @@ FutureOr<Response> onRequest(
   RequestContext context,
   String hotelId,
   String roomId,
+  String bookingId,
 ) {
   switch (context.request.method) {
-    case HttpMethod.post:
-      return BookingController.addBooking(context, roomId);
     case HttpMethod.put:
+      return BookingController.updateBooking(context, roomId, bookingId);
     case HttpMethod.delete:
+      return BookingController.deleteBooking(context, roomId, bookingId);
     case HttpMethod.get:
+    case HttpMethod.post:
     case HttpMethod.head:
     case HttpMethod.options:
     case HttpMethod.patch:

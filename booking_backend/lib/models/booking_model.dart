@@ -3,72 +3,72 @@
 part of 'models.dart';
 
 class Booking {
-  static String table = Tables.booking;
+  static String table = Tables.bookings;
   int? id;
-  String name;
+  String booking_date;
   String checkin;
   String checkout;
-  int adults;
-  int children;
   int rooms;
+  int guests;
   int? room_id;
+  String? user_id;
 
   Booking({
     this.id,
-    required this.name,
+    required this.booking_date,
     required this.checkin,
     required this.checkout,
-    required this.adults,
-    required this.children,
     required this.rooms,
+    required this.guests,
     this.room_id,
+    this.user_id,
   });
 
   Booking copyWith({
     int? id,
-    String? name,
+    String? booking_date,
     String? checkin,
     String? checkout,
-    int? adults,
-    int? children,
     int? rooms,
+    int? guests,
     int? room_id,
+    String? user_id,
   }) {
     return Booking(
       id: id ?? this.id,
-      name: name ?? this.name,
+      booking_date: booking_date ?? this.booking_date,
       checkin: checkin ?? this.checkin,
       checkout: checkout ?? this.checkout,
-      adults: adults ?? this.adults,
-      children: children ?? this.children,
       rooms: rooms ?? this.rooms,
+      guests: guests ?? this.guests,
       room_id: room_id ?? this.room_id,
+      user_id: user_id ?? this.user_id,
     );
   }
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,
-      'name': name,
+      'booking_date': booking_date,
       'checkin': checkin,
       'checkout': checkout,
-      'adults': adults,
-      'children': children,
       'rooms': rooms,
+      'adults': guests,
       'room_id': room_id,
+      'user_id': user_id,
     };
   }
 
   factory Booking.fromJson(Map<String, dynamic> json) {
     return Booking(
       id: json['id'] != null ? json['id'] as int : null,
-      name: json['name'] as String,
+      booking_date: json['booking_date'] as String,
       checkin: json['checkin'] as String,
       checkout: json['checkout'] as String,
-      adults: json['adults'] as int,
-      children: json['children'] as int,
       rooms: json['rooms'] as int,
+      guests: json['adults'] as int,
       room_id: json['room_id'] != null ? json['room_id'] as int : null,
+      user_id: json['user_id'] != null ? json['user_id'] as String : null,
     );
   }
 
@@ -97,6 +97,19 @@ class Booking {
 
   static Future<Booking> read(
     PostgreSQLConnection connection,
+    String roomId,
+    String bookingId,
+  ) async {
+    final result = await connection.mappedResultsQuery(
+      'SELECT * FROM $table '
+      "WHERE room_id = '$roomId' AND id = '$bookingId'",
+    );
+    final data = result.map((e) => Booking.fromJson(e[table]!)).toList();
+    return data.first;
+  }
+
+  static Future<Booking> readAll(
+    PostgreSQLConnection connection,
     String id,
   ) async {
     final result = await connection.mappedResultsQuery(
@@ -110,7 +123,8 @@ class Booking {
   static Future<void> update(
     PostgreSQLConnection connection,
     Booking? data,
-    String id,
+    String roomId,
+    String bookingId,
   ) async {
     var values = '';
     data?.toJson().forEach((key, value) {
@@ -121,17 +135,28 @@ class Booking {
     await connection.query(
       'UPDATE $table '
       'SET $values '
-      "WHERE room_id = '$id'",
+      "WHERE room_id = '$roomId' AND id = '$bookingId'",
     );
   }
 
   static Future<void> delete(
     PostgreSQLConnection connection,
-    String id,
+    String roomId,
+    String bookingId,
   ) async {
     await connection.query(
       'DELETE FROM $table '
-      "WHERE room_id = '$id'",
+      "WHERE room_id = '$roomId' AND id = '$bookingId'",
+    );
+  }
+
+  static Future<void> deleteAll(
+    PostgreSQLConnection connection,
+    String roomId,
+  ) async {
+    await connection.query(
+      'DELETE FROM $table '
+      "WHERE room_id = '$roomId'",
     );
   }
 }
