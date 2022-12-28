@@ -1,5 +1,5 @@
 CREATE TABLE if NOT EXISTS users (
-    id TEXT PRIMARY KEY,
+    id NUMERIC PRIMARY KEY,
     name VARCHAR(255),
     email VARCHAR(255),
     profile_image VARCHAR(255),
@@ -55,11 +55,11 @@ ALTER TABLE contact
 ADD UNIQUE (hotel_id);
 CREATE TABLE IF NOT EXISTS reviews (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255),
     rating REAL,
-    review VARCHAR(255),
+    review TEXT,
     guest_images text [],
-    hotel_id INTEGER REFERENCES hotels (id)
+    hotel_id INTEGER REFERENCES hotels (id),
+    user_id NUMERIC REFERENCES users (id)
 );
 CREATE TABLE IF NOT EXISTS rooms (
     id SERIAL PRIMARY KEY,
@@ -72,15 +72,16 @@ CREATE TABLE IF NOT EXISTS rooms (
     room_images text [],
     hotel_id INTEGER REFERENCES hotels (id)
 );
-CREATE TABLE IF NOT EXISTS booking (
+CREATE TABLE IF NOT EXISTS bookings (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255),
+    status VARCHAR(255),
+    booking_date DATE,
     checkin DATE,
     checkout DATE,
-    adults INTEGER,
-    children INTEGER,
     rooms INTEGER,
-    room_id INTEGER REFERENCES rooms (id)
+    guests INTEGER,
+    room_id INTEGER REFERENCES rooms (id),
+    user_id NUMERIC REFERENCES users (id)
 );
 CREATE TABLE IF NOT EXISTS localities (
     id SERIAL PRIMARY KEY,

@@ -12,5 +12,4 @@ SET rating = (
     )
 WHERE id = NEW.hotel_id;
 RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+END $$ LANGUAGE plpgsql;
