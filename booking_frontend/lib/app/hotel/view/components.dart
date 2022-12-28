@@ -30,25 +30,31 @@ class SearchBar extends StatelessWidget {
                   Expanded(
                     child: InputField(
                       labelText: 'Distance',
-                      controller: context.read<HotelBloc>().distanceController,
+                      controller: HotelBloc.distanceController,
                     ),
                   ),
                   Expanded(
                     child: InputField(
                       labelText: 'Checkin',
-                      controller: context.read<HotelBloc>().checkinController,
+                      controller: HotelBloc.checkinController,
                     ),
                   ),
                   Expanded(
                     child: InputField(
                       labelText: 'Checkout',
-                      controller: context.read<HotelBloc>().checkoutController,
+                      controller: HotelBloc.checkoutController,
                     ),
                   ),
                   Expanded(
                     child: InputField(
                       labelText: 'Rooms',
-                      controller: context.read<HotelBloc>().roomController,
+                      controller: HotelBloc.roomController,
+                    ),
+                  ),
+                  Expanded(
+                    child: InputField(
+                      labelText: 'Guests',
+                      controller: HotelBloc.guestController,
                     ),
                   ),
                 ],

@@ -67,6 +67,19 @@ class HotelBloc extends Bloc<HotelEvent, HotelState> {
       emit(HotelDetailsLoaded(hotel));
     });
 
+    on<AddBooking>((event, emit) async {
+      emit(const HotelsLoading());
+      await repository.addBooking(
+        event.hotelId,
+        event.roomId,
+        checkinController.text,
+        checkoutController.text,
+        int.parse(roomController.text),
+        int.parse(guestController.text),
+      );
+      add(GetHotelDetails(event.hotelId));
+    });
+
     on<AddReview>((event, emit) async {
       emit(const HotelsLoading());
       await repository.addReview(
@@ -87,11 +100,12 @@ class HotelBloc extends Bloc<HotelEvent, HotelState> {
 
   final formKey = GlobalKey<FormState>();
   final reviewFormKey = GlobalKey<FormState>();
+  static final distanceController = TextEditingController();
+  static final checkinController = TextEditingController();
+  static final checkoutController = TextEditingController();
+  static final roomController = TextEditingController();
+  static final guestController = TextEditingController();
   final cityController = TextEditingController();
-  final distanceController = TextEditingController();
-  final checkinController = TextEditingController();
-  final checkoutController = TextEditingController();
-  final roomController = TextEditingController();
   final reviewController = TextEditingController();
 
   final repository = HotelRepository();

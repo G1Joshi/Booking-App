@@ -85,6 +85,33 @@ class HotelRepository {
     }
   }
 
+  Future<bool> addBooking(
+    int hotelId,
+    int roomId,
+    String checkin,
+    String checkout,
+    int rooms,
+    int guests,
+  ) async {
+    final response = await Client().post(
+      path: '$hotelsPath/$hotelId/$roomsPath/$roomId/$bookingPath',
+      data: {
+        'booking_date': DateTime.now().toIso8601String(),
+        'checkin': checkin,
+        'checkout': checkout,
+        'rooms': rooms,
+        'guests': guests,
+      },
+    );
+    final data = GeneralResponse.fromJson(response);
+
+    if (data.status) {
+      return data.status;
+    } else {
+      throw Exception(data.message);
+    }
+  }
+
   Future<bool> addReview(
     int hotelId,
     double rating,

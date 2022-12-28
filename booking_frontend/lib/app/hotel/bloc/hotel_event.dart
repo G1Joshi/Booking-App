@@ -25,6 +25,13 @@ class GetHotelDetails extends HotelEvent {
   final int id;
 }
 
+class AddBooking extends HotelEvent {
+  const AddBooking(this.hotelId, this.roomId);
+
+  final int hotelId;
+  final int roomId;
+}
+
 class AddReview extends HotelEvent {
   const AddReview(this.hotelId);
 
