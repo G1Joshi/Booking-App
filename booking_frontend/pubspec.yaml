@@ -13,14 +13,13 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
-  flutter_dotenv: ^6.0.0
   flutter_localizations:
     sdk: flutter
   flutter_rating_bar: ^4.0.1
-  google_sign_in: ^5.4.4
   intl: ^0.20.2
   shared_preferences: ^2.5.3
   shimmer: ^3.0.0
+  uuid: ^4.5.1
 
 dev_dependencies:
   bloc_test: ^10.0.0
@@ -32,5 +31,3 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
-  assets:
-    - .env
