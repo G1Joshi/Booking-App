@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  PATH: booking_frontend
+  APP_PATH: booking_frontend
 
 jobs:
   ci:
@@ -24,17 +24,17 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Install Dependencies
         run: flutter pub get
-        working-directory: ${{ env.PATH }}
+        working-directory: ${{ env.APP_PATH }}
       - name: Build Web App
         run: flutter build web --base-href "${{ steps.pages.outputs.base_path }}/"
-        working-directory: ${{ env.PATH }}
+        working-directory: ${{ env.APP_PATH }}
       - name: Run Tests
         run: flutter test
-        working-directory: ${{ env.PATH }}
+        working-directory: ${{ env.APP_PATH }}
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: ${{ env.PATH }}/build/web
+          path: ${{ env.APP_PATH }}/build/web
 
   cd:
     name: Continuous Deployment
