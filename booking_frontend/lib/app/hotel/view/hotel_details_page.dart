@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HotelDetailsPage extends StatelessWidget {
-  const HotelDetailsPage({super.key, required this.id});
+  const HotelDetailsPage({required this.id, super.key});
 
   final int id;
 
@@ -29,9 +29,9 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is SignedOut) {
-          Navigator.pushReplacement(
+          await Navigator.pushReplacement(
             context,
             MaterialPageRoute<HotelPage>(
               builder: (context) => const AuthPage(),
@@ -58,7 +58,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
               colors: [
                 Colors.blue.shade900,
                 Colors.blue.shade700,
-                Colors.blue.shade500
+                Colors.blue.shade500,
               ],
             ),
           ),
@@ -86,8 +86,9 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                                       fit: BoxFit.cover,
                                       height:
                                           MediaQuery.of(context).size.height /
-                                              1.5,
-                                      width: MediaQuery.of(context).size.width /
+                                          1.5,
+                                      width:
+                                          MediaQuery.of(context).size.width /
                                           1.4,
                                     ),
                                   ),
@@ -109,7 +110,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                                         context,
                                       ),
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
                               Column(
@@ -162,7 +163,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                                             size: 16,
                                           ),
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                   const SizedBox(height: 12),
@@ -282,7 +283,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                       const SizedBox(width: 4),
                       roomImage(room.roomImages[3]),
                     ],
-                  )
+                  ),
                 ],
               ),
               const SizedBox(width: 32),
@@ -370,7 +371,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ],
@@ -429,7 +430,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
             subtitle: Text(
@@ -442,12 +443,12 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
               height: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  context
-                      .read<HotelBloc>()
-                      .add(DeleteReview(hotel.id, review.id));
+                  context.read<HotelBloc>().add(
+                    DeleteReview(hotel.id, review.id),
+                  );
                 },
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.redAccent),
+                  backgroundColor: WidgetStateProperty.all(Colors.redAccent),
                 ),
                 child: const Icon(Icons.delete),
               ),

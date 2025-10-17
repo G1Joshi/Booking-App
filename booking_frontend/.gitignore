@@ -1,14 +1,16 @@
 # Miscellaneous
 *.class
-*.lock
 *.log
 *.pyc
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
+migrate_working_dir/
 
 # IntelliJ related
 *.iml
@@ -21,21 +23,6 @@
 .project
 .settings/
 .vscode/*
-
-# Flutter repo-specific
-/bin/cache/
-/bin/mingit/
-/dev/benchmarks/mega_gallery/
-/dev/bots/.recipe_deps
-/dev/bots/android_tools/
-/dev/docs/doc/
-/dev/docs/flutter.docs.zip
-/dev/docs/lib/
-/dev/docs/pubspec.yaml
-/dev/integration_tests/**/xcuserdata
-/dev/integration_tests/**/Pods
-/packages/flutter/coverage/
-version
 
 # packages file containing multi-root paths
 .packages.generated
@@ -60,12 +47,13 @@ unlinked_spec.ds
 **/android/**/gradle-wrapper.jar
 **/android/.gradle
 **/android/captures/
-**/android/gradlew
-**/android/gradlew.bat
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
 **/android/key.properties
 **/android/.idea/
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
 *.jks
 
 # iOS/XCode related
@@ -101,7 +89,6 @@ unlinked_spec.ds
 coverage/
 
 # Submodules
-!pubspec.lock
 packages/**/pubspec.lock
 
 # Web related
@@ -125,5 +112,8 @@ app.*.map.json
 !.idea/codeStyles/
 !.idea/dictionaries/
 !.idea/runConfigurations/
+
+# Generated l10n files
+lib/l10n/gen/
 
 *.env

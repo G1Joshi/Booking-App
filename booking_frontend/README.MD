@@ -40,7 +40,7 @@ _\*Booking Frontend works on iOS, Android, Web, and Windows._
 To run all unit and widget tests use the following command:
 
 ```sh
-$ flutter test --coverage --test-randomize-ordering-seed random
+$ very_good test --coverage --test-randomize-ordering-seed random
 ```
 
 To view the generated coverage report you can use [lcov](https://github.com/linux-test-project/lcov).
@@ -153,6 +153,18 @@ Update the `CFBundleLocalizations` array in the `Info.plist` at `ios/Runner/Info
     }
 }
 ```
+
+### Generating Translations
+
+To use the latest translations changes, you will need to generate them:
+
+1. Generate localizations for the current project:
+
+```sh
+flutter gen-l10n --arb-dir="lib/l10n/arb"
+```
+
+Alternatively, run `flutter run` and code generation will take place automatically.
 
 [coverage_badge]: coverage_badge.svg
 [flutter_localizations_link]: https://api.flutter.dev/flutter/flutter_localizations/flutter_localizations-library.html

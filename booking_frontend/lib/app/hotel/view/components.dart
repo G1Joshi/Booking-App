@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shimmer/shimmer.dart';
 
-class SearchBar extends StatelessWidget {
-  const SearchBar({super.key});
+class SearchBarView extends StatelessWidget {
+  const SearchBarView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +94,7 @@ class SearchBar extends StatelessWidget {
                   },
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -104,9 +104,9 @@ class SearchBar extends StatelessWidget {
 
 class FilterTile extends StatefulWidget {
   const FilterTile({
-    super.key,
     required this.title,
     required this.filters,
+    super.key,
   });
 
   final String title;
@@ -168,7 +168,7 @@ class ShimmerLoader extends StatelessWidget {
               baseColor: Colors.grey.shade300,
               highlightColor: Colors.grey.shade100,
               child: ListView.builder(
-                itemBuilder: (_, __) => Padding(
+                itemBuilder: (_, _) => Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -214,7 +214,7 @@ class ShimmerLoader extends StatelessWidget {
                             ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -230,7 +230,7 @@ class ShimmerLoader extends StatelessWidget {
               baseColor: Colors.grey.shade300,
               highlightColor: Colors.grey.shade100,
               child: ListView.builder(
-                itemBuilder: (_, __) => Padding(
+                itemBuilder: (_, _) => Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,7 +276,7 @@ class ShimmerLoader extends StatelessWidget {
                             ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -290,7 +290,7 @@ class ShimmerLoader extends StatelessWidget {
 }
 
 class RatingAndReviewForm extends StatefulWidget {
-  const RatingAndReviewForm({super.key, required this.id});
+  const RatingAndReviewForm({required this.id, super.key});
 
   final int id;
 

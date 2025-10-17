@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class InputField extends StatelessWidget {
   const InputField({
-    super.key,
     required this.labelText,
     required this.controller,
+    super.key,
   });
 
   final TextEditingController controller;

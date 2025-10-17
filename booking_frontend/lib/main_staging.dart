@@ -1,6 +1,6 @@
 import 'package:booking_frontend/app/app.dart';
 import 'package:booking_frontend/bootstrap.dart';
 
-void main() {
-  bootstrap(() => const App());
+Future<void> main() async {
+  await bootstrap(() => const App());
 }

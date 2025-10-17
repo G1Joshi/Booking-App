@@ -1,4 +1,4 @@
-const String baseUrl = 'http://localhost:8090/api/v1';
+const String baseUrl = 'http://localhost:8080/api/v1';
 const String hotelsPath = '/hotels';
 const String roomsPath = '/room';
 const String searchPath = '/search';

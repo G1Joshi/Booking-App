@@ -27,9 +27,9 @@ class _HotelViewState extends State<HotelView> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is SignedOut) {
-          Navigator.pushReplacement(
+          await Navigator.pushReplacement(
             context,
             MaterialPageRoute<HotelPage>(
               builder: (context) => const AuthPage(),
@@ -56,7 +56,7 @@ class _HotelViewState extends State<HotelView> {
               colors: [
                 Colors.blue.shade900,
                 Colors.blue.shade700,
-                Colors.blue.shade500
+                Colors.blue.shade500,
               ],
             ),
           ),
@@ -65,7 +65,7 @@ class _HotelViewState extends State<HotelView> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  const SearchBar(),
+                  const SearchBarView(),
                   const SizedBox(height: 16),
                   Card(
                     child: Padding(
@@ -105,7 +105,7 @@ class _HotelViewState extends State<HotelView> {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -157,8 +157,8 @@ class _HotelViewState extends State<HotelView> {
       itemBuilder: (context, index) {
         final hotel = hotels[index];
         return GestureDetector(
-          onTap: () {
-            Navigator.push(
+          onTap: () async {
+            await Navigator.push(
               context,
               MaterialPageRoute<HotelDetailsPage>(
                 builder: (context) => HotelDetailsPage(id: hotel.id),
@@ -227,7 +227,7 @@ class _HotelViewState extends State<HotelView> {
                               size: 16,
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     const SizedBox(height: 8),

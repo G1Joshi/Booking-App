@@ -1,4 +1,5 @@
 import 'package:booking_frontend/app/app.dart';
+import 'package:booking_frontend/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,16 +13,19 @@ class App extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          cardTheme: CardTheme(
+          useMaterial3: true,
+          cardTheme: CardThemeData(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
           ),
           appBarTheme: AppBarTheme(
             elevation: 0,
-            color: Colors.blue.shade900,
+            backgroundColor: Colors.blue.shade900,
           ),
         ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: const AuthPage(),
       ),
     );
