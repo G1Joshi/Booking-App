@@ -15,7 +15,6 @@ class Address {
   int? hotel_id;
 
   Address({
-    this.id,
     required this.street,
     required this.city,
     required this.state,
@@ -23,6 +22,7 @@ class Address {
     required this.pincode,
     required this.latitude,
     required this.longitude,
+    this.id,
     this.hotel_id,
   });
 
