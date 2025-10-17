@@ -14,12 +14,12 @@ class Booking {
   String? user_id;
 
   Booking({
-    this.id,
     required this.booking_date,
     required this.checkin,
     required this.checkout,
     required this.rooms,
     required this.guests,
+    this.id,
     this.room_id,
     this.user_id,
   });

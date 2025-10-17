@@ -15,14 +15,14 @@ class Room {
   int? hotel_id;
 
   Room({
-    this.id,
     required this.category,
-    this.description,
     required this.price,
     required this.count,
     required this.capacity,
     required this.amenities,
     required this.room_images,
+    this.id,
+    this.description,
     this.hotel_id,
   });
 

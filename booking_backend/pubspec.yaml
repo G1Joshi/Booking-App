@@ -1,19 +1,21 @@
 name: booking_backend
-description: An new Dart Frog application
+description: A new Dart Frog application
 version: 1.0.0+1
 publish_to: none
 
 environment:
-  sdk: ">=2.18.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
-  dart_frog: ^0.3.1
-  dotenv: ^4.0.1
-  faker: ^2.1.0
-  googleapis: ^9.2.0
-  http: ^0.13.5
-  postgres: ^2.5.2
-  uuid: ^3.0.7
+  dart_frog: ^1.2.4
+  dotenv: ^4.2.0
+  faker: ^2.2.0
+  googleapis: ^15.0.0
+  http: ^1.5.0
+  postgres: ^2.6.4
+  uuid: ^4.5.1
 
-dev_dependencies: 
-  very_good_analysis: ^3.1.0
+dev_dependencies:
+  dart_frog_lint: ^0.1.2
+  mocktail: ^1.0.4
+  test: ^1.26.3

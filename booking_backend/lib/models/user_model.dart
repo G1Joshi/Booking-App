@@ -19,13 +19,13 @@ class User {
     required this.id,
     required this.name,
     required this.email,
-    this.profile_image,
     required this.phone,
     required this.date_of_birth,
     required this.city,
     required this.state,
     required this.country,
     required this.pincode,
+    this.profile_image,
   });
 
   User copyWith({

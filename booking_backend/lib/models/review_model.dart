@@ -14,11 +14,11 @@ class Review {
   String? user_id;
 
   Review({
+    required this.rating,
+    required this.review,
     this.id,
     this.name,
     this.profile_image,
-    required this.rating,
-    required this.review,
     this.guest_images,
     this.hotel_id,
     this.user_id,

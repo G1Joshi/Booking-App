@@ -12,11 +12,11 @@ class Details {
   int? hotel_id;
 
   Details({
-    this.id,
     required this.amenities,
     required this.rules,
     required this.preferences,
     required this.hotel_images,
+    this.id,
     this.hotel_id,
   });
 

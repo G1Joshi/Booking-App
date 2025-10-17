@@ -32,7 +32,7 @@ class Seed {
               star: random.integer(6, min: 1),
               rating: random.integer(6, min: 1),
               rooms_starting_price: random.integer(50000, min: 1000),
-              cover_image: faker.image.image(),
+              cover_image: faker.image.loremPicsum(),
               address: Address(
                 street: faker.address.streetName(),
                 city: faker.address.city(),
@@ -82,7 +82,8 @@ class Seed {
                     'Evening Snacks',
                   ]),
                 ),
-                hotel_images: List.generate(4, (index) => faker.image.image()),
+                hotel_images:
+                    List.generate(4, (index) => faker.image.loremPicsum()),
               ),
             ),
             id,
@@ -122,10 +123,11 @@ class Seed {
                   'Hairdryer',
                   'Geyser',
                   'Safe',
-                  'Iron'
+                  'Iron',
                 ]),
               ),
-              room_images: List.generate(4, (index) => faker.image.image()),
+              room_images:
+                  List.generate(4, (index) => faker.image.loremPicsum()),
             ),
             hotelId,
           );

@@ -11,10 +11,10 @@ class Contact {
   int? hotel_id;
 
   Contact({
-    this.id,
     required this.phone,
     required this.email,
     required this.website,
+    this.id,
     this.hotel_id,
   });
 

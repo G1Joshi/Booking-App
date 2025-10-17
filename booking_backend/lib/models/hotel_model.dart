@@ -20,7 +20,6 @@ class Hotel {
   List<Room>? rooms;
 
   Hotel({
-    this.id,
     required this.name,
     required this.description,
     required this.property_type,
@@ -29,6 +28,7 @@ class Hotel {
     required this.rating,
     required this.rooms_starting_price,
     required this.cover_image,
+    this.id,
     this.address,
     this.contact,
     this.details,
