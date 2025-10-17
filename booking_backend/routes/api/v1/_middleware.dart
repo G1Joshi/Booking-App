@@ -1,6 +1,7 @@
 import 'package:booking_backend/database/connection.dart';
 import 'package:booking_backend/middleware/auth_service_middleware.dart';
 import 'package:booking_backend/middleware/booking_service_middleware.dart';
+import 'package:booking_backend/middleware/cors_middleware.dart';
 import 'package:booking_backend/middleware/db_connection_middleware.dart';
 import 'package:booking_backend/middleware/hotel_service_middleware.dart';
 import 'package:booking_backend/middleware/review_service_middleware.dart';
@@ -11,6 +12,7 @@ import 'package:dart_frog/dart_frog.dart';
 Handler middleware(Handler handler) {
   final connection = Connection();
   return handler
+      .use(cors())
       .use(requestLogger())
       .use(tokenVerification())
       .use(dbConnection(connection))

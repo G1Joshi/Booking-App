@@ -1,34 +1,19 @@
 class Token {
   Token({
-    this.accessToken,
-    this.idToken,
+    required this.accessToken,
   });
 
   factory Token.fromJson(Map<String, dynamic> json) {
     return Token(
-      accessToken:
-          json['access_token'] != null ? json['access_token'] as String : null,
-      idToken: json['id_token'] != null ? json['id_token'] as String : null,
+      accessToken: json['access_token'] as String,
     );
   }
 
-  String? accessToken;
-  String? idToken;
-
-  Token copyWith({
-    String? accessToken,
-    String? idToken,
-  }) {
-    return Token(
-      accessToken: accessToken ?? accessToken,
-      idToken: idToken ?? idToken,
-    );
-  }
+  String accessToken;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'access_token': accessToken,
-      'id_token': idToken,
     };
   }
 }

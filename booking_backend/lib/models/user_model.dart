@@ -7,8 +7,10 @@ class User {
   String id;
   String name;
   String email;
-  String? profile_image;
   int phone;
+  String password;
+  String? access_token;
+  String? profile_image;
   String date_of_birth;
   String city;
   String state;
@@ -20,11 +22,13 @@ class User {
     required this.name,
     required this.email,
     required this.phone,
+    required this.password,
     required this.date_of_birth,
     required this.city,
     required this.state,
     required this.country,
     required this.pincode,
+    this.access_token,
     this.profile_image,
   });
 
@@ -32,8 +36,10 @@ class User {
     String? id,
     String? name,
     String? email,
-    String? profile_image,
     int? phone,
+    String? password,
+    String? access_token,
+    String? profile_image,
     String? date_of_birth,
     String? city,
     String? state,
@@ -44,8 +50,10 @@ class User {
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
-      profile_image: profile_image ?? this.profile_image,
       phone: phone ?? this.phone,
+      password: password ?? this.password,
+      access_token: access_token ?? this.access_token,
+      profile_image: profile_image ?? this.profile_image,
       date_of_birth: date_of_birth ?? this.date_of_birth,
       city: city ?? this.city,
       state: state ?? this.state,
@@ -59,8 +67,10 @@ class User {
       'id': id,
       'name': name,
       'email': email,
-      'profile_image': profile_image,
       'phone': phone,
+      'password': password,
+      'access_token': access_token,
+      'profile_image': profile_image,
       'date_of_birth': date_of_birth,
       'city': city,
       'state': state,
@@ -74,10 +84,13 @@ class User {
       id: json['id'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
+      phone: json['phone'] as int,
+      password: json['password'] != null ? json['password'] as String : '',
+      access_token:
+          json['access_token'] != null ? json['access_token'] as String : null,
       profile_image: json['profile_image'] != null
           ? json['profile_image'] as String
           : null,
-      phone: json['phone'] as int,
       date_of_birth: json['date_of_birth'].toString(),
       city: json['city'] as String,
       state: json['state'] as String,
@@ -86,19 +99,23 @@ class User {
     );
   }
 
-  static Future<bool> checkAccount(
+  static Future<String?> checkAccount(
     PostgreSQLConnection connection,
-    String id,
+    String email,
+    String password,
   ) async {
-    final result = await connection.query(
-      'SELECT COUNT(*) '
-      'FROM $table '
-      "WHERE id = '$id'",
+    final result = await connection.mappedResultsQuery(
+      'SELECT * FROM $table '
+      "WHERE email = '$email' AND password = '$password'",
     );
-    return result.first.first != 0;
+    final data = result.map((e) => User.fromJson(e[table]!)).toList();
+    if (data.isNotEmpty) {
+      return data.first.access_token;
+    }
+    return null;
   }
 
-  static Future<void> create(
+  static Future<bool> create(
     PostgreSQLConnection connection,
     User? data,
   ) async {
@@ -112,11 +129,12 @@ class User {
       keys += key;
       values += '@$key';
     });
-    await connection.query(
+    final result = await connection.query(
       'INSERT INTO $table ($keys) '
       'VALUES ($values)',
       substitutionValues: data?.toJson(),
     );
+    return result.affectedRowCount > 0;
   }
 
   static Future<User> read(
@@ -129,5 +147,20 @@ class User {
     );
     final data = result.map((e) => User.fromJson(e[table]!)).toList();
     return data.first;
+  }
+
+  static Future<String> getUserId(
+    PostgreSQLConnection connection,
+    String accessToken,
+  ) async {
+    final result = await connection.mappedResultsQuery(
+      'SELECT * FROM $table '
+      "WHERE access_token = '$accessToken'",
+    );
+    final data = result.map((e) => User.fromJson(e[table]!)).toList();
+    if (data.isNotEmpty) {
+      return data.first.id;
+    }
+    return '';
   }
 }

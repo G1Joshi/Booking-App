@@ -1,19 +1,17 @@
+import 'package:booking_backend/models/login_request.dart';
 import 'package:booking_backend/models/models.dart';
 import 'package:booking_backend/models/token_model.dart';
-import 'package:dotenv/dotenv.dart';
-import 'package:googleapis/oauth2/v2.dart';
-import 'package:http/http.dart' as http;
 import 'package:postgres/postgres.dart';
+import 'package:uuid/uuid.dart';
 
 class AuthService {
   AuthService(this.connection);
 
   final PostgreSQLConnection connection;
-  final env = DotEnv()..load();
 
   bool _isAdmin(Map<String, String> headers) {
     if (headers.containsKey('X-Secret-Key')) {
-      return headers['X-Secret-Key'] == env['secretKey'];
+      return headers['X-Secret-Key'] == 'Admin';
     }
     return false;
   }
@@ -31,36 +29,41 @@ class AuthService {
     return token;
   }
 
-  Future<bool> create(User user) async {
-    final userExists = await User.checkAccount(connection, user.id);
-    if (userExists) return false;
-    await User.create(connection, user);
-    return true;
+  String _getAccessToken() {
+    // TODO: JWT
+    return const Uuid().v4();
   }
 
-  Future<bool> read(Token token) async {
-    final oAuth = Oauth2Api(http.Client());
-    final tokenInfo = await oAuth.tokeninfo(idToken: token.idToken);
-    final userExists = await User.checkAccount(connection, tokenInfo.userId!);
-    if (!userExists) return false;
-    return !(tokenInfo.audience != env['clientId'] ||
-        tokenInfo.issuedTo != env['clientId']);
+  Future<bool> create(User user) async {
+    final accessToken =
+        await User.checkAccount(connection, user.email, user.password);
+    if (accessToken != null) return false;
+    final result = await User.create(
+      connection,
+      user.copyWith(access_token: _getAccessToken()),
+    );
+    return result;
+  }
+
+  Future<Token?> read(LoginRequest token) async {
+    final accessToken =
+        await User.checkAccount(connection, token.email, token.password);
+    if (accessToken != null) {
+      return Token(accessToken: accessToken);
+    }
+    return null;
   }
 
   Future<bool> verify(Map<String, String> headers) async {
     if (_isAdmin(headers)) return true;
-    final accessToken = _getToken(headers);
-    final oAuth = Oauth2Api(http.Client());
-    final tokenInfo = await oAuth.tokeninfo(accessToken: accessToken);
-    return !(tokenInfo.audience != env['clientId'] ||
-        tokenInfo.issuedTo != env['clientId']);
+    final userId = await getUserID(headers);
+    return userId.isNotEmpty;
   }
 
   Future<String> getUserID(Map<String, String> headers) async {
     final accessToken = _getToken(headers);
-    final oAuth = Oauth2Api(http.Client());
-    final tokenInfo = await oAuth.tokeninfo(accessToken: accessToken);
-    return tokenInfo.userId!;
+    final userId = await User.getUserId(connection, accessToken!);
+    return userId;
   }
 
   Future<User> getUser(Map<String, String> headers) async {

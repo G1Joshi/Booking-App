@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:booking_backend/models/general_response.dart';
+import 'package:booking_backend/models/login_request.dart';
 import 'package:booking_backend/models/models.dart';
-import 'package:booking_backend/models/token_model.dart';
 import 'package:booking_backend/service/auth_service.dart';
 import 'package:dart_frog/dart_frog.dart';
 
@@ -35,15 +35,16 @@ class AuthController {
   static Future<Response> signIn(RequestContext context) async {
     final request = context.request;
     final authService = context.read<AuthService>();
-    final token = Token.fromJson(
+    final loginRequest = LoginRequest.fromJson(
       await request.json() as Map<String, dynamic>,
     );
-    final data = await authService.read(token);
-    if (data) {
+    final data = await authService.read(loginRequest);
+    if (data != null) {
       return Response.json(
         statusCode: HttpStatus.created,
         body: GeneralResponse(
           status: true,
+          data: data,
         ),
       );
     } else {
