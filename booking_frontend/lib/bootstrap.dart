@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:booking_frontend/config/config.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
@@ -31,7 +30,6 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   await runZonedGuarded(
     () async {
-      await dotenv.load();
       await Storage.init();
       runApp(await builder());
     },

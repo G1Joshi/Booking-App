@@ -3,6 +3,7 @@ class User {
     required this.id,
     required this.name,
     required this.email,
+    required this.password,
     required this.phone,
     required this.dateOfBirth,
     required this.city,
@@ -17,6 +18,7 @@ class User {
       id: json['id'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
+      password: json['password'] as String,
       profileImage: json['profile_image'] != null
           ? json['profile_image'] as String
           : null,
@@ -32,6 +34,7 @@ class User {
   String id;
   String name;
   String email;
+  String password;
   String? profileImage;
   int phone;
   String dateOfBirth;
@@ -45,6 +48,7 @@ class User {
       'id': id,
       'name': name,
       'email': email,
+      'password': password,
       'profile_image': profileImage,
       'phone': phone,
       'date_of_birth': dateOfBirth,

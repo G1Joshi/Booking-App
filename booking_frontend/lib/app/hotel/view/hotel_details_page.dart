@@ -95,20 +95,26 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                                   const SizedBox(width: 8),
                                   Column(
                                     children: [
-                                      hotelImage(
-                                        state.hotel.details!.hotelImages[0],
-                                        context,
-                                      ),
+                                      if (hotel.details?.hotelImages != null &&
+                                          hotel.details!.hotelImages.isNotEmpty)
+                                        hotelImage(
+                                          hotel.details!.hotelImages[0],
+                                          context,
+                                        ),
                                       const SizedBox(height: 4),
-                                      hotelImage(
-                                        state.hotel.details!.hotelImages[1],
-                                        context,
-                                      ),
+                                      if (hotel.details?.hotelImages != null &&
+                                          hotel.details!.hotelImages.length > 1)
+                                        hotelImage(
+                                          hotel.details!.hotelImages[1],
+                                          context,
+                                        ),
                                       const SizedBox(height: 4),
-                                      hotelImage(
-                                        state.hotel.details!.hotelImages[2],
-                                        context,
-                                      ),
+                                      if (hotel.details?.hotelImages != null &&
+                                          hotel.details!.hotelImages.length > 2)
+                                        hotelImage(
+                                          hotel.details!.hotelImages[2],
+                                          context,
+                                        ),
                                     ],
                                   ),
                                 ],
@@ -265,23 +271,27 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
             children: [
               Column(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.network(
-                      room.roomImages[0],
-                      fit: BoxFit.cover,
-                      height: 200,
-                      width: 400,
+                  if (room.roomImages.isNotEmpty)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Image.network(
+                        room.roomImages[0],
+                        fit: BoxFit.cover,
+                        height: 200,
+                        width: 400,
+                      ),
                     ),
-                  ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      roomImage(room.roomImages[1]),
+                      if (room.roomImages.length > 1)
+                        roomImage(room.roomImages[1]),
                       const SizedBox(width: 4),
-                      roomImage(room.roomImages[2]),
+                      if (room.roomImages.length > 2)
+                        roomImage(room.roomImages[2]),
                       const SizedBox(width: 4),
-                      roomImage(room.roomImages[3]),
+                      if (room.roomImages.length > 3)
+                        roomImage(room.roomImages[3]),
                     ],
                   ),
                 ],

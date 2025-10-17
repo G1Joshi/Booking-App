@@ -1,32 +1,20 @@
 import 'package:booking_frontend/config/config.dart';
 import 'package:booking_frontend/data/data.dart';
+import 'package:booking_frontend/data/model/login_request.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:uuid/uuid.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(const AuthInitial()) {
-    googleSignIn.onCurrentUserChanged.listen(
-      (GoogleSignInAccount? account) => currentUser = account,
-    );
-
     on<CheckAuth>((event, emit) async {
       emit(const AuthLoading());
       try {
         if (Storage.prefs.getString('access_token') != null) {
-          final data = await googleSignIn.signInSilently();
-          final auth = await data?.authentication;
-          final accessToken = auth?.accessToken;
-          if (accessToken != null) {
-            await Storage.prefs.setString('access_token', accessToken);
-          }
-        }
-        if (googleSignIn.currentUser != null) {
           emit(const SignedIn());
         } else {
           emit(const AuthInitial());
@@ -39,11 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<StartRegistration>((event, emit) async {
       emit(const AuthLoading());
       try {
-        final data = await googleSignIn.signIn();
-        final id = data?.id;
-        if (id != null) {
-          emit(const RegistrationStarted());
-        }
+        emit(const RegistrationStarted());
       } catch (error) {
         emit(AuthError(error.toString()));
       }
@@ -54,10 +38,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         final response = await repository.signUp(
           User(
-            id: currentUser!.id,
+            id: getId(),
             name: nameController.text,
-            email: currentUser!.email,
-            profileImage: currentUser!.photoUrl,
+            email: emailController.text,
+            password: passwordController.text,
+            profileImage: getAvatar(nameController.text),
             phone: int.parse(phoneController.text),
             dateOfBirth: dobController.text,
             city: cityController.text,
@@ -74,23 +59,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
 
+    on<StartLogin>((event, emit) async {
+      emit(const AuthLoading());
+      try {
+        emit(const LoginStarted());
+      } catch (error) {
+        emit(AuthError(error.toString()));
+      }
+    });
+
     on<SignIn>((event, emit) async {
       emit(const AuthLoading());
       try {
-        final data = await googleSignIn.signIn();
-        final auth = await data?.authentication;
-        final accessToken = auth?.accessToken;
-        final idToken = auth?.idToken;
-        if (accessToken != null && idToken != null) {
-          final response = await repository.signIn(
-            Token(idToken: idToken),
-          );
-          if (response) {
-            await Storage.prefs.setString('access_token', accessToken);
-            emit(const SignedIn());
-          } else {
-            emit(const SignedOut());
-          }
+        final token = await repository.signIn(
+          LoginRequest(
+            email: emailController.text,
+            password: passwordController.text,
+          ),
+        );
+        if (token != null) {
+          await Storage.prefs.setString('access_token', token.accessToken);
+          emit(const SignedIn());
+        } else {
+          emit(const SignedOut());
         }
       } catch (error) {
         emit(AuthError(error.toString()));
@@ -101,7 +92,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(const AuthLoading());
       try {
         await Storage.prefs.clear();
-        await googleSignIn.signOut();
         emit(const SignedOut());
       } catch (error) {
         emit(AuthError(error.toString()));
@@ -109,8 +99,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
   }
 
-  static GoogleSignInAccount? currentUser;
+  String getAvatar(String name) {
+    final initials = name.isNotEmpty
+        ? name.trim().split(' ').map((e) => e[0]).take(2).join()
+        : 'U';
+    final avatarUrl =
+        'https://ui-avatars.com/api/?name=$initials&background=random&size=128';
+    return avatarUrl;
+  }
+
+  String getId() {
+    return const Uuid().v4();
+  }
+
   final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   final phoneController = TextEditingController();
   final dobController = TextEditingController();
   final cityController = TextEditingController();
@@ -119,8 +123,4 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final pincodeController = TextEditingController();
 
   final repository = AuthRepository();
-  final googleSignIn = GoogleSignIn(
-    clientId: dotenv.get('clientId'),
-    scopes: ['email', 'profile'],
-  );
 }

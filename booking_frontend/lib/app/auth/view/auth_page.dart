@@ -28,6 +28,8 @@ class _AuthViewState extends State<AuthView> {
       listener: (context, state) async {
         if (state is RegistrationStarted) {
           await showRegistrationForm(context);
+        } else if (state is LoginStarted) {
+          await showLoginForm(context);
         } else if (state is SignedUp) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -71,7 +73,7 @@ class _AuthViewState extends State<AuthView> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         AuthButton(
-                          text: 'Sign Up With Google',
+                          text: 'Sign Up',
                           icon: Icons.android,
                           onPressed: () {
                             context.read<AuthBloc>().add(
@@ -81,10 +83,10 @@ class _AuthViewState extends State<AuthView> {
                         ),
                         const SizedBox(height: 16),
                         AuthButton(
-                          text: 'Sign In With Google',
+                          text: 'Sign In',
                           icon: Icons.android,
                           onPressed: () {
-                            context.read<AuthBloc>().add(const SignIn());
+                            context.read<AuthBloc>().add(const StartLogin());
                           },
                         ),
                       ],

@@ -25,6 +25,10 @@ class RegistrationStarted extends AuthState {
   const RegistrationStarted();
 }
 
+class LoginStarted extends AuthState {
+  const LoginStarted();
+}
+
 class SignedUp extends AuthState {
   const SignedUp();
 }

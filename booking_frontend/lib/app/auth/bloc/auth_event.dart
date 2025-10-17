@@ -15,6 +15,10 @@ class StartRegistration extends AuthEvent {
   const StartRegistration();
 }
 
+class StartLogin extends AuthEvent {
+  const StartLogin();
+}
+
 class SignUp extends AuthEvent {
   const SignUp();
 }

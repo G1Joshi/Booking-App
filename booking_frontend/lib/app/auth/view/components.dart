@@ -64,6 +64,15 @@ Future<AlertDialog?> showRegistrationForm(BuildContext context) async {
             ),
             const SizedBox(height: 8),
             InputField(
+              labelText: 'Email',
+              controller: context.read<AuthBloc>().emailController,
+            ),
+            const SizedBox(height: 8),
+            InputField(
+              labelText: 'Password',
+              controller: context.read<AuthBloc>().passwordController,
+            ),
+            InputField(
               labelText: 'Phone',
               controller: context.read<AuthBloc>().phoneController,
             ),
@@ -111,6 +120,63 @@ Future<AlertDialog?> showRegistrationForm(BuildContext context) async {
                           ? const CircularProgressIndicator()
                           : const Text(
                               'Register',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+Future<AlertDialog?> showLoginForm(BuildContext context) async {
+  final formKey = GlobalKey<FormState>();
+
+  return showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Login'),
+      content: Form(
+        key: formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InputField(
+              labelText: 'Email',
+              controller: context.read<AuthBloc>().emailController,
+            ),
+            const SizedBox(height: 8),
+            InputField(
+              labelText: 'Password',
+              controller: context.read<AuthBloc>().passwordController,
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 40,
+              width: 200,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        if (formKey.currentState?.validate() ?? false) {
+                          Navigator.pop(context);
+                          context.read<AuthBloc>().add(const SignIn());
+                        }
+                      },
+                      child: state is AuthLoading
+                          ? const CircularProgressIndicator()
+                          : const Text(
+                              'Login',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
