@@ -1,7 +1,4 @@
-version: '3.1'
-
 services:
-
   db:
     image: postgres
     restart: always
@@ -16,4 +13,4 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8090:8090
+      - 8080:8080
