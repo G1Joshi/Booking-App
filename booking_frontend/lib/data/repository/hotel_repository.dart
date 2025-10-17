@@ -8,8 +8,9 @@ class HotelRepository {
 
     if (data.status) {
       final result = List<Hotel>.from(
-        (data.data as Iterable?)!
-            .map((e) => Hotel.fromJson(e as Map<String, dynamic>)),
+        (data.data as Iterable?)!.map(
+          (e) => Hotel.fromJson(e as Map<String, dynamic>),
+        ),
       );
       return result;
     } else {
@@ -43,14 +44,17 @@ class HotelRepository {
       'checkout': checkout,
       'rooms': rooms,
     };
-    final response =
-        await Client().get(path: searchPath, queryParameters: queryParameters);
+    final response = await Client().get(
+      path: searchPath,
+      queryParameters: queryParameters,
+    );
     final data = GeneralResponse.fromJson(response);
 
     if (data.status) {
       final result = List<Hotel>.from(
-        (data.data as Iterable?)!
-            .map((e) => Hotel.fromJson(e as Map<String, dynamic>)),
+        (data.data as Iterable?)!.map(
+          (e) => Hotel.fromJson(e as Map<String, dynamic>),
+        ),
       );
       return result;
     } else {
@@ -70,14 +74,17 @@ class HotelRepository {
       if (propertyType != '') 'property_type': propertyType,
       if (budget != '') 'budget': budget,
     };
-    final response =
-        await Client().get(path: filterPath, queryParameters: queryParameters);
+    final response = await Client().get(
+      path: filterPath,
+      queryParameters: queryParameters,
+    );
     final data = GeneralResponse.fromJson(response);
 
     if (data.status) {
       final result = List<Hotel>.from(
-        (data.data as Iterable?)!
-            .map((e) => Hotel.fromJson(e as Map<String, dynamic>)),
+        (data.data as Iterable?)!.map(
+          (e) => Hotel.fromJson(e as Map<String, dynamic>),
+        ),
       );
       return result;
     } else {

@@ -1,4 +1,8 @@
-include: package:very_good_analysis/analysis_options.3.1.0.yaml
+include: package:very_good_analysis/analysis_options.yaml
+analyzer:
+  exclude:
+    - lib/l10n/gen/*
 linter:
   rules:
     public_member_api_docs: false
+    avoid_catches_without_on_clauses: false

@@ -3,13 +3,13 @@ class User {
     required this.id,
     required this.name,
     required this.email,
-    this.profileImage,
     required this.phone,
     required this.dateOfBirth,
     required this.city,
     required this.state,
     required this.country,
     required this.pincode,
+    this.profileImage,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {

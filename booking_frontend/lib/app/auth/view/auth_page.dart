@@ -25,26 +25,23 @@ class _AuthViewState extends State<AuthView> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is RegistrationStarted) {
-          showRegistrationForm(context);
-        }
-        if (state is SignedUp) {
+          await showRegistrationForm(context);
+        } else if (state is SignedUp) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Registration successful, Please login'),
             ),
           );
-        }
-        if (state is SignedIn) {
-          Navigator.pushReplacement(
+        } else if (state is SignedIn) {
+          await Navigator.pushReplacement(
             context,
             MaterialPageRoute<HotelPage>(
               builder: (context) => const HotelPage(),
             ),
           );
-        }
-        if (state is AuthError) {
+        } else if (state is AuthError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.error)),
           );
@@ -58,7 +55,7 @@ class _AuthViewState extends State<AuthView> {
                 colors: [
                   Colors.blue.shade900,
                   Colors.blue.shade700,
-                  Colors.blue.shade500
+                  Colors.blue.shade500,
                 ],
               ),
             ),
@@ -77,9 +74,9 @@ class _AuthViewState extends State<AuthView> {
                           text: 'Sign Up With Google',
                           icon: Icons.android,
                           onPressed: () {
-                            context
-                                .read<AuthBloc>()
-                                .add(const StartRegistration());
+                            context.read<AuthBloc>().add(
+                              const StartRegistration(),
+                            );
                           },
                         ),
                         const SizedBox(height: 16),

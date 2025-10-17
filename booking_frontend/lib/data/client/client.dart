@@ -17,7 +17,7 @@ class Client {
       contentType: Headers.jsonContentType,
       headers: {
         Headers.acceptHeader: Headers.jsonContentType,
-        HttpHeaders.authorizationHeader: 'Bearer $accessToken'
+        HttpHeaders.authorizationHeader: 'Bearer $accessToken',
       },
     );
 

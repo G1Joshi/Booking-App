@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthButton extends StatelessWidget {
   const AuthButton({
-    super.key,
     required this.text,
     required this.icon,
     required this.onPressed,
+    super.key,
   });
 
   final String text;
@@ -38,7 +38,7 @@ class AuthButton extends StatelessWidget {
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -46,7 +46,7 @@ class AuthButton extends StatelessWidget {
   }
 }
 
-Future<AlertDialog?> showRegistrationForm(BuildContext context) {
+Future<AlertDialog?> showRegistrationForm(BuildContext context) async {
   final formKey = GlobalKey<FormState>();
 
   return showDialog(
@@ -120,7 +120,7 @@ Future<AlertDialog?> showRegistrationForm(BuildContext context) {
                   },
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
