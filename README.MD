@@ -20,10 +20,9 @@ A full-stack hotel booking application built with **Flutter** (Frontend) and **D
   - [Frontend Setup](#2-frontend-setup)
 - [Running the Application](#-running-the-application)
 - [API Documentation](#-api-documentation)
-- [Environment Variables](#-environment-variables)
 - [Project Structure](#-project-structure)
 - [Technologies Used](#-technologies-used)
-- [Contributing](#-contributing)
+- [Troubleshooting](#-troubleshooting)
 
 ---
 
@@ -157,9 +156,11 @@ erDiagram
     rooms ||--o{ bookings : has
 
     users {
-        numeric id PK
+        varchar id PK
         varchar name
         varchar email
+        varchar password
+        varchar access_token
         varchar profile_image
         bigint phone
         date date_of_birth
@@ -231,7 +232,7 @@ erDiagram
         integer rooms
         integer guests
         integer room_id FK
-        numeric user_id FK
+        varchar user_id FK
     }
 
     reviews {
@@ -240,7 +241,7 @@ erDiagram
         text review
         text[] guest_images
         integer hotel_id FK
-        numeric user_id FK
+        varchar user_id FK
     }
 
     localities {
@@ -311,7 +312,7 @@ This will start:
   - Database: `booking`
   - Username: `booking`
   - Password: `booking`
-- Adminer (DB admin tool) on `localhost:8090`
+- Adminer (DB admin tool) on `localhost:8080`
 
 **Option B: Manual PostgreSQL Setup**
 
@@ -343,47 +344,11 @@ psql -h localhost -U booking -d booking
 \q
 ```
 
-#### Step 1.4: Configure Environment Variables
-
-Create a `.env` file in `booking_backend/` directory:
-
-```bash
-cd booking_backend
-touch .env
-```
-
-Add the following configuration:
-
-```env
-# Database Configuration
-database=booking
-username=booking
-password=booking
-
-# Google OAuth Configuration
-clientId=YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com
-
-# Admin Secret Key
-secretKey=YOUR_SECRET_KEY_HERE
-```
-
-#### Step 1.5: Install Backend Dependencies
+#### Step 1.4: Install Backend Dependencies
 
 ```bash
 cd booking_backend
 dart pub get
-```
-
-#### Step 1.6: Seed Database with Test Data (Optional)
-
-To generate 1000+ fake hotels for testing:
-
-```bash
-# Start the backend first (see next section)
-# Then call the seed endpoint with admin secret key
-curl -X POST http://localhost:8080/api/v1/hotels \
-  -H "X-Secret-Key: YOUR_SECRET_KEY_HERE" \
-  -H "Content-Type: application/json"
 ```
 
 ---
@@ -402,23 +367,6 @@ cd booking_frontend
 flutter pub get
 ```
 
-#### Step 2.3: Configure Environment (Optional)
-
-Create a `.env` file in `booking_frontend/` directory if you want to customize the API URL:
-
-```bash
-touch .env
-```
-
-Add configuration:
-
-```env
-# Google OAuth Configuration
-clientId=YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com
-```
-
-**Note**: The frontend is configured to use `http://localhost:8080` by default (see `lib/config/apis.dart`)
-
 ---
 
 ## 🎮 Running the Application
@@ -429,16 +377,16 @@ clientId=YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com
 
 ```bash
 cd booking_backend
-dart_frog dev
+dart_frog dev --port 8090
 ```
 
-Server will start at: `http://localhost:8080`
+Server will start at: `http://localhost:8090`
 
 You should see:
 
 ```
-✓ Running on http://localhost:8080 (1.2s)
-The Dart VM service is listening on http://127.0.0.1:8181/XXXXXXXX
+✓ Running on http://localhost:8090 (99ms)
+The Dart VM service is listening on http://127.0.0.1:8181/XXXXXXXX/
 ```
 
 #### Production Mode
@@ -454,7 +402,7 @@ dart run build/bin/server.dart
 ```bash
 cd booking_backend/build
 docker build -t booking-backend .
-docker run -p 8080:8080 booking-backend
+docker run -p 8090:8090 booking-backend
 ```
 
 ---
@@ -534,7 +482,8 @@ POST /auth/signin
 Content-Type: application/json
 
 {
-  "idToken": "GOOGLE_ID_TOKEN_HERE"
+  "email": "jeevan@example.com",
+  "password": "your_password"
 }
 ```
 
@@ -655,33 +604,12 @@ Authorization: Bearer ACCESS_TOKEN
 
 ---
 
-## 🔐 Environment Variables
-
-### Backend (.env)
-
-| Variable    | Description              | Example                            |
-| ----------- | ------------------------ | ---------------------------------- |
-| `database`  | PostgreSQL database name | `booking`                          |
-| `username`  | PostgreSQL username      | `booking`                          |
-| `password`  | PostgreSQL password      | `booking`                          |
-| `clientId`  | Google OAuth Client ID   | `xxxxx.apps.googleusercontent.com` |
-| `secretKey` | Admin API secret key     | `your-secret-key`                  |
-
-### Frontend (.env)
-
-| Variable   | Description            | Default                            |
-| ---------- | ---------------------- | ---------------------------------- |
-| `clientId` | Google OAuth Client ID | `xxxxx.apps.googleusercontent.com` |
-
----
-
 ## 📁 Project Structure
 
 ### Backend Structure
 
 ```
 booking_backend/
-├── .env                        # Environment variables
 ├── docker-compose.yaml         # Docker configuration
 ├── pubspec.yaml               # Dependencies
 ├── routes/                    # API routes
@@ -715,12 +643,15 @@ booking_backend/
 │   │   ├── hotel_model.dart
 │   │   ├── booking_model.dart
 │   │   └── review_model.dart
-│   └── database/             # Database setup
-│       ├── connection.dart   # DB connection
+│   ├── database/             # Database setup
+│   │   ├── connection.dart   # DB connection
+│   │   └── tables.dart       # Table name constants
+│   └── sql/                  # SQL scripts
 │       ├── tables.sql        # Table schemas
 │       ├── functions.sql     # SQL functions
 │       ├── triggers.sql      # SQL triggers
-│       └── seed.dart         # Data seeding
+│       ├── seed.sql          # Sample data
+│       └── drop.sql          # Drop tables script
 └── test/                     # Tests
 ```
 
@@ -728,7 +659,6 @@ booking_backend/
 
 ```
 booking_frontend/
-├── .env                      # Environment variables (optional)
 ├── pubspec.yaml             # Dependencies
 ├── lib/
 │   ├── main_development.dart   # Development entry
@@ -786,29 +716,27 @@ booking_frontend/
 
 ### Frontend
 
-| Technology                                                        | Purpose                     |
-| ----------------------------------------------------------------- | --------------------------- |
-| [Flutter](https://flutter.dev)                                    | Cross-platform UI framework |
-| [Dart](https://dart.dev)                                          | Programming language        |
-| [flutter_bloc](https://pub.dev/packages/flutter_bloc)             | State management            |
-| [Dio](https://pub.dev/packages/dio)                               | HTTP client                 |
-| [google_sign_in](https://pub.dev/packages/google_sign_in)         | Google authentication       |
-| [shared_preferences](https://pub.dev/packages/shared_preferences) | Local storage               |
-| [flutter_rating_bar](https://pub.dev/packages/flutter_rating_bar) | Rating UI                   |
-| [shimmer](https://pub.dev/packages/shimmer)                       | Loading animations          |
+| Technology                                                        | Purpose                        |
+| ----------------------------------------------------------------- | ------------------------------ |
+| [Flutter](https://flutter.dev)                                    | Cross-platform UI framework    |
+| [Dart](https://dart.dev)                                          | Programming language           |
+| [flutter_bloc](https://pub.dev/packages/flutter_bloc)             | State management (BLoC)        |
+| [Dio](https://pub.dev/packages/dio)                               | HTTP client for API calls      |
+| [shared_preferences](https://pub.dev/packages/shared_preferences) | Local storage for tokens       |
+| [flutter_rating_bar](https://pub.dev/packages/flutter_rating_bar) | Rating UI component            |
+| [shimmer](https://pub.dev/packages/shimmer)                       | Loading shimmer animations     |
+| [equatable](https://pub.dev/packages/equatable)                   | Value equality for BLoC        |
+| [intl](https://pub.dev/packages/intl)                             | Internationalization & formats |
 
 ### Backend
 
-| Technology                                        | Purpose                   |
-| ------------------------------------------------- | ------------------------- |
-| [Dart Frog](https://dart-frog.dev)                | Backend framework         |
-| [Dart](https://dart.dev)                          | Programming language      |
-| [PostgreSQL](https://www.postgresql.org)          | Relational database       |
-| [postgres](https://pub.dev/packages/postgres)     | PostgreSQL client         |
-| [googleapis](https://pub.dev/packages/googleapis) | Google OAuth integration  |
-| [dotenv](https://pub.dev/packages/dotenv)         | Environment configuration |
-| [faker](https://pub.dev/packages/faker)           | Test data generation      |
-| [uuid](https://pub.dev/packages/uuid)             | UUID generation           |
+| Technology                                    | Purpose                             |
+| --------------------------------------------- | ----------------------------------- |
+| [Dart Frog](https://dart-frog.dev)            | Backend REST API framework          |
+| [Dart](https://dart.dev)                      | Programming language                |
+| [PostgreSQL](https://www.postgresql.org)      | Relational database                 |
+| [postgres](https://pub.dev/packages/postgres) | PostgreSQL driver for Dart          |
+| [uuid](https://pub.dev/packages/uuid)         | UUID v4 for access token generation |
 
 ### DevOps
 
@@ -856,29 +784,10 @@ open coverage/index.html
 ```
 Solution:
 1. Check if PostgreSQL is running: pg_isready
-2. Verify credentials in .env file
 3. Ensure database exists: psql -l
 ```
 
-**Issue: Google OAuth error**
-
-```
-Solution:
-1. Verify clientId in .env matches Google Console
-2. Check OAuth consent screen configuration
-3. Ensure authorized domains are configured
-```
-
 ### Frontend Issues
-
-**Issue: Google Sign-In not working**
-
-```
-Solution:
-1. Android: Check SHA-1 fingerprint registration
-2. iOS: Verify URL schemes in Info.plist
-3. Web: Check OAuth client ID in index.html
-```
 
 **Issue: Cannot connect to backend**
 
@@ -888,18 +797,6 @@ Solution:
 2. Check API_URL in lib/config/apis.dart
 3. For physical devices, use network IP instead of localhost
 ```
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ---
 
@@ -916,9 +813,5 @@ Contributions are welcome! Please follow these steps:
 - [Flutter Community](https://flutter.dev/community) for continuous support
 
 ---
-
-## 📞 Support
-
-If you have any questions or need help, please open an issue on GitHub.
 
 **Happy Coding! 🚀**
