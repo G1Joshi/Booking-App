@@ -4,7 +4,7 @@ import 'package:booking_backend/database/connection.dart';
 import 'package:booking_backend/models/general_response.dart';
 import 'package:dart_frog/dart_frog.dart';
 
-Middleware dbConnection(Connection connection) {
+Middleware dbConnection(DBConnection connection) {
   return (handler) {
     return (context) async {
       try {

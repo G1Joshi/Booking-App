@@ -10,7 +10,7 @@ import 'package:booking_backend/middleware/token_verification_middleware.dart';
 import 'package:dart_frog/dart_frog.dart';
 
 Handler middleware(Handler handler) {
-  final connection = Connection();
+  final connection = DBConnection();
   return handler
       .use(cors())
       .use(requestLogger())

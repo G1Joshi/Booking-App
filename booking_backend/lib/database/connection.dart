@@ -1,8 +1,8 @@
 import 'package:booking_backend/config/constants.dart';
 import 'package:postgres/postgres.dart';
 
-class Connection {
-  factory Connection() {
+class DBConnection {
+  factory DBConnection() {
     _connection = PostgreSQLConnection(
       kHost,
       kPort,
@@ -13,9 +13,9 @@ class Connection {
     return _instance;
   }
 
-  Connection._();
+  DBConnection._();
 
-  static final Connection _instance = Connection._();
+  static final DBConnection _instance = DBConnection._();
 
   static late PostgreSQLConnection _connection;
 
