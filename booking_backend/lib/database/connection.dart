@@ -1,35 +1,38 @@
 import 'package:booking_backend/config/constants.dart';
 import 'package:postgres/postgres.dart';
 
-class Connection {
-  factory Connection() {
-    _connection = PostgreSQLConnection(
-      kHost,
-      kPort,
-      kDatabase,
-      username: kUsername,
-      password: kPassword,
-    );
-    return _instance;
-  }
+class DBConnection {
+  factory DBConnection() => _instance;
 
-  Connection._();
+  DBConnection._();
 
-  static final Connection _instance = Connection._();
+  static final DBConnection _instance = DBConnection._();
 
-  static late PostgreSQLConnection _connection;
+  static late Connection _connection;
 
   Future<void> _openConnection() async {
-    if (_connection.isClosed) await _connection.open();
+    if (!_connection.isOpen) await _open();
   }
 
   Future<void> _closeConnection() async {
-    if (!_connection.isClosed) await _connection.close();
+    if (_connection.isOpen) await _connection.close();
   }
 
   Future<void> get connect => _openConnection();
 
   Future<void> get disconnect => _closeConnection();
 
-  PostgreSQLConnection get getConnection => _connection;
+  Connection get getConnection => _connection;
+
+  Future<void> _open() async {
+    _connection = await Connection.open(
+      Endpoint(
+        host: kHost,
+        database: kDatabase,
+        username: kUsername,
+        password: kPassword,
+      ),
+      settings: const ConnectionSettings(sslMode: SslMode.disable),
+    );
+  }
 }

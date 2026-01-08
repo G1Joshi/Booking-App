@@ -4,7 +4,7 @@ import 'package:postgres/postgres.dart';
 class ReviewService {
   ReviewService(this.connection);
 
-  final PostgreSQLConnection connection;
+  final Connection connection;
 
   Future<void> create(Review review, String id, String userId) async {
     final newReview = review.copyWith(hotel_id: int.parse(id), user_id: userId);
