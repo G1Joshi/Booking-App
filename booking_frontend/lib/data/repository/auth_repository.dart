@@ -3,8 +3,12 @@ import 'package:booking_frontend/data/data.dart';
 import 'package:booking_frontend/data/model/login_request.dart';
 
 class AuthRepository {
+  AuthRepository({Client? client}) : _client = client ?? Client();
+
+  final Client _client;
+
   Future<bool> signUp(User user) async {
-    final response = await Client().post(
+    final response = await _client.post(
       path: signupPath,
       data: user.toJson(),
     );
@@ -18,7 +22,7 @@ class AuthRepository {
   }
 
   Future<Token?> signIn(LoginRequest request) async {
-    final response = await Client().post(
+    final response = await _client.post(
       path: signinPath,
       data: request.toJson(),
     );

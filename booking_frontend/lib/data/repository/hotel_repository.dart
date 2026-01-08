@@ -2,8 +2,12 @@ import 'package:booking_frontend/config/config.dart';
 import 'package:booking_frontend/data/data.dart';
 
 class HotelRepository {
+  HotelRepository({Client? client}) : _client = client ?? Client();
+
+  final Client _client;
+
   Future<List<Hotel>> readAll() async {
-    final response = await Client().get(path: hotelsPath);
+    final response = await _client.get(path: hotelsPath);
     final data = GeneralResponse.fromJson(response);
 
     if (data.status) {
@@ -19,7 +23,7 @@ class HotelRepository {
   }
 
   Future<Hotel> read(int id) async {
-    final response = await Client().get(path: '$hotelsPath/$id');
+    final response = await _client.get(path: '$hotelsPath/$id');
     final data = GeneralResponse.fromJson(response);
 
     if (data.status) {
@@ -44,7 +48,7 @@ class HotelRepository {
       'checkout': checkout,
       'rooms': rooms,
     };
-    final response = await Client().get(
+    final response = await _client.get(
       path: searchPath,
       queryParameters: queryParameters,
     );
@@ -74,7 +78,7 @@ class HotelRepository {
       if (propertyType != '') 'property_type': propertyType,
       if (budget != '') 'budget': budget,
     };
-    final response = await Client().get(
+    final response = await _client.get(
       path: filterPath,
       queryParameters: queryParameters,
     );
@@ -100,7 +104,7 @@ class HotelRepository {
     int rooms,
     int guests,
   ) async {
-    final response = await Client().post(
+    final response = await _client.post(
       path: '$hotelsPath/$hotelId/$roomsPath/$roomId/$bookingPath',
       data: {
         'booking_date': DateTime.now().toIso8601String(),
@@ -124,7 +128,7 @@ class HotelRepository {
     double rating,
     String review,
   ) async {
-    final response = await Client().post(
+    final response = await _client.post(
       path: '$hotelsPath/$hotelId/$reviewPath',
       data: {
         'rating': rating,
@@ -141,7 +145,7 @@ class HotelRepository {
   }
 
   Future<bool> deleteReview(int hotelId, int reviewId) async {
-    final response = await Client().delete(
+    final response = await _client.delete(
       path: '$hotelsPath/$hotelId/$reviewPath/$reviewId',
     );
     final data = GeneralResponse.fromJson(response);
