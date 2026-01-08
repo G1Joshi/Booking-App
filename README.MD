@@ -5,7 +5,7 @@ A full-stack hotel booking application built with **Flutter** (Frontend) and **D
 [![Flutter](https://img.shields.io/badge/Flutter-3.35.0-02569B?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.9.0-0175C2?logo=dart)](https://dart.dev)
 [![Dart Frog](https://img.shields.io/badge/Dart_Frog-1.2.4-1DF9D2)](https://dart-frog.dev)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql)](https://www.postgresql.org)
+[![PostgreSQL](<https://img.shields.io/badge/PostgreSQL-15%20(v3)-336791?logo=postgresql>)](https://www.postgresql.org)
 
 ---
 
@@ -451,7 +451,7 @@ flutter run -d windows --flavor development --target lib/main_development.dart
 ### Base URL
 
 ```
-http://localhost:8080/api/v1
+http://localhost:8090/api/v1
 ```
 
 ### Authentication
