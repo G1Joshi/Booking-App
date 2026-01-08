@@ -79,7 +79,7 @@ class Address {
   }
 
   static Future<void> create(
-    PostgreSQLConnection connection,
+    Connection connection,
     Address? data,
   ) async {
     var keys = '';
@@ -94,27 +94,28 @@ class Address {
         values += '@$key';
       }
     });
-    await connection.query(
+    await connection.execute(
       'INSERT INTO $table ($keys) '
       'VALUES ($values)',
-      substitutionValues: data?.toJson(),
+      parameters: data?.toJson(),
     );
   }
 
   static Future<Address> read(
-    PostgreSQLConnection connection,
+    Connection connection,
     String id,
   ) async {
-    final result = await connection.mappedResultsQuery(
+    final result = await connection.execute(
       'SELECT * FROM $table '
       "WHERE hotel_id = '$id'",
     );
-    final data = result.map((e) => Address.fromJson(e[table]!)).toList();
+    final data =
+        result.map((row) => Address.fromJson(row.toColumnMap())).toList();
     return data.first;
   }
 
   static Future<void> update(
-    PostgreSQLConnection connection,
+    Connection connection,
     Address? data,
     String id,
   ) async {
@@ -124,7 +125,7 @@ class Address {
       values += "$key = '$value'";
     });
 
-    await connection.query(
+    await connection.execute(
       'UPDATE $table '
       'SET $values '
       "WHERE hotel_id = '$id'",
@@ -132,10 +133,10 @@ class Address {
   }
 
   static Future<void> delete(
-    PostgreSQLConnection connection,
+    Connection connection,
     String id,
   ) async {
-    await connection.query(
+    await connection.execute(
       'DELETE FROM $table '
       "WHERE hotel_id = '$id'",
     );

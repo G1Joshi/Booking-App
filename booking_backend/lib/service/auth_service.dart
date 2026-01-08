@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 class AuthService {
   AuthService(this.connection);
 
-  final PostgreSQLConnection connection;
+  final Connection connection;
 
   bool _isAdmin(Map<String, String> headers) {
     if (headers.containsKey('X-Secret-Key')) {

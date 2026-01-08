@@ -100,15 +100,15 @@ class User {
   }
 
   static Future<String?> checkAccount(
-    PostgreSQLConnection connection,
+    Connection connection,
     String email,
     String password,
   ) async {
-    final result = await connection.mappedResultsQuery(
+    final result = await connection.execute(
       'SELECT * FROM $table '
       "WHERE email = '$email' AND password = '$password'",
     );
-    final data = result.map((e) => User.fromJson(e[table]!)).toList();
+    final data = result.map((row) => User.fromJson(row.toColumnMap())).toList();
     if (data.isNotEmpty) {
       return data.first.access_token;
     }
@@ -116,7 +116,7 @@ class User {
   }
 
   static Future<bool> create(
-    PostgreSQLConnection connection,
+    Connection connection,
     User? data,
   ) async {
     var keys = '';
@@ -129,35 +129,35 @@ class User {
       keys += key;
       values += '@$key';
     });
-    final result = await connection.query(
+    final result = await connection.execute(
       'INSERT INTO $table ($keys) '
       'VALUES ($values)',
-      substitutionValues: data?.toJson(),
+      parameters: data?.toJson(),
     );
-    return result.affectedRowCount > 0;
+    return result.affectedRows > 0;
   }
 
   static Future<User> read(
-    PostgreSQLConnection connection,
+    Connection connection,
     String id,
   ) async {
-    final result = await connection.mappedResultsQuery(
+    final result = await connection.execute(
       'SELECT * FROM $table '
       "WHERE id = '$id'",
     );
-    final data = result.map((e) => User.fromJson(e[table]!)).toList();
+    final data = result.map((row) => User.fromJson(row.toColumnMap())).toList();
     return data.first;
   }
 
   static Future<String> getUserId(
-    PostgreSQLConnection connection,
+    Connection connection,
     String accessToken,
   ) async {
-    final result = await connection.mappedResultsQuery(
+    final result = await connection.execute(
       'SELECT * FROM $table '
       "WHERE access_token = '$accessToken'",
     );
-    final data = result.map((e) => User.fromJson(e[table]!)).toList();
+    final data = result.map((row) => User.fromJson(row.toColumnMap())).toList();
     if (data.isNotEmpty) {
       return data.first.id;
     }

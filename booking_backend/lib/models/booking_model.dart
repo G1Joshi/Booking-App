@@ -73,7 +73,7 @@ class Booking {
   }
 
   static Future<void> create(
-    PostgreSQLConnection connection,
+    Connection connection,
     Booking? data,
   ) async {
     var keys = '';
@@ -88,40 +88,42 @@ class Booking {
         values += '@$key';
       }
     });
-    await connection.query(
+    await connection.execute(
       'INSERT INTO $table ($keys) '
       'VALUES ($values)',
-      substitutionValues: data?.toJson(),
+      parameters: data?.toJson(),
     );
   }
 
   static Future<Booking> read(
-    PostgreSQLConnection connection,
+    Connection connection,
     String roomId,
     String bookingId,
   ) async {
-    final result = await connection.mappedResultsQuery(
+    final result = await connection.execute(
       'SELECT * FROM $table '
       "WHERE room_id = '$roomId' AND id = '$bookingId'",
     );
-    final data = result.map((e) => Booking.fromJson(e[table]!)).toList();
+    final data =
+        result.map((row) => Booking.fromJson(row.toColumnMap())).toList();
     return data.first;
   }
 
   static Future<Booking> readAll(
-    PostgreSQLConnection connection,
+    Connection connection,
     String id,
   ) async {
-    final result = await connection.mappedResultsQuery(
+    final result = await connection.execute(
       'SELECT * FROM $table '
       "WHERE room_id = '$id'",
     );
-    final data = result.map((e) => Booking.fromJson(e[table]!)).toList();
+    final data =
+        result.map((row) => Booking.fromJson(row.toColumnMap())).toList();
     return data.first;
   }
 
   static Future<void> update(
-    PostgreSQLConnection connection,
+    Connection connection,
     Booking? data,
     String roomId,
     String bookingId,
@@ -132,7 +134,7 @@ class Booking {
       values += "$key = '$value'";
     });
 
-    await connection.query(
+    await connection.execute(
       'UPDATE $table '
       'SET $values '
       "WHERE room_id = '$roomId' AND id = '$bookingId'",
@@ -140,21 +142,21 @@ class Booking {
   }
 
   static Future<void> delete(
-    PostgreSQLConnection connection,
+    Connection connection,
     String roomId,
     String bookingId,
   ) async {
-    await connection.query(
+    await connection.execute(
       'DELETE FROM $table '
       "WHERE room_id = '$roomId' AND id = '$bookingId'",
     );
   }
 
   static Future<void> deleteAll(
-    PostgreSQLConnection connection,
+    Connection connection,
     String roomId,
   ) async {
-    await connection.query(
+    await connection.execute(
       'DELETE FROM $table '
       "WHERE room_id = '$roomId'",
     );

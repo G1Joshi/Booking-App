@@ -4,7 +4,7 @@ import 'package:postgres/postgres.dart';
 class RoomService {
   RoomService(this.connection);
 
-  final PostgreSQLConnection connection;
+  final Connection connection;
 
   Future<void> create(Room room, String hotelId) async {
     await Room.create(connection, room.copyWith(hotel_id: int.parse(hotelId)));

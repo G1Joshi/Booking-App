@@ -154,16 +154,16 @@ class Hotel {
     );
   }
 
-  static Future<int> getId(PostgreSQLConnection connection) async {
-    final result = await connection.query(
+  static Future<int> getId(Connection connection) async {
+    final result = await connection.execute(
       "SELECT nextval('${table}_id_seq')",
     );
-    final id = result.first.first as int;
+    final id = result.first.first as int? ?? 0;
     return id;
   }
 
   static Future<void> create(
-    PostgreSQLConnection connection,
+    Connection connection,
     Hotel? data,
   ) async {
     var keys = '';
@@ -176,37 +176,38 @@ class Hotel {
       keys += key;
       values += '@$key';
     });
-    await connection.query(
+    await connection.execute(
       'INSERT INTO $table ($keys) '
       'VALUES ($values)',
-      substitutionValues: data?.toDatabase(),
+      parameters: data?.toDatabase(),
     );
   }
 
   static Future<Hotel> read(
-    PostgreSQLConnection connection,
+    Connection connection,
     String id,
   ) async {
-    final result = await connection.mappedResultsQuery(
+    final result = await connection.execute(
       'SELECT * FROM $table '
       "WHERE id = '$id'",
     );
-    final data = result.map((e) => Hotel.fromJson(e[table]!)).toList();
+    final data =
+        result.map((row) => Hotel.fromJson(row.toColumnMap())).toList();
     return data.first;
   }
 
-  static Future<List<Hotel>> readAll(PostgreSQLConnection connection) async {
-    final result = await connection.mappedResultsQuery(
+  static Future<List<Hotel>> readAll(Connection connection) async {
+    final result = await connection.execute(
       'SELECT * FROM ${Tables.hotels} '
       'ORDER BY id',
     );
     final data =
-        result.map((e) => Hotel.fromDatabase(e[Tables.hotels]!)).toList();
+        result.map((row) => Hotel.fromDatabase(row.toColumnMap())).toList();
     return data;
   }
 
   static Future<void> update(
-    PostgreSQLConnection connection,
+    Connection connection,
     Hotel? data,
     String id,
   ) async {
@@ -216,7 +217,7 @@ class Hotel {
       values += "$key = '$value'";
     });
 
-    await connection.query(
+    await connection.execute(
       'UPDATE $table '
       'SET $values '
       "WHERE id = '$id'",
@@ -224,24 +225,24 @@ class Hotel {
   }
 
   static Future<void> delete(
-    PostgreSQLConnection connection,
+    Connection connection,
     String id,
   ) async {
-    await connection.query(
+    await connection.execute(
       'DELETE FROM $table '
       "WHERE id = '$id'",
     );
   }
 
   static Future<List<Hotel>> search(
-    PostgreSQLConnection connection,
+    Connection connection,
     String locality,
     int distance,
     String checkin,
     String checkout,
     int rooms,
   ) async {
-    final result = await connection.mappedResultsQuery(
+    final result = await connection.execute(
       'SELECT * FROM $table '
       'where id in ( '
       '   SELECT hotel_id FROM ( SELECT r.id, r.hotel_id, '
@@ -257,12 +258,13 @@ class Hotel {
       "   WHERE l.name iLIKE '%$locality%' "
       ')',
     );
-    final data = result.map((e) => Hotel.fromDatabase(e[table]!)).toList();
+    final data =
+        result.map((row) => Hotel.fromDatabase(row.toColumnMap())).toList();
     return data;
   }
 
   static Future<List<Hotel>> filter(
-    PostgreSQLConnection connection,
+    Connection connection,
     String? star,
     String? rating,
     String? propertyType,
@@ -282,11 +284,12 @@ class Hotel {
     if (budget != null) {
       query += 'AND rooms_starting_price <= ANY (ARRAY${budget.split(',')})';
     }
-    final result = await connection.mappedResultsQuery(
+    final result = await connection.execute(
       'SELECT * FROM $table '
       'WHERE ${query.split('AND').skip(1).join('AND')}',
     );
-    final data = result.map((e) => Hotel.fromDatabase(e[table]!)).toList();
+    final data =
+        result.map((row) => Hotel.fromDatabase(row.toColumnMap())).toList();
     return data;
   }
 }
