@@ -2,13 +2,14 @@ name: booking_frontend
 description: A Very Good Project created by Very Good CLI.
 version: 1.0.0+1
 publish_to: none
+resolution: workspace
 
 environment:
   sdk: ^3.9.0
   flutter: ^3.35.0
 
 dependencies:
-  dio: ^5.9.0
+  dio: ^5.9.1
   equatable: ^2.0.8
   flutter:
     sdk: flutter
@@ -26,7 +27,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mocktail: ^1.0.4
-  very_good_analysis: ^10.0.0
+  very_good_analysis: ^10.1.0
 
 flutter:
   generate: true

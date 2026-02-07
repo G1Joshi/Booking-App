@@ -1,0 +1,10 @@
+.DS_Store
+.vscode/
+.idea/
+.dart_tool/
+.packages
+.pub/
+.pub-cache/
+build/
+*.iml
+*.env
