@@ -3,6 +3,61 @@ name: booking
 environment:
   sdk: ^3.9.0
 
+dev_dependencies:
+  melos: ^7.4.0
+
 workspace:
   - apps/backend
   - apps/frontend
+
+melos:
+  scripts:
+    install:
+      description: Get all dependencies.
+      exec: melos bootstrap
+
+    get:
+      description: Get all dependencies.
+      exec: dart pub get
+
+    analyze:
+      description: Run static analysis.
+      exec: dart analyze --fatal-infos
+      packageFilters:
+        dirExists: lib
+
+    fix:
+      description: Fix source code.
+      exec: dart fix --apply
+
+    format:
+      description: Format source code.
+      exec: dart format .
+
+    clean:
+      description: Clean all packages.
+      exec: flutter clean
+
+    test:backend:
+      description: Run backend tests.
+      exec: dart test
+      packageFilters:
+        scope: booking_backend
+
+    test:frontend:
+      description: Run frontend tests.
+      exec: flutter test
+      packageFilters:
+        scope: booking_frontend
+
+    run:backend:
+      description: Start the Dart Frog dev server with Docker.
+      steps:
+        - melos exec --scope=booking_backend -- docker-compose up -d
+        - melos exec --scope=booking_backend -- dart_frog dev --port 8090
+
+    run:frontend:
+      description: Run frontend in web browser.
+      exec: flutter run -d chrome --flavor development --target lib/main_development.dart --web-hostname localhost --web-port 7357
+      packageFilters:
+        scope: booking_frontend
