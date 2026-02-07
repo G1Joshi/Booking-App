@@ -1,0 +1,18 @@
+name: booking_backend
+description: A new Dart Frog application
+version: 1.0.0+1
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  dart_frog: ^1.2.6
+  postgres: ^3.5.9
+  uuid: ^4.5.2
+
+dev_dependencies:
+  dart_frog_lint: ^0.1.2
+  mocktail: ^1.0.4
+  test: ^1.26.0

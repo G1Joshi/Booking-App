@@ -1,11 +1,14 @@
 # 🏨 Booking App
 
+[![Web App](https://github.com/G1Joshi/Booking-App/actions/workflows/main.yml/badge.svg)](https://github.com/G1Joshi/Booking-App/actions/workflows/main.yml)
+[![Melos](https://img.shields.io/badge/maintained%20with-melos-f700ff)](https://melos.invertase.dev/)
+
 A full-stack hotel booking application built with **Flutter** (Frontend) and **Dart Frog** (Backend) with **PostgreSQL** database. This application allows users to search for hotels, view details, make bookings, and leave reviews.
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.35.0-02569B?logo=flutter)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/Dart-3.9.0-0175C2?logo=dart)](https://dart.dev)
-[![Dart Frog](https://img.shields.io/badge/Dart_Frog-1.2.4-1DF9D2)](https://dart-frog.dev)
-[![PostgreSQL](<https://img.shields.io/badge/PostgreSQL-15%20(v3)-336791?logo=postgresql>)](https://www.postgresql.org)
+[![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-0175C2?logo=dart&logoColor=white)](https://dart.dev)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org)
 
 ---
 
@@ -16,11 +19,9 @@ A full-stack hotel booking application built with **Flutter** (Frontend) and **D
 - [Database Schema](#-database-schema-er-diagram)
 - [Prerequisites](#-prerequisites)
 - [Installation & Setup](#-installation--setup)
-  - [Backend Setup](#1-backend-setup)
-  - [Frontend Setup](#2-frontend-setup)
+  - [Initialize Workspace](#1-initialize-workspace)
+  - [Backend Setup](#2-backend-setup)
 - [Running the Application](#-running-the-application)
-- [API Documentation](#-api-documentation)
-- [Project Structure](#-project-structure)
 - [Technologies Used](#-technologies-used)
 - [Troubleshooting](#-troubleshooting)
 
@@ -105,38 +106,35 @@ This application follows a **3-tier architecture**:
 ### Frontend Architecture (Flutter BLoC)
 
 ```
-lib/
-├── app/
-│   ├── auth/          # Authentication feature
-│   │   ├── bloc/      # BLoC (Business Logic Component)
-│   │   └── view/      # UI components
-│   └── hotel/         # Hotel feature
-│       ├── bloc/      # BLoC for hotel management
-│       └── view/      # UI components
-├── data/
-│   ├── client/        # HTTP client (Dio)
-│   ├── model/         # Data models
-│   └── repository/    # Data repositories
-├── config/            # App configuration
-└── l10n/              # Internationalization
+apps/frontend/
+├── lib/
+│   ├── app/
+│   │   ├── <feature>/     # Feature-based organization
+│   │   │   ├── bloc/      # State management (BLoC)
+│   │   │   └── view/      # UI components & pages
+│   ├── data/
+│   │   ├── client/        # HTTP clients (e.g., Dio)
+│   │   ├── model/         # Data models
+│   │   └── repository/    # Data repositories
+│   ├── config/            # App configuration (routes, theme)
+│   └── l10n/              # Internationalization
 ```
 
 ### Backend Architecture (Dart Frog)
 
 ```
-booking_backend/
+apps/backend/
 ├── routes/
 │   ├── api/v1/
-│   │   ├── auth/           # Authentication endpoints
-│   │   ├── hotels/         # Hotel CRUD operations
-│   │   ├── search/         # Search functionality
-│   │   └── filter/         # Filter functionality
+│   │   ├── <resource>/     # Resource endpoints
+│   │   │   ├── index.dart  # GET / POST
+│   │   │   └── [id].dart   # Dynamic routes
 │   └── index.dart          # Root endpoint
 ├── lib/
-│   ├── controller/         # Request handlers
+│   ├── controller/         # Request handlers & validation
 │   ├── service/            # Business logic
-│   ├── middleware/         # Auth, logging, etc.
-│   ├── models/             # Data models
+│   ├── middleware/         # Auth, logging, injection
+│   ├── models/             # Data transfer objects
 │   └── database/           # DB connection & setup
 ```
 
@@ -275,8 +273,9 @@ Before you begin, ensure you have the following installed:
 - **Dart SDK**: >= 3.9.0 (comes with Flutter)
 - **PostgreSQL**: >= 15.x
 - **Docker & Docker Compose**: (Optional, for containerized setup)
+- **Melos**: Install with `dart pub global activate melos`
 - **Dart Frog CLI**: Install with `dart pub global activate dart_frog_cli`
-- **Very Good CLI**: (Optional) Install with `dart pub global activate very_good_cli`
+- **Very Good CLI**: Install with `dart pub global activate very_good_cli`
 
 ### System Requirements
 
@@ -288,7 +287,7 @@ Before you begin, ensure you have the following installed:
 
 ## 🚀 Installation & Setup
 
-### 1. Backend Setup
+### 1. Initialize Workspace
 
 #### Step 1.1: Clone the Repository
 
@@ -297,418 +296,58 @@ git clone https://github.com/G1Joshi/Booking-App.git
 cd Booking-App
 ```
 
-#### Step 1.2: Setup PostgreSQL Database
+#### Step 1.2: Bootstrap Workspace
 
-**Option A: Using Docker (Recommended)**
+This command installs dependencies for all packages and links them.
 
 ```bash
-cd booking_backend
-docker-compose up -d
+melos run install
 ```
 
-This will start:
+### 2. Backend Setup
 
-- PostgreSQL database on `localhost:5432`
-  - Database: `booking`
-  - Username: `booking`
-  - Password: `booking`
-- Adminer (DB admin tool) on `localhost:8080`
+#### Step 2.1: Initialize Database Schema
 
-**Option B: Manual PostgreSQL Setup**
+To initialize the database, you first need to start the backend services (which includes the database container).
 
-```bash
-# Install PostgreSQL (macOS)
-brew install postgresql@15
-brew services start postgresql@15
+1.  **Start Backend**: Follow the instructions in [Running the Application](#-running-the-application) to start the backend.
+2.  **Initialize Schema**: Once the backend is running, run the following SQL scripts in order:
 
-# Create database and user
-psql postgres
-CREATE DATABASE booking;
-CREATE USER booking WITH ENCRYPTED PASSWORD 'booking';
-GRANT ALL PRIVILEGES ON DATABASE booking TO booking;
-\q
 ```
-
-#### Step 1.3: Initialize Database Schema
-
-```bash
-cd booking_backend
-
-# Connect to database
-psql -h localhost -U booking -d booking
-
-# Run SQL scripts in order
-\i lib/database/tables.sql
-\i lib/database/functions.sql
-\i lib/database/triggers.sql
-\q
-```
-
-#### Step 1.4: Install Backend Dependencies
-
-```bash
-cd booking_backend
-dart pub get
-```
-
----
-
-### 2. Frontend Setup
-
-#### Step 2.1: Navigate to Frontend Directory
-
-```bash
-cd booking_frontend
-```
-
-#### Step 2.2: Install Dependencies
-
-```bash
-flutter pub get
+apps/backend/queries/
+├── drop/
+├── tables/
+├── functions/
+├── triggers/
+└── seed/
 ```
 
 ---
 
 ## 🎮 Running the Application
 
+This project uses **Melos** to manage scripts. You can run the backend and frontend using the following commands from the root of the project.
+
 ### Start Backend Server
 
-#### Development Mode (Hot Reload)
-
 ```bash
-cd booking_backend
-dart_frog dev --port 8090
+melos run run:backend
 ```
+
+This command will:
+
+1. Start the Docker containers (PostgreSQL).
+2. Start the Dart Frog development server on port `8090`.
 
 Server will start at: `http://localhost:8090`
 
-You should see:
-
-```
-✓ Running on http://localhost:8090 (99ms)
-The Dart VM service is listening on http://127.0.0.1:8181/XXXXXXXX/
-```
-
-#### Production Mode
-
-```bash
-cd booking_backend
-dart_frog build
-dart run build/bin/server.dart
-```
-
-#### Using Docker
-
-```bash
-cd booking_backend/build
-docker build -t booking-backend .
-docker run -p 8090:8090 booking-backend
-```
-
----
-
 ### Start Frontend Application
 
-#### Development Flavor
-
 ```bash
-cd booking_frontend
-flutter run --flavor development --target lib/main_development.dart
+melos run run:frontend
 ```
 
-#### Staging Flavor
-
-```bash
-flutter run --flavor staging --target lib/main_staging.dart
-```
-
-#### Production Flavor
-
-```bash
-flutter run --flavor production --target lib/main_production.dart
-```
-
-#### Run on Specific Platform
-
-```bash
-# iOS
-flutter run -d ios --flavor development --target lib/main_development.dart
-
-# Android
-flutter run -d android --flavor development --target lib/main_development.dart
-
-# Web
-flutter run -d chrome --flavor development --target lib/main_development.dart
-
-# Windows
-flutter run -d windows --flavor development --target lib/main_development.dart
-```
-
----
-
-## 📡 API Documentation
-
-### Base URL
-
-```
-http://localhost:8090/api/v1
-```
-
-### Authentication
-
-#### Sign Up
-
-```http
-POST /auth/signup
-Content-Type: application/json
-
-{
-  "id": "123456789",
-  "name": "John Doe",
-  "email": "john@example.com",
-  "phone": 1234567890,
-  "date_of_birth": "1990-01-01",
-  "city": "New York",
-  "state": "NY",
-  "country": "USA",
-  "pincode": 10001
-}
-```
-
-#### Sign In
-
-```http
-POST /auth/signin
-Content-Type: application/json
-
-{
-  "email": "jeevan@example.com",
-  "password": "your_password"
-}
-```
-
-### Hotels
-
-#### Get All Hotels
-
-```http
-GET /hotels
-Authorization: Bearer ACCESS_TOKEN
-```
-
-#### Get Hotel Details
-
-```http
-GET /hotels/{hotel_id}
-Authorization: Bearer ACCESS_TOKEN
-```
-
-#### Add Hotel (Admin)
-
-```http
-POST /hotels
-X-Secret-Key: YOUR_SECRET_KEY
-Content-Type: application/json
-
-{
-  "name": "Grand Hotel",
-  "description": "Luxury hotel",
-  "property_type": "Hotel",
-  "chain": "Tata",
-  "star": 5,
-  "rating": 4.5,
-  "rooms_starting_price": 5000,
-  "cover_image": "https://example.com/image.jpg"
-}
-```
-
-### Search & Filter
-
-#### Search Hotels
-
-```http
-GET /search?locality=Mumbai&distance=10&checkin=2024-01-01&checkout=2024-01-05&rooms=2
-Authorization: Bearer ACCESS_TOKEN
-```
-
-#### Filter Hotels
-
-```http
-GET /filter?star=4,5&rating=4.0&propertyType=Hotel&budget=10000
-Authorization: Bearer ACCESS_TOKEN
-```
-
-### Rooms
-
-#### Get Rooms
-
-```http
-GET /hotels/{hotel_id}/room
-Authorization: Bearer ACCESS_TOKEN
-```
-
-#### Get Room Details
-
-```http
-GET /hotels/{hotel_id}/room/{room_id}
-Authorization: Bearer ACCESS_TOKEN
-```
-
-### Bookings
-
-#### Create Booking
-
-```http
-POST /hotels/{hotel_id}/room/{room_id}/booking
-Authorization: Bearer ACCESS_TOKEN
-Content-Type: application/json
-
-{
-  "booking_date": "2024-01-01",
-  "checkin": "2024-01-15",
-  "checkout": "2024-01-20",
-  "rooms": 2,
-  "adults": 4
-}
-```
-
-#### Get Booking
-
-```http
-GET /hotels/{hotel_id}/room/{room_id}/booking/{booking_id}
-Authorization: Bearer ACCESS_TOKEN
-```
-
-### Reviews
-
-#### Add Review
-
-```http
-POST /hotels/{hotel_id}/review
-Authorization: Bearer ACCESS_TOKEN
-Content-Type: application/json
-
-{
-  "rating": 4.5,
-  "review": "Great hotel!",
-  "guest_images": ["url1", "url2"]
-}
-```
-
-#### Get Reviews
-
-```http
-GET /hotels/{hotel_id}/review
-Authorization: Bearer ACCESS_TOKEN
-```
-
----
-
-## 📁 Project Structure
-
-### Backend Structure
-
-```
-booking_backend/
-├── docker-compose.yaml         # Docker configuration
-├── pubspec.yaml               # Dependencies
-├── routes/                    # API routes
-│   ├── index.dart            # Root endpoint
-│   └── api/v1/               # API version 1
-│       ├── _middleware.dart  # Route middleware
-│       ├── auth/             # Authentication routes
-│       ├── hotels/           # Hotel routes
-│       ├── search/           # Search endpoint
-│       └── filter/           # Filter endpoint
-├── lib/
-│   ├── config/
-│   │   └── constants.dart    # App constants
-│   ├── controller/           # Request controllers
-│   │   ├── auth_controller.dart
-│   │   ├── hotel_controller.dart
-│   │   ├── booking_controller.dart
-│   │   └── review_controller.dart
-│   ├── service/              # Business logic services
-│   │   ├── auth_service.dart
-│   │   ├── hotels_service.dart
-│   │   ├── room_service.dart
-│   │   ├── booking_service.dart
-│   │   └── review_service.dart
-│   ├── middleware/           # Middleware functions
-│   │   ├── auth_service_middleware.dart
-│   │   ├── db_connection_middleware.dart
-│   │   └── token_verification_middleware.dart
-│   ├── models/               # Data models
-│   │   ├── user_model.dart
-│   │   ├── hotel_model.dart
-│   │   ├── booking_model.dart
-│   │   └── review_model.dart
-│   ├── database/             # Database setup
-│   │   ├── connection.dart   # DB connection
-│   │   └── tables.dart       # Table name constants
-│   └── sql/                  # SQL scripts
-│       ├── tables.sql        # Table schemas
-│       ├── functions.sql     # SQL functions
-│       ├── triggers.sql      # SQL triggers
-│       ├── seed.sql          # Sample data
-│       └── drop.sql          # Drop tables script
-└── test/                     # Tests
-```
-
-### Frontend Structure
-
-```
-booking_frontend/
-├── pubspec.yaml             # Dependencies
-├── lib/
-│   ├── main_development.dart   # Development entry
-│   ├── main_staging.dart       # Staging entry
-│   ├── main_production.dart    # Production entry
-│   ├── bootstrap.dart          # App initialization
-│   ├── app/
-│   │   ├── view/
-│   │   │   └── app.dart        # Main app widget
-│   │   ├── auth/               # Authentication feature
-│   │   │   ├── bloc/
-│   │   │   │   ├── auth_bloc.dart
-│   │   │   │   ├── auth_event.dart
-│   │   │   │   └── auth_state.dart
-│   │   │   └── view/
-│   │   │       ├── auth_page.dart
-│   │   │       └── components.dart
-│   │   ├── hotel/              # Hotel feature
-│   │   │   ├── bloc/
-│   │   │   │   ├── hotel_bloc.dart
-│   │   │   │   ├── hotel_event.dart
-│   │   │   │   └── hotel_state.dart
-│   │   │   └── view/
-│   │   │       ├── hotel_page.dart
-│   │   │       ├── hotel_details_page.dart
-│   │   │       └── components.dart
-│   │   └── widgets/            # Shared widgets
-│   ├── config/
-│   │   ├── apis.dart           # API endpoints
-│   │   └── storage.dart        # Local storage
-│   ├── data/
-│   │   ├── client/             # HTTP client
-│   │   ├── model/              # Data models
-│   │   │   ├── user_model.dart
-│   │   │   ├── hotel_model.dart
-│   │   │   ├── filter_model.dart
-│   │   │   └── token_model.dart
-│   │   └── repository/         # Data repositories
-│   │       ├── auth_repository.dart
-│   │       └── hotel_repository.dart
-│   ├── l10n/                   # Internationalization
-│   │   └── arb/
-│   │       └── app_en.arb
-│   └── utils/                  # Utilities
-├── android/                    # Android platform
-├── ios/                        # iOS platform
-├── web/                        # Web platform
-├── windows/                    # Windows platform
-└── test/                       # Tests
-```
+This command will run the frontend in Chrome (Web) with the development flavor.
 
 ---
 
@@ -745,6 +384,7 @@ booking_frontend/
 | [Docker](https://www.docker.com)                   | Containerization              |
 | [Docker Compose](https://docs.docker.com/compose/) | Multi-container orchestration |
 | [Adminer](https://www.adminer.org)                 | Database management tool      |
+| [Melos](https://melos.invertase.dev)               | Monorepo management           |
 
 ---
 
@@ -753,24 +393,13 @@ booking_frontend/
 ### Backend Tests
 
 ```bash
-cd booking_backend
-dart test
+melos run test:backend
 ```
 
 ### Frontend Tests
 
 ```bash
-cd booking_frontend
-
-# Unit & Widget tests
-flutter test
-
-# Coverage report
-very_good test --coverage --test-randomize-ordering-seed random
-
-# View coverage
-genhtml coverage/lcov.info -o coverage/
-open coverage/index.html
+melos run test:frontend
 ```
 
 ---
@@ -810,6 +439,7 @@ Solution:
 
 - [Very Good Ventures](https://verygood.ventures) for Flutter best practices
 - [Dart Frog Team](https://dart-frog.dev) for the amazing backend framework
+- [Invertase](https://invertase.io) for `Melos` to manage monorepo
 - [Flutter Community](https://flutter.dev/community) for continuous support
 
 ---
