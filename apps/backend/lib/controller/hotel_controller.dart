@@ -50,12 +50,15 @@ class HotelController {
     final response = await context.request.json() as Map<String, dynamic>;
     final hotel = await hotelService.read(id);
     final updatedHotel = Hotel.fromJson(response);
-    final updatedAddress =
-        Address.fromJson(response['address'] as Map<String, dynamic>);
-    final updatedContact =
-        Contact.fromJson(response['contact'] as Map<String, dynamic>);
-    final updatedDetails =
-        Details.fromJson(response['details'] as Map<String, dynamic>);
+    final updatedAddress = Address.fromJson(
+      response['address'] as Map<String, dynamic>,
+    );
+    final updatedContact = Contact.fromJson(
+      response['contact'] as Map<String, dynamic>,
+    );
+    final updatedDetails = Details.fromJson(
+      response['details'] as Map<String, dynamic>,
+    );
     await hotelService.update(
       int.parse(id),
       hotel!.copyWith(

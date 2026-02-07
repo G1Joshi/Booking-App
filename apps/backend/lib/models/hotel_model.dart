@@ -191,8 +191,9 @@ class Hotel {
       'SELECT * FROM $table '
       "WHERE id = '$id'",
     );
-    final data =
-        result.map((row) => Hotel.fromJson(row.toColumnMap())).toList();
+    final data = result
+        .map((row) => Hotel.fromJson(row.toColumnMap()))
+        .toList();
     return data.first;
   }
 
@@ -201,8 +202,9 @@ class Hotel {
       'SELECT * FROM ${Tables.hotels} '
       'ORDER BY id',
     );
-    final data =
-        result.map((row) => Hotel.fromDatabase(row.toColumnMap())).toList();
+    final data = result
+        .map((row) => Hotel.fromDatabase(row.toColumnMap()))
+        .toList();
     return data;
   }
 
@@ -258,8 +260,9 @@ class Hotel {
       "   WHERE l.name iLIKE '%$locality%' "
       ')',
     );
-    final data =
-        result.map((row) => Hotel.fromDatabase(row.toColumnMap())).toList();
+    final data = result
+        .map((row) => Hotel.fromDatabase(row.toColumnMap()))
+        .toList();
     return data;
   }
 
@@ -288,8 +291,9 @@ class Hotel {
       'SELECT * FROM $table '
       'WHERE ${query.split('AND').skip(1).join('AND')}',
     );
-    final data =
-        result.map((row) => Hotel.fromDatabase(row.toColumnMap())).toList();
+    final data = result
+        .map((row) => Hotel.fromDatabase(row.toColumnMap()))
+        .toList();
     return data;
   }
 }

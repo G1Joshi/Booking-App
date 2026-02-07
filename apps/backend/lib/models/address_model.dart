@@ -109,8 +109,9 @@ class Address {
       'SELECT * FROM $table '
       "WHERE hotel_id = '$id'",
     );
-    final data =
-        result.map((row) => Address.fromJson(row.toColumnMap())).toList();
+    final data = result
+        .map((row) => Address.fromJson(row.toColumnMap()))
+        .toList();
     return data.first;
   }
 

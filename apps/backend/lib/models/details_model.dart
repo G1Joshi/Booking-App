@@ -91,8 +91,9 @@ class Details {
       'SELECT * FROM $table '
       "WHERE hotel_id = '$id'",
     );
-    final data =
-        result.map((row) => Details.fromJson(row.toColumnMap())).toList();
+    final data = result
+        .map((row) => Details.fromJson(row.toColumnMap()))
+        .toList();
     return data.first;
   }
 

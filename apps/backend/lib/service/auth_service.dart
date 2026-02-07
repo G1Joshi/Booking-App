@@ -35,8 +35,11 @@ class AuthService {
   }
 
   Future<bool> create(User user) async {
-    final accessToken =
-        await User.checkAccount(connection, user.email, user.password);
+    final accessToken = await User.checkAccount(
+      connection,
+      user.email,
+      user.password,
+    );
     if (accessToken != null) return false;
     final result = await User.create(
       connection,
@@ -46,8 +49,11 @@ class AuthService {
   }
 
   Future<Token?> read(LoginRequest token) async {
-    final accessToken =
-        await User.checkAccount(connection, token.email, token.password);
+    final accessToken = await User.checkAccount(
+      connection,
+      token.email,
+      token.password,
+    );
     if (accessToken != null) {
       return Token(accessToken: accessToken);
     }

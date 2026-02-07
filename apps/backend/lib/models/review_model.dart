@@ -133,8 +133,9 @@ class Review {
       'SELECT * FROM $table '
       "WHERE hotel_id = '$hotelId' AND id = '$reviewId'",
     );
-    final data =
-        result.map((row) => Review.fromJson(row.toColumnMap())).toList();
+    final data = result
+        .map((row) => Review.fromJson(row.toColumnMap()))
+        .toList();
     return data.first;
   }
 

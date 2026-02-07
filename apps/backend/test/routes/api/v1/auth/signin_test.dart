@@ -35,10 +35,12 @@ void main() {
     });
 
     test('returns 201 and token', () async {
-      when(() => request.json())
-          .thenAnswer((_) async => {'email': 'e', 'password': 'p'});
-      when(() => authService.read(any()))
-          .thenAnswer((_) async => Token(accessToken: 'tk'));
+      when(
+        () => request.json(),
+      ).thenAnswer((_) async => {'email': 'e', 'password': 'p'});
+      when(
+        () => authService.read(any()),
+      ).thenAnswer((_) async => Token(accessToken: 'tk'));
       final response = await route.onRequest(context);
       expect(response.statusCode, HttpStatus.created);
       final body = await response.json() as Map<String, dynamic>;
@@ -47,8 +49,9 @@ void main() {
     });
 
     test('returns 203 if not found', () async {
-      when(() => request.json())
-          .thenAnswer((_) async => {'email': 'e', 'password': 'p'});
+      when(
+        () => request.json(),
+      ).thenAnswer((_) async => {'email': 'e', 'password': 'p'});
       when(() => authService.read(any())).thenAnswer((_) async => null);
       expect(
         (await route.onRequest(context)).statusCode,

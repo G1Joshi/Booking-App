@@ -68,8 +68,9 @@ class Room {
     return Room(
       id: json['id'] != null ? json['id'] as int : null,
       category: json['category'] as String,
-      description:
-          json['description'] != null ? json['description'] as String : null,
+      description: json['description'] != null
+          ? json['description'] as String
+          : null,
       price: json['price'] as int,
       count: json['count'] as int,
       capacity: json['capacity'] as int,

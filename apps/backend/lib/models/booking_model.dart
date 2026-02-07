@@ -104,8 +104,9 @@ class Booking {
       'SELECT * FROM $table '
       "WHERE room_id = '$roomId' AND id = '$bookingId'",
     );
-    final data =
-        result.map((row) => Booking.fromJson(row.toColumnMap())).toList();
+    final data = result
+        .map((row) => Booking.fromJson(row.toColumnMap()))
+        .toList();
     return data.first;
   }
 
@@ -117,8 +118,9 @@ class Booking {
       'SELECT * FROM $table '
       "WHERE room_id = '$id'",
     );
-    final data =
-        result.map((row) => Booking.fromJson(row.toColumnMap())).toList();
+    final data = result
+        .map((row) => Booking.fromJson(row.toColumnMap()))
+        .toList();
     return data.first;
   }
 

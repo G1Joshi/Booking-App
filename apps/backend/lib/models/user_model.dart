@@ -86,8 +86,9 @@ class User {
       email: json['email'] as String,
       phone: json['phone'] as int,
       password: json['password'] != null ? json['password'] as String : '',
-      access_token:
-          json['access_token'] != null ? json['access_token'] as String : null,
+      access_token: json['access_token'] != null
+          ? json['access_token'] as String
+          : null,
       profile_image: json['profile_image'] != null
           ? json['profile_image'] as String
           : null,
