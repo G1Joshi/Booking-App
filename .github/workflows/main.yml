@@ -15,5 +15,5 @@ jobs:
       - uses: g1j0shi/flutter-web-app-deployment@main
         id: cicd
         with:
-          working-directory: "./booking_frontend"
+          working-directory: "./apps/frontend"
           build-target: "./lib/main_production.dart"
