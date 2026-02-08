@@ -1,8 +1,7 @@
 import 'dart:io';
 
-import 'package:booking_backend/models/general_response.dart';
-import 'package:booking_backend/models/models.dart';
 import 'package:booking_backend/service/hotels_service.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:dart_frog/dart_frog.dart';
 
 class HotelController {
@@ -12,7 +11,7 @@ class HotelController {
     return Response.json(
       body: GeneralResponse(
         status: true,
-        data: data.map((e) => e.toDatabase()).toList(),
+        data: data.map((e) => e.toJson()).toList(),
       ),
     );
   }
@@ -25,7 +24,7 @@ class HotelController {
     await hotelService.create(hotel);
     return Response.json(
       statusCode: HttpStatus.created,
-      body: GeneralResponse(
+      body: const GeneralResponse(
         status: true,
       ),
     );
@@ -65,28 +64,28 @@ class HotelController {
         id: updatedHotel.id,
         name: updatedHotel.name,
         description: updatedHotel.description,
-        property_type: updatedHotel.property_type,
+        propertyType: updatedHotel.propertyType,
         chain: updatedHotel.chain,
         star: updatedHotel.star,
         rating: updatedHotel.rating,
-        rooms_starting_price: updatedHotel.rooms_starting_price,
-        cover_image: updatedHotel.cover_image,
+        roomsStartingPrice: updatedHotel.roomsStartingPrice,
+        coverImage: updatedHotel.coverImage,
         address: updatedAddress.copyWith(
           id: hotel.address?.id,
-          hotel_id: hotel.address?.hotel_id,
+          hotelId: hotel.address?.hotelId,
         ),
         contact: updatedContact.copyWith(
           id: hotel.contact?.id,
-          hotel_id: hotel.contact?.hotel_id,
+          hotelId: hotel.contact?.hotelId,
         ),
         details: updatedDetails.copyWith(
           id: hotel.details?.id,
-          hotel_id: hotel.details?.hotel_id,
+          hotelId: hotel.details?.hotelId,
         ),
       ),
     );
     return Response.json(
-      body: GeneralResponse(
+      body: const GeneralResponse(
         status: true,
       ),
     );
@@ -97,7 +96,7 @@ class HotelController {
     await hotelService.delete(id);
     return Response.json(
       statusCode: HttpStatus.noContent,
-      body: GeneralResponse(
+      body: const GeneralResponse(
         status: true,
       ),
     );

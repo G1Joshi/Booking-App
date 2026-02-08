@@ -8,6 +8,8 @@ environment:
   sdk: ^3.9.0
 
 dependencies:
+  booking_models:
+  booking_utils:
   dart_frog: ^1.2.6
   postgres: ^3.5.9
   uuid: ^4.5.2

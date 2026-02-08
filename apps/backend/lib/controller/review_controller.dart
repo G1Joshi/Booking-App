@@ -1,9 +1,8 @@
 import 'dart:io';
 
-import 'package:booking_backend/models/general_response.dart';
-import 'package:booking_backend/models/models.dart';
 import 'package:booking_backend/service/auth_service.dart';
 import 'package:booking_backend/service/review_service.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:dart_frog/dart_frog.dart';
 
 class ReviewController {
@@ -17,7 +16,7 @@ class ReviewController {
     await reviewService.create(review, id, userId);
     return Response.json(
       statusCode: HttpStatus.created,
-      body: GeneralResponse(
+      body: const GeneralResponse(
         status: true,
       ),
     );
@@ -40,11 +39,11 @@ class ReviewController {
         name: updatedReview.name,
         rating: updatedReview.rating,
         review: updatedReview.review,
-        guest_images: updatedReview.guest_images,
+        guestImages: updatedReview.guestImages,
       ),
     );
     return Response.json(
-      body: GeneralResponse(
+      body: const GeneralResponse(
         status: true,
       ),
     );
@@ -58,7 +57,7 @@ class ReviewController {
     final reviewService = context.read<ReviewService>();
     await reviewService.delete(hotelId, reviewId);
     return Response.json(
-      body: GeneralResponse(
+      body: const GeneralResponse(
         status: true,
       ),
     );

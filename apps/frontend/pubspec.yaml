@@ -9,6 +9,8 @@ environment:
   flutter: ^3.35.0
 
 dependencies:
+  booking_models:
+  booking_utils:
   dio: ^5.9.1
   equatable: ^2.0.8
   flutter:

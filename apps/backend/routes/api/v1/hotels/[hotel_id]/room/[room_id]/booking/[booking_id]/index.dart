@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:booking_backend/controller/booking_controller.dart';
-import 'package:booking_backend/models/general_response.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:dart_frog/dart_frog.dart';
 
 FutureOr<Response> onRequest(
@@ -23,7 +23,7 @@ FutureOr<Response> onRequest(
     case HttpMethod.patch:
       return Response.json(
         statusCode: HttpStatus.methodNotAllowed,
-        body: GeneralResponse(
+        body: const GeneralResponse(
           status: false,
         ),
       );

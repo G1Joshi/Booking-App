@@ -1,4 +1,5 @@
-import 'package:booking_backend/models/models.dart';
+import 'package:booking_backend/database/extensions.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:postgres/postgres.dart';
 
 class HotelService {
@@ -7,53 +8,53 @@ class HotelService {
   final Connection connection;
 
   Future<void> create(Hotel hotel, [int? i]) async {
-    final id = i ?? await Hotel.getId(connection);
-    await Hotel.create(connection, hotel.copyWith(id: id));
-    await Address.create(connection, hotel.address?.copyWith(hotel_id: id));
-    await Contact.create(connection, hotel.contact?.copyWith(hotel_id: id));
-    await Details.create(connection, hotel.details?.copyWith(hotel_id: id));
+    final id = i ?? await HotelDb.getId(connection);
+    await HotelDb.create(connection, hotel.copyWith(id: id));
+    await AddressDb.create(connection, hotel.address?.copyWith(hotelId: id));
+    await ContactDb.create(connection, hotel.contact?.copyWith(hotelId: id));
+    await DetailsDb.create(connection, hotel.details?.copyWith(hotelId: id));
   }
 
   Future<Hotel?> read(String id) async {
-    final hotel = await Hotel.read(connection, id);
+    final hotel = await HotelDb.read(connection, id);
     return Hotel(
       id: hotel.id,
       name: hotel.name,
       description: hotel.description,
-      property_type: hotel.property_type,
+      propertyType: hotel.propertyType,
       chain: hotel.chain,
       star: hotel.star,
       rating: hotel.rating,
-      rooms_starting_price: hotel.rooms_starting_price,
-      cover_image: hotel.cover_image,
-      details: await Details.read(connection, id),
-      address: await Address.read(connection, id),
-      contact: await Contact.read(connection, id),
-      reviews: await Review.readAll(connection, id),
-      rooms: await Room.readAll(connection, id),
+      roomsStartingPrice: hotel.roomsStartingPrice,
+      coverImage: hotel.coverImage,
+      details: await DetailsDb.read(connection, id),
+      address: await AddressDb.read(connection, id),
+      contact: await ContactDb.read(connection, id),
+      reviews: await ReviewDb.readAll(connection, id),
+      rooms: await RoomDb.readAll(connection, id),
     );
   }
 
   Future<List<Hotel>> readAll() async {
-    final hotels = await Hotel.readAll(connection);
+    final hotels = await HotelDb.readAll(connection);
     return hotels;
   }
 
   Future<void> update(int id, Hotel hotel) async {
-    await Hotel.update(connection, hotel, id.toString());
-    await Address.update(connection, hotel.address, id.toString());
-    await Contact.update(connection, hotel.contact, id.toString());
-    await Details.update(connection, hotel.details, id.toString());
+    await HotelDb.update(connection, hotel, id.toString());
+    await AddressDb.update(connection, hotel.address, id.toString());
+    await ContactDb.update(connection, hotel.contact, id.toString());
+    await DetailsDb.update(connection, hotel.details, id.toString());
   }
 
   Future<void> delete(String id) async {
     await Future.wait([
-      Review.deleteAll(connection, id),
-      Details.delete(connection, id),
-      Contact.delete(connection, id),
-      Address.delete(connection, id),
-      Room.deleteAll(connection, id),
-      Hotel.delete(connection, id),
+      ReviewDb.deleteAll(connection, id),
+      DetailsDb.delete(connection, id),
+      ContactDb.delete(connection, id),
+      AddressDb.delete(connection, id),
+      RoomDb.deleteAll(connection, id),
+      HotelDb.delete(connection, id),
     ]);
   }
 
@@ -64,7 +65,7 @@ class HotelService {
     String checkout,
     int rooms,
   ) async {
-    final hotels = await Hotel.search(
+    final hotels = await HotelDb.search(
       connection,
       locality,
       distance,
@@ -81,7 +82,7 @@ class HotelService {
     String? propertyType,
     String? budget,
   ) async {
-    final hotels = await Hotel.filter(
+    final hotels = await HotelDb.filter(
       connection,
       star,
       rating,

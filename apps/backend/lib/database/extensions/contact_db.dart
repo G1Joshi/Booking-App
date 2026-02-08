@@ -1,58 +1,11 @@
-// ignore_for_file: non_constant_identifier_names, sort_constructors_first
+// ignore_for_file: non_constant_identifier_names
 
-part of 'models.dart';
+import 'package:booking_backend/database/tables.dart';
+import 'package:booking_models/booking_models.dart';
+import 'package:postgres/postgres.dart';
 
-class Contact {
-  static String table = Tables.contact;
-  int? id;
-  int phone;
-  String email;
-  String website;
-  int? hotel_id;
-
-  Contact({
-    required this.phone,
-    required this.email,
-    required this.website,
-    this.id,
-    this.hotel_id,
-  });
-
-  Contact copyWith({
-    int? id,
-    int? phone,
-    String? email,
-    String? website,
-    int? hotel_id,
-  }) {
-    return Contact(
-      id: id ?? this.id,
-      phone: phone ?? this.phone,
-      email: email ?? this.email,
-      website: website ?? this.website,
-      hotel_id: hotel_id ?? this.hotel_id,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'id': id,
-      'phone': phone,
-      'email': email,
-      'website': website,
-      'hotel_id': hotel_id,
-    };
-  }
-
-  factory Contact.fromJson(Map<String, dynamic> json) {
-    return Contact(
-      id: json['id'] != null ? json['id'] as int : null,
-      phone: json['phone'] as int,
-      email: json['email'] as String,
-      website: json['website'] as String,
-      hotel_id: json['hotel_id'] != null ? json['hotel_id'] as int : null,
-    );
-  }
+class ContactDb {
+  static String get table => Tables.contact;
 
   static Future<void> create(
     Connection connection,

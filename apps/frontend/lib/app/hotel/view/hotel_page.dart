@@ -1,6 +1,6 @@
 import 'package:booking_frontend/app/app.dart';
-import 'package:booking_frontend/data/data.dart';
-import 'package:booking_frontend/utils/utils.dart';
+import 'package:booking_models/booking_models.dart';
+import 'package:booking_utils/booking_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -161,10 +161,11 @@ class _HotelViewState extends State<HotelView> {
             await Navigator.push(
               context,
               MaterialPageRoute<HotelDetailsPage>(
-                builder: (context) => HotelDetailsPage(id: hotel.id),
+                builder: (context) => HotelDetailsPage(id: hotel.id!),
               ),
             );
           },
+
           child: Card(
             child: Row(
               children: [
@@ -199,7 +200,7 @@ class _HotelViewState extends State<HotelView> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          getGrade(hotel.rating),
+                          Grade.getGrade(hotel.rating),
                           style: TextStyle(
                             color: Colors.blue.shade600,
                             fontWeight: FontWeight.bold,

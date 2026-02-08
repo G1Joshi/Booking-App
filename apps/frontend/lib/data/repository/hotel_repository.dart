@@ -1,5 +1,6 @@
-import 'package:booking_frontend/config/config.dart';
 import 'package:booking_frontend/data/data.dart';
+import 'package:booking_models/booking_models.dart';
+import 'package:booking_utils/booking_utils.dart';
 
 class HotelRepository {
   HotelRepository({Client? client}) : _client = client ?? Client();
@@ -7,7 +8,7 @@ class HotelRepository {
   final Client _client;
 
   Future<List<Hotel>> readAll() async {
-    final response = await _client.get(path: hotelsPath);
+    final response = await _client.get(path: HotelsApi.base);
     final data = GeneralResponse.fromJson(response);
 
     if (data.status) {
@@ -23,7 +24,7 @@ class HotelRepository {
   }
 
   Future<Hotel> read(int id) async {
-    final response = await _client.get(path: '$hotelsPath/$id');
+    final response = await _client.get(path: '${HotelsApi.base}/$id');
     final data = GeneralResponse.fromJson(response);
 
     if (data.status) {
@@ -49,7 +50,7 @@ class HotelRepository {
       'rooms': rooms,
     };
     final response = await _client.get(
-      path: searchPath,
+      path: SearchApi.base,
       queryParameters: queryParameters,
     );
     final data = GeneralResponse.fromJson(response);
@@ -79,7 +80,7 @@ class HotelRepository {
       if (budget != '') 'budget': budget,
     };
     final response = await _client.get(
-      path: filterPath,
+      path: FilterApi.base,
       queryParameters: queryParameters,
     );
     final data = GeneralResponse.fromJson(response);
@@ -105,7 +106,8 @@ class HotelRepository {
     int guests,
   ) async {
     final response = await _client.post(
-      path: '$hotelsPath/$hotelId/$roomsPath/$roomId/$bookingPath',
+      path:
+          '${HotelsApi.base}/$hotelId${RoomsApi.base}/$roomId${BookingsApi.base}',
       data: {
         'booking_date': DateTime.now().toIso8601String(),
         'checkin': checkin,
@@ -129,7 +131,7 @@ class HotelRepository {
     String review,
   ) async {
     final response = await _client.post(
-      path: '$hotelsPath/$hotelId/$reviewPath',
+      path: '${HotelsApi.base}/$hotelId${ReviewsApi.base}',
       data: {
         'rating': rating,
         'review': review,
@@ -146,7 +148,7 @@ class HotelRepository {
 
   Future<bool> deleteReview(int hotelId, int reviewId) async {
     final response = await _client.delete(
-      path: '$hotelsPath/$hotelId/$reviewPath/$reviewId',
+      path: '${HotelsApi.base}/$hotelId${ReviewsApi.base}/$reviewId',
     );
     final data = GeneralResponse.fromJson(response);
 

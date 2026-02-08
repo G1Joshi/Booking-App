@@ -1,4 +1,5 @@
-import 'package:booking_backend/models/models.dart';
+import 'package:booking_backend/database/extensions.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:postgres/postgres.dart';
 
 class BookingService {
@@ -7,22 +8,22 @@ class BookingService {
   final Connection connection;
 
   Future<void> create(Booking booking, String roomId, String userId) async {
-    await Booking.create(
+    await BookingDb.create(
       connection,
-      booking.copyWith(room_id: int.parse(roomId), user_id: userId),
+      booking.copyWith(roomId: int.parse(roomId), userId: userId),
     );
   }
 
   Future<Booking?> read(String roomId, String bookingId) async {
-    final booking = await Booking.read(connection, roomId, bookingId);
+    final booking = await BookingDb.read(connection, roomId, bookingId);
     return booking;
   }
 
   Future<void> update(String roomId, String bookingId, Booking booking) async {
-    await Booking.update(connection, booking, roomId, bookingId);
+    await BookingDb.update(connection, booking, roomId, bookingId);
   }
 
   Future<void> delete(String roomId, String bookingId) async {
-    await Booking.delete(connection, roomId, bookingId);
+    await BookingDb.delete(connection, roomId, bookingId);
   }
 }

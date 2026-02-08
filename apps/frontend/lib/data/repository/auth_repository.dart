@@ -1,6 +1,6 @@
-import 'package:booking_frontend/config/config.dart';
 import 'package:booking_frontend/data/data.dart';
-import 'package:booking_frontend/data/model/login_request.dart';
+import 'package:booking_models/booking_models.dart';
+import 'package:booking_utils/booking_utils.dart';
 
 class AuthRepository {
   AuthRepository({Client? client}) : _client = client ?? Client();
@@ -9,7 +9,7 @@ class AuthRepository {
 
   Future<bool> signUp(User user) async {
     final response = await _client.post(
-      path: signupPath,
+      path: AuthApi.signup,
       data: user.toJson(),
     );
     final data = GeneralResponse.fromJson(response);
@@ -23,7 +23,7 @@ class AuthRepository {
 
   Future<Token?> signIn(LoginRequest request) async {
     final response = await _client.post(
-      path: signinPath,
+      path: AuthApi.signin,
       data: request.toJson(),
     );
     final data = GeneralResponse.fromJson(response);

@@ -1,9 +1,8 @@
 import 'dart:io';
 
-import 'package:booking_backend/models/general_response.dart';
-import 'package:booking_backend/models/models.dart';
 import 'package:booking_backend/service/auth_service.dart';
 import 'package:booking_backend/service/booking_service.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:dart_frog/dart_frog.dart';
 
 class BookingController {
@@ -20,7 +19,7 @@ class BookingController {
     await bookingService.create(booking, roomId, userId);
     return Response.json(
       statusCode: HttpStatus.created,
-      body: GeneralResponse(
+      body: const GeneralResponse(
         status: true,
       ),
     );
@@ -47,7 +46,7 @@ class BookingController {
       ),
     );
     return Response.json(
-      body: GeneralResponse(
+      body: const GeneralResponse(
         status: true,
       ),
     );
@@ -61,7 +60,7 @@ class BookingController {
     final bookingService = context.read<BookingService>();
     await bookingService.delete(roomId, bookingId);
     return Response.json(
-      body: GeneralResponse(
+      body: const GeneralResponse(
         status: true,
       ),
     );

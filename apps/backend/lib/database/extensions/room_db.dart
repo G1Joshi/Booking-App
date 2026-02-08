@@ -1,84 +1,11 @@
-// ignore_for_file: non_constant_identifier_names, sort_constructors_first
+// ignore_for_file: non_constant_identifier_names
 
-part of 'models.dart';
+import 'package:booking_backend/database/tables.dart';
+import 'package:booking_models/booking_models.dart';
+import 'package:postgres/postgres.dart';
 
-class Room {
-  static String table = Tables.rooms;
-  int? id;
-  String category;
-  String? description;
-  int price;
-  int count;
-  int capacity;
-  List<String> amenities;
-  List<String> room_images;
-  int? hotel_id;
-
-  Room({
-    required this.category,
-    required this.price,
-    required this.count,
-    required this.capacity,
-    required this.amenities,
-    required this.room_images,
-    this.id,
-    this.description,
-    this.hotel_id,
-  });
-
-  Room copyWith({
-    int? id,
-    String? category,
-    String? description,
-    int? price,
-    int? count,
-    int? capacity,
-    List<String>? amenities,
-    List<String>? room_images,
-    int? hotel_id,
-  }) {
-    return Room(
-      id: id ?? this.id,
-      category: category ?? this.category,
-      description: description ?? this.description,
-      price: price ?? this.price,
-      count: count ?? this.count,
-      capacity: capacity ?? this.capacity,
-      amenities: amenities ?? this.amenities,
-      room_images: room_images ?? this.room_images,
-      hotel_id: hotel_id ?? this.hotel_id,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'id': id,
-      'category': category,
-      'description': description,
-      'price': price,
-      'count': count,
-      'capacity': capacity,
-      'amenities': amenities,
-      'room_images': room_images,
-      'hotel_id': hotel_id,
-    };
-  }
-
-  factory Room.fromJson(Map<String, dynamic> json) {
-    return Room(
-      id: json['id'] != null ? json['id'] as int : null,
-      category: json['category'] as String,
-      description: json['description'] != null
-          ? json['description'] as String
-          : null,
-      price: json['price'] as int,
-      count: json['count'] as int,
-      capacity: json['capacity'] as int,
-      amenities: List<String>.from(json['amenities'] as List),
-      room_images: List<String>.from(json['room_images'] as List),
-      hotel_id: json['hotel_id'] != null ? json['hotel_id'] as int : null,
-    );
-  }
+class RoomDb {
+  static String get table => Tables.rooms;
 
   static Future<void> create(
     Connection connection,

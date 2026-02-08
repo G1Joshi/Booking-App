@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:booking_backend/controller/auth_controller.dart';
-import 'package:booking_backend/models/general_response.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:dart_frog/dart_frog.dart';
 
 Middleware tokenVerification() {
@@ -14,7 +14,7 @@ Middleware tokenVerification() {
       } else {
         return Response.json(
           statusCode: HttpStatus.unauthorized,
-          body: GeneralResponse(
+          body: const GeneralResponse(
             status: false,
             message: 'Unauthorized',
           ),

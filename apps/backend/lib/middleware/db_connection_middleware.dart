@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:booking_backend/database/connection.dart';
-import 'package:booking_backend/models/general_response.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:dart_frog/dart_frog.dart';
 
 Middleware dbConnection(DBConnection connection) {

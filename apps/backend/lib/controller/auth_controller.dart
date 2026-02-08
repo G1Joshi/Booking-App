@@ -1,9 +1,7 @@
 import 'dart:io';
 
-import 'package:booking_backend/models/general_response.dart';
-import 'package:booking_backend/models/login_request.dart';
-import 'package:booking_backend/models/models.dart';
 import 'package:booking_backend/service/auth_service.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:dart_frog/dart_frog.dart';
 
 class AuthController {
@@ -17,14 +15,14 @@ class AuthController {
     if (data) {
       return Response.json(
         statusCode: HttpStatus.created,
-        body: GeneralResponse(
+        body: const GeneralResponse(
           status: true,
         ),
       );
     } else {
       return Response.json(
         statusCode: HttpStatus.nonAuthoritativeInformation,
-        body: GeneralResponse(
+        body: const GeneralResponse(
           status: false,
           message: 'User already registered',
         ),
@@ -50,7 +48,7 @@ class AuthController {
     } else {
       return Response.json(
         statusCode: HttpStatus.nonAuthoritativeInformation,
-        body: GeneralResponse(
+        body: const GeneralResponse(
           status: false,
           message: 'User not found, Please register',
         ),
