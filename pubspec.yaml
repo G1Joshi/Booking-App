@@ -10,6 +10,7 @@ workspace:
   - apps/backend
   - apps/frontend
   - packages/models
+  - packages/utils
 
 melos:
   scripts:
@@ -56,6 +57,12 @@ melos:
       exec: dart test
       packageFilters:
         scope: booking_models
+
+    test:utils:
+      description: Run shared utils tests.
+      exec: dart test
+      packageFilters:
+        scope: booking_utils
 
     run:backend:
       description: Start the Dart Frog dev server with Docker.
