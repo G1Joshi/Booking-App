@@ -1,5 +1,5 @@
 import 'package:booking_frontend/app/app.dart';
-import 'package:booking_frontend/data/data.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';

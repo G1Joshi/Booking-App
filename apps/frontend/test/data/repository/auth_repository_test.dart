@@ -1,5 +1,5 @@
 import 'package:booking_frontend/data/data.dart';
-import 'package:booking_frontend/data/model/login_request.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -15,7 +15,7 @@ void main() {
       authRepository = AuthRepository(client: mockClient);
     });
 
-    final testUser = User(
+    const testUser = User(
       id: '1',
       name: 'John Doe',
       email: 'john@example.com',
@@ -64,7 +64,7 @@ void main() {
       );
 
       final res = await authRepository.signIn(
-        LoginRequest(email: 'e', password: 'p'),
+        const LoginRequest(email: 'e', password: 'p'),
       );
       expect(res?.accessToken, 'tk');
     });

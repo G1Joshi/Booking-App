@@ -1,8 +1,7 @@
 import 'dart:io';
 
-import 'package:booking_backend/models/login_request.dart';
-import 'package:booking_backend/models/token_model.dart';
 import 'package:booking_backend/service/auth_service.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
@@ -40,7 +39,7 @@ void main() {
       ).thenAnswer((_) async => {'email': 'e', 'password': 'p'});
       when(
         () => authService.read(any()),
-      ).thenAnswer((_) async => Token(accessToken: 'tk'));
+      ).thenAnswer((_) async => const Token(accessToken: 'tk'));
       final response = await route.onRequest(context);
       expect(response.statusCode, HttpStatus.created);
       final body = await response.json() as Map<String, dynamic>;

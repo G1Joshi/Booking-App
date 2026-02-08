@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:booking_backend/models/models.dart';
 import 'package:booking_backend/service/auth_service.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';

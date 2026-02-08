@@ -134,8 +134,22 @@ apps/backend/
 │   ├── controller/         # Request handlers & validation
 │   ├── service/            # Business logic
 │   ├── middleware/         # Auth, logging, injection
-│   ├── models/             # Data transfer objects
-│   └── database/           # DB connection & setup
+│   ├── models/             # Re-exports from shared packages
+│   └── database/
+│       ├── extensions/     # *Db classes (HotelDb, UserDb, etc.)
+│       └── tables.dart     # Table name constants
+```
+
+### Shared Packages
+
+```
+packages/
+├── models/                 # booking_models: Shared DTOs (Hotel, User, Booking, etc.)
+│   └── lib/src/            # common model files
+└── utils/                  # booking_utils: Shared utilities & API constants
+    └── lib/src/
+        ├── endpoints.dart  # API endpoint constants
+        └── rating_utils.dart
 ```
 
 ---
@@ -400,6 +414,18 @@ melos run test:backend
 
 ```bash
 melos run test:frontend
+```
+
+### Shared Models Tests
+
+```bash
+melos run test:models
+```
+
+### Shared Utils Tests
+
+```bash
+melos run test:utils
 ```
 
 ---

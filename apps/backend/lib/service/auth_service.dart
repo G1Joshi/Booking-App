@@ -1,6 +1,5 @@
-import 'package:booking_backend/models/login_request.dart';
-import 'package:booking_backend/models/models.dart';
-import 'package:booking_backend/models/token_model.dart';
+import 'package:booking_backend/database/extensions.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:postgres/postgres.dart';
 import 'package:uuid/uuid.dart';
 
@@ -30,26 +29,26 @@ class AuthService {
   }
 
   String _getAccessToken() {
-    // TODO: JWT
+    // TODO(auth): Implement JWT
     return const Uuid().v4();
   }
 
   Future<bool> create(User user) async {
-    final accessToken = await User.checkAccount(
+    final accessToken = await UserDb.checkAccount(
       connection,
       user.email,
       user.password,
     );
     if (accessToken != null) return false;
-    final result = await User.create(
+    final result = await UserDb.create(
       connection,
-      user.copyWith(access_token: _getAccessToken()),
+      user.copyWith(accessToken: _getAccessToken()),
     );
     return result;
   }
 
   Future<Token?> read(LoginRequest token) async {
-    final accessToken = await User.checkAccount(
+    final accessToken = await UserDb.checkAccount(
       connection,
       token.email,
       token.password,
@@ -68,12 +67,12 @@ class AuthService {
 
   Future<String> getUserID(Map<String, String> headers) async {
     final accessToken = _getToken(headers);
-    final userId = await User.getUserId(connection, accessToken!);
+    final userId = await UserDb.getUserId(connection, accessToken!);
     return userId;
   }
 
   Future<User> getUser(Map<String, String> headers) async {
-    final user = await User.read(connection, await getUserID(headers));
+    final user = await UserDb.read(connection, await getUserID(headers));
     return user;
   }
 }

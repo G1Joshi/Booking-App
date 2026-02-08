@@ -1,4 +1,5 @@
 import 'package:booking_frontend/data/data.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

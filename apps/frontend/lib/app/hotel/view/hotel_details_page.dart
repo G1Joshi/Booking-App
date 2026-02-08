@@ -1,6 +1,6 @@
 import 'package:booking_frontend/app/app.dart';
-import 'package:booking_frontend/data/data.dart';
-import 'package:booking_frontend/utils/utils.dart';
+import 'package:booking_models/booking_models.dart';
+import 'package:booking_utils/booking_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -141,7 +141,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        getGrade(hotel.rating),
+                                        Grade.getGrade(hotel.rating),
                                         style: TextStyle(
                                           color: Colors.blue.shade600,
                                           fontWeight: FontWeight.bold,
@@ -216,7 +216,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                               const SizedBox(height: 16),
                               reviewsList(state.hotel),
                               const SizedBox(height: 16),
-                              RatingAndReviewForm(id: state.hotel.id),
+                              RatingAndReviewForm(id: state.hotel.id!),
                             ],
                           ),
                         );
@@ -402,13 +402,13 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
           child: ListTile(
             isThreeLine: true,
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(review.profileImage),
+              backgroundImage: NetworkImage(review.profileImage ?? ''),
               radius: 25,
             ),
             title: Row(
               children: [
                 Text(
-                  review.name,
+                  review.name ?? '',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -433,7 +433,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      getGrade(review.rating),
+                      Grade.getGrade(review.rating),
                       style: TextStyle(
                         color: Colors.blue.shade600,
                         fontWeight: FontWeight.bold,
@@ -454,9 +454,10 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
               child: ElevatedButton(
                 onPressed: () {
                   context.read<HotelBloc>().add(
-                    DeleteReview(hotel.id, review.id),
+                    DeleteReview(hotel.id!, review.id!),
                   );
                 },
+
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(Colors.redAccent),
                 ),

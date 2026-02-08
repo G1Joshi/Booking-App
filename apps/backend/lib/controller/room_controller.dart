@@ -1,8 +1,7 @@
 import 'dart:io';
 
-import 'package:booking_backend/models/general_response.dart';
-import 'package:booking_backend/models/models.dart';
 import 'package:booking_backend/service/room_service.dart';
+import 'package:booking_models/booking_models.dart';
 import 'package:dart_frog/dart_frog.dart';
 
 class RoomController {
@@ -14,7 +13,7 @@ class RoomController {
     await roomService.create(room, id);
     return Response.json(
       statusCode: HttpStatus.created,
-      body: GeneralResponse(
+      body: const GeneralResponse(
         status: true,
       ),
     );
@@ -40,11 +39,11 @@ class RoomController {
         count: updatedRoom.count,
         capacity: updatedRoom.capacity,
         amenities: updatedRoom.amenities,
-        room_images: updatedRoom.room_images,
+        roomImages: updatedRoom.roomImages,
       ),
     );
     return Response.json(
-      body: GeneralResponse(
+      body: const GeneralResponse(
         status: true,
       ),
     );
@@ -59,7 +58,7 @@ class RoomController {
     await rooomService.delete(hotelId, roomId);
     return Response.json(
       statusCode: HttpStatus.noContent,
-      body: GeneralResponse(
+      body: const GeneralResponse(
         status: true,
       ),
     );
