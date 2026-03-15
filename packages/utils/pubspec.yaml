@@ -5,8 +5,8 @@ publish_to: none
 resolution: workspace
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.11.1
 
 dev_dependencies:
   lints: ^6.1.0
-  test: ^1.26.0
+  test: ^1.30.0

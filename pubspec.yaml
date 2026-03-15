@@ -1,16 +1,14 @@
 name: booking
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.11.1
 
 dev_dependencies:
   melos: ^7.4.0
 
 workspace:
-  - apps/backend
-  - apps/frontend
-  - packages/models
-  - packages/utils
+  - apps/*
+  - packages/*
 
 melos:
   scripts:

@@ -5,16 +5,16 @@ publish_to: none
 resolution: workspace
 
 environment:
-  sdk: ^3.9.0
+  sdk: ^3.11.1
 
 dependencies:
   booking_models:
   booking_utils:
   dart_frog: ^1.2.6
   postgres: ^3.5.9
-  uuid: ^4.5.2
+  uuid: ^4.5.3
 
 dev_dependencies:
   dart_frog_lint: ^0.1.2
   mocktail: ^1.0.4
-  test: ^1.26.0
+  test: ^1.30.0
