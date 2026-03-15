@@ -18,9 +18,7 @@ class InputField extends StatelessWidget {
           value == null || value.isEmpty ? "Value can't be null" : null,
       decoration: InputDecoration(
         labelText: labelText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(1),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(1)),
       ),
     );
   }

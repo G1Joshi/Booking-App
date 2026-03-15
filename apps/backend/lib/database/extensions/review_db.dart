@@ -1,113 +1,63 @@
-// ignore_for_file: non_constant_identifier_names
-
+import 'package:booking_backend/database/query_helper.dart';
 import 'package:booking_backend/database/tables.dart';
 import 'package:booking_models/booking_models.dart';
 import 'package:postgres/postgres.dart';
 
 class ReviewDb {
-  static String get table => Tables.reviews;
+  static final _crud = CrudDb<Review>(
+    table: Tables.reviews,
+    fromJson: _fromDatabase,
+    toJson: _toDatabase,
+  );
 
-  static Future<void> create(
-    Connection connection,
-    Review? data,
-  ) async {
-    var keys = '';
-    var values = '';
-    _toDatabase(data).keys.forEach((key) {
-      if (key != 'id') {
-        if (keys != '') {
-          keys += ', ';
-          values += ', ';
-        }
-        keys += key;
-        values += '@$key';
-      }
-    });
-    await connection.execute(
-      'INSERT INTO $table ($keys) '
-      'VALUES ($values)',
-      parameters: _toDatabase(data),
-    );
-  }
+  static Future<void> create(Connection connection, Review? data) =>
+      _crud.create(connection, data);
 
   static Future<Review> read(
     Connection connection,
     String hotelId,
     String reviewId,
-  ) async {
-    final result = await connection.execute(
-      'SELECT * FROM $table '
-      "WHERE hotel_id = '$hotelId' AND id = '$reviewId'",
-    );
-    final data = result
-        .map((row) => Review.fromJson(row.toColumnMap()))
-        .toList();
-    return data.first;
-  }
+  ) => _crud.readBy(connection, {
+    'hotel_id': hotelId,
+    'id': reviewId,
+  });
 
   static Future<List<Review>> readAll(
     Connection connection,
     String id,
-  ) async {
-    final result = await connection.execute(
-      'SELECT r.id, u.name, u.profile_image, r.rating, r.review, r.guest_images, r.hotel_id '
-      'FROM $table r '
-      'JOIN ${Tables.users} u ON r.user_id = u.id '
-      "WHERE hotel_id = '$id'",
-    );
-    final data = result.map((row) {
-      final map = row.toColumnMap();
-      return _fromDatabase(map);
-    }).toList();
-    return data;
-  }
+  ) => _crud.query(
+    connection,
+    'SELECT r.id, u.name, u.profile_image, '
+    'r.rating, r.review, r.guest_images, r.hotel_id '
+    'FROM ${Tables.reviews} r '
+    'JOIN ${Tables.users} u ON r.user_id = u.id '
+    'WHERE hotel_id = @id',
+    {'id': id},
+  );
 
   static Future<void> update(
     Connection connection,
     Review? data,
     String hotelId,
     String reviewId,
-  ) async {
-    var values = '';
-    data?.toJson().forEach((key, value) {
-      if (values != '') values += ', ';
-      if (!key.contains('id')) {
-        value = value.toString().replaceAll('[', '{');
-        value = value.toString().replaceAll(']', '}');
-      }
-      values += "$key = '$value'";
-    });
-
-    await connection.execute(
-      'UPDATE $table '
-      'SET $values '
-      "WHERE hotel_id = '$hotelId' AND id = '$reviewId'",
-    );
-  }
+  ) => _crud.updateBy(connection, data, {
+    'hotel_id': hotelId,
+    'id': reviewId,
+  });
 
   static Future<void> delete(
     Connection connection,
     String hotelId,
     String reviewId,
-  ) async {
-    await connection.execute(
-      'DELETE FROM $table '
-      "WHERE hotel_id = '$hotelId' AND id = '$reviewId'",
-    );
-  }
+  ) => _crud.deleteBy(connection, {
+    'hotel_id': hotelId,
+    'id': reviewId,
+  });
 
-  static Future<void> deleteAll(
-    Connection connection,
-    String id,
-  ) async {
-    await connection.execute(
-      'DELETE FROM $table '
-      "WHERE hotel_id = '$id'",
-    );
-  }
+  static Future<void> deleteAll(Connection connection, String id) =>
+      _crud.delete(connection, id);
 
-  static Map<String, dynamic> _toDatabase(Review? data) {
-    if (data == null) return {};
+  static Map<String, dynamic> _toDatabase(Review data) {
     return <String, dynamic>{
       'id': data.id,
       'rating': data.rating,

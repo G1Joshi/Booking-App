@@ -1,74 +1,51 @@
-// ignore_for_file: non_constant_identifier_names
-
+import 'package:booking_backend/database/query_helper.dart';
 import 'package:booking_backend/database/tables.dart';
 import 'package:booking_models/booking_models.dart';
 import 'package:postgres/postgres.dart';
 
 class UserDb {
-  static String get table => Tables.users;
+  static final _crud = CrudDb<User>(
+    table: Tables.users,
+    fromJson: User.fromJson,
+    toJson: _toJson,
+    primaryKey: 'id',
+    excludeOnCreate: [],
+  );
+
+  static Map<String, dynamic> _toJson(User data) => data.toJson();
 
   static Future<String?> checkAccount(
     Connection connection,
     String email,
     String password,
   ) async {
-    final result = await connection.execute(
-      'SELECT * FROM $table '
-      "WHERE email = '$email' AND password = '$password'",
+    final result = await _crud.query(
+      connection,
+      'SELECT * FROM ${Tables.users} WHERE email = @email AND password = @password',
+      {'email': email, 'password': password},
     );
-    final data = result.map((row) => User.fromJson(row.toColumnMap())).toList();
-    if (data.isNotEmpty) {
-      return data.first.accessToken;
-    }
+    if (result.isNotEmpty) return result.first.accessToken;
     return null;
   }
 
-  static Future<bool> create(
-    Connection connection,
-    User? data,
-  ) async {
-    var keys = '';
-    var values = '';
-    data?.toJson().keys.forEach((key) {
-      if (keys != '') {
-        keys += ', ';
-        values += ', ';
-      }
-      keys += key;
-      values += '@$key';
-    });
-    final result = await connection.execute(
-      'INSERT INTO $table ($keys) '
-      'VALUES ($values)',
-      parameters: data?.toJson(),
-    );
+  static Future<bool> create(Connection connection, User? data) async {
+    final result = await _crud.create(connection, data);
     return result.affectedRows > 0;
   }
 
-  static Future<User> read(
-    Connection connection,
-    String id,
-  ) async {
-    final result = await connection.execute(
-      'SELECT * FROM $table '
-      "WHERE id = '$id'",
-    );
-    final data = result.map((row) => User.fromJson(row.toColumnMap())).toList();
-    return data.first;
-  }
+  static Future<User> read(Connection connection, String id) =>
+      _crud.read(connection, id);
 
   static Future<String> getUserId(
     Connection connection,
     String accessToken,
   ) async {
-    final result = await connection.execute(
-      'SELECT * FROM $table '
-      "WHERE access_token = '$accessToken'",
+    final result = await _crud.query(
+      connection,
+      'SELECT * FROM ${Tables.users} WHERE access_token = @token',
+      {'token': accessToken},
     );
-    final data = result.map((row) => User.fromJson(row.toColumnMap())).toList();
-    if (data.isNotEmpty) {
-      return data.first.id;
-    }
+    if (result.isNotEmpty) return result.first.id;
     return '';
   }
 }

@@ -123,28 +123,13 @@ class _HotelViewState extends State<HotelView> {
           child: Text(
             'Select Filters',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
-        FilterTile(
-          title: 'Star Category',
-          filters: FilterModel.starCategory,
-        ),
-        FilterTile(
-          title: 'Property Type',
-          filters: FilterModel.propertyType,
-        ),
-        FilterTile(
-          title: 'Budget (Per Night)',
-          filters: FilterModel.budget,
-        ),
-        FilterTile(
-          title: 'User Rating',
-          filters: FilterModel.userRating,
-        ),
+        FilterTile(title: 'Star Category', filters: FilterModel.starCategory),
+        FilterTile(title: 'Property Type', filters: FilterModel.propertyType),
+        FilterTile(title: 'Budget (Per Night)', filters: FilterModel.budget),
+        FilterTile(title: 'User Rating', filters: FilterModel.userRating),
       ],
     );
   }
@@ -192,9 +177,7 @@ class _HotelViewState extends State<HotelView> {
                             color: Colors.blue.shade600,
                             child: Text(
                               hotel.rating.toStringAsFixed(1),
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
+                              style: const TextStyle(color: Colors.white),
                             ),
                           ),
                         ),
@@ -223,10 +206,8 @@ class _HotelViewState extends State<HotelView> {
                         Row(
                           children: List.generate(
                             hotel.star,
-                            (index) => const Icon(
-                              Icons.star_rate_rounded,
-                              size: 16,
-                            ),
+                            (index) =>
+                                const Icon(Icons.star_rate_rounded, size: 16),
                           ),
                         ),
                       ],
@@ -238,21 +219,14 @@ class _HotelViewState extends State<HotelView> {
                           width: 4,
                           padding: const EdgeInsets.all(4),
                           color: Colors.blue.shade900,
-                          child: const Text(
-                            '',
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
+                          child: const Text('', style: TextStyle(fontSize: 16)),
                         ),
                         Container(
                           padding: const EdgeInsets.all(4),
                           color: Colors.blue.shade100,
                           child: Text(
                             hotel.propertyType,
-                            style: const TextStyle(
-                              fontSize: 16,
-                            ),
+                            style: const TextStyle(fontSize: 16),
                           ),
                         ),
                       ],
@@ -263,9 +237,7 @@ class _HotelViewState extends State<HotelView> {
                         children: [
                           const TextSpan(
                             text: 'Rooms Starting From: ',
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
+                            style: TextStyle(fontSize: 18),
                           ),
                           TextSpan(
                             text: '₹${hotel.roomsStartingPrice}',

@@ -1,91 +1,42 @@
-// ignore_for_file: non_constant_identifier_names
-
+import 'package:booking_backend/database/query_helper.dart';
 import 'package:booking_backend/database/tables.dart';
 import 'package:booking_models/booking_models.dart';
 import 'package:postgres/postgres.dart';
 
 class HotelDb {
-  static String get table => Tables.hotels;
+  static final _crud = CrudDb<Hotel>(
+    table: Tables.hotels,
+    fromJson: _fromDatabase,
+    toJson: _toDatabase,
+    primaryKey: 'id',
+    excludeOnCreate: [],
+  );
 
   static Future<int> getId(Connection connection) async {
-    final result = await connection.execute(
-      "SELECT nextval('${table}_id_seq')",
+    final result = await QueryHelper.read(
+      connection,
+      "SELECT nextval('${Tables.hotels}_id_seq')",
     );
-    final id = result.first.first as int? ?? 0;
-    return id;
+    return result.first.first as int? ?? 0;
   }
 
-  static Future<void> create(
-    Connection connection,
-    Hotel? data,
-  ) async {
-    var keys = '';
-    var values = '';
-    _toDatabase(data).keys.forEach((key) {
-      if (keys != '') {
-        keys += ', ';
-        values += ', ';
-      }
-      keys += key;
-      values += '@$key';
-    });
-    await connection.execute(
-      'INSERT INTO $table ($keys) '
-      'VALUES ($values)',
-      parameters: _toDatabase(data),
-    );
-  }
+  static Future<void> create(Connection connection, Hotel? data) =>
+      _crud.create(connection, data);
 
-  static Future<Hotel> read(
-    Connection connection,
-    String id,
-  ) async {
-    final result = await connection.execute(
-      'SELECT * FROM $table '
-      "WHERE id = '$id'",
-    );
-    final data = result
-        .map((row) => Hotel.fromJson(row.toColumnMap()))
-        .toList();
-    return data.first;
-  }
+  static Future<Hotel> read(Connection connection, String id) =>
+      _crud.read(connection, id);
 
-  static Future<List<Hotel>> readAll(Connection connection) async {
-    final result = await connection.execute(
-      'SELECT * FROM ${Tables.hotels} '
-      'ORDER BY id',
-    );
-    final data = result.map((row) => _fromDatabase(row.toColumnMap())).toList();
-    return data;
-  }
+  static Future<List<Hotel>> readAll(Connection connection) =>
+      _crud.readAll(connection);
 
   static Future<void> update(
     Connection connection,
     Hotel? data,
     String id,
-  ) async {
-    var values = '';
-    _toDatabase(data).forEach((key, value) {
-      if (values != '') values += ', ';
-      values += "$key = '$value'";
-    });
+  ) => _crud.update(connection, data, id);
 
-    await connection.execute(
-      'UPDATE $table '
-      'SET $values '
-      "WHERE id = '$id'",
-    );
-  }
-
-  static Future<void> delete(
-    Connection connection,
-    String id,
-  ) async {
-    await connection.execute(
-      'DELETE FROM $table '
-      "WHERE id = '$id'",
-    );
-  }
+  static Future<void> delete(Connection connection, String id) =>
+      _crud.delete(connection, id);
 
   static Future<List<Hotel>> search(
     Connection connection,
@@ -94,26 +45,40 @@ class HotelDb {
     String checkin,
     String checkout,
     int rooms,
-  ) async {
-    final result = await connection.execute(
-      'SELECT * FROM $table '
-      'where id in ( '
-      '   SELECT hotel_id FROM ( SELECT r.id, r.hotel_id, '
-      "   CASE WHEN ( b.checkin BETWEEN '$checkin' AND '$checkout' OR b.checkout BETWEEN '$checkin' AND '$checkout' OR '$checkin' BETWEEN b.checkin AND b.checkout OR '$checkout' BETWEEN b.checkin AND b.checkout ) "
-      '   THEN r.count - COALESCE(SUM(b.rooms), 0) ELSE r.count '
-      '   END AS available_rooms '
-      '   FROM ${Tables.rooms} r LEFT JOIN ${Tables.bookings} b on r.id = b.room_id '
-      '   GROUP BY r.id, b.checkin, b.checkout ) AS subquery '
-      '   WHERE available_rooms >= $rooms '
-      'INTERSECT '
-      '   SELECT h.hotel_id FROM ${Tables.address} h '
-      '   JOIN ${Tables.localities} l ON distance(h.latitude, h.longitude, l.latitude, l.longitude) < $distance '
-      "   WHERE l.name iLIKE '%$locality%' "
-      ')',
-    );
-    final data = result.map((row) => _fromDatabase(row.toColumnMap())).toList();
-    return data;
-  }
+  ) => _crud.query(
+    connection,
+    'SELECT * FROM ${Tables.hotels} '
+    'WHERE id IN ( '
+    '  SELECT hotel_id FROM ( '
+    '    SELECT r.id, r.hotel_id, '
+    '      CASE WHEN ( '
+    '        b.checkin BETWEEN @checkin AND @checkout '
+    '        OR b.checkout BETWEEN @checkin AND @checkout '
+    '        OR @checkin BETWEEN b.checkin AND b.checkout '
+    '        OR @checkout BETWEEN b.checkin AND b.checkout '
+    '      ) '
+    '      THEN r.count - COALESCE(SUM(b.rooms), 0) '
+    '      ELSE r.count '
+    '    END AS available_rooms '
+    '    FROM ${Tables.rooms} r '
+    '    LEFT JOIN ${Tables.bookings} b ON r.id = b.room_id '
+    '    GROUP BY r.id, b.checkin, b.checkout '
+    '  ) AS subquery '
+    '  WHERE available_rooms >= @rooms '
+    '  INTERSECT '
+    '  SELECT h.hotel_id FROM ${Tables.address} h '
+    '  JOIN ${Tables.localities} l '
+    '    ON distance(h.latitude, h.longitude, l.latitude, l.longitude) < @distance '
+    '  WHERE l.name ILIKE @locality '
+    ')',
+    {
+      'checkin': checkin,
+      'checkout': checkout,
+      'rooms': rooms,
+      'distance': distance,
+      'locality': '%$locality%',
+    },
+  );
 
   static Future<List<Hotel>> filter(
     Connection connection,
@@ -121,31 +86,31 @@ class HotelDb {
     String? rating,
     String? propertyType,
     String? budget,
-  ) async {
-    var query = '';
+  ) {
+    var query = 'SELECT * FROM ${Tables.hotels} WHERE 1=1 ';
+    final params = <String, dynamic>{};
+
     if (star != null) {
-      query += 'AND star >= ANY (ARRAY${star.split(',')})';
+      params['star'] = star.split(',').map(int.parse).toList();
+      query += 'AND star >= ANY (@star) ';
     }
     if (rating != null) {
-      query += 'AND rating >= ANY (ARRAY${rating.split(',')})';
+      params['rating'] = rating.split(',').map(num.parse).toList();
+      query += 'AND rating >= ANY (@rating) ';
     }
     if (propertyType != null) {
-      query +=
-          'AND property_type = ANY (ARRAY${propertyType.split(',').map((w) => "'$w'").toList()})';
+      params['propertyType'] = propertyType.split(',');
+      query += 'AND property_type = ANY (@propertyType) ';
     }
     if (budget != null) {
-      query += 'AND rooms_starting_price <= ANY (ARRAY${budget.split(',')})';
+      params['budget'] = budget.split(',').map(int.parse).toList();
+      query += 'AND rooms_starting_price <= ANY (@budget) ';
     }
-    final result = await connection.execute(
-      'SELECT * FROM $table '
-      'WHERE ${query.split('AND').skip(1).join('AND')}',
-    );
-    final data = result.map((row) => _fromDatabase(row.toColumnMap())).toList();
-    return data;
+
+    return _crud.query(connection, query, params);
   }
 
-  static Map<String, dynamic> _toDatabase(Hotel? data) {
-    if (data == null) return {};
+  static Map<String, dynamic> _toDatabase(Hotel data) {
     return <String, dynamic>{
       'id': data.id,
       'name': data.name,

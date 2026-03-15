@@ -5,13 +5,13 @@ publish_to: none
 resolution: workspace
 
 environment:
-  sdk: ^3.9.0
-  flutter: ^3.35.0
+  sdk: ^3.11.0
+  flutter: ^3.41.0
 
 dependencies:
   booking_models:
   booking_utils:
-  dio: ^5.9.1
+  dio: ^5.9.2
   equatable: ^2.0.8
   flutter:
     sdk: flutter
@@ -22,14 +22,15 @@ dependencies:
   intl: ^0.20.2
   shared_preferences: ^2.5.4
   shimmer: ^3.0.0
-  uuid: ^4.5.2
+  uuid: ^4.5.3
 
 dev_dependencies:
+  bloc_lint: ^0.4.0
   bloc_test: ^10.0.0
   flutter_test:
     sdk: flutter
   mocktail: ^1.0.4
-  very_good_analysis: ^10.1.0
+  very_good_analysis: ^10.2.0
 
 flutter:
   generate: true

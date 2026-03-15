@@ -5,8 +5,32 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shimmer/shimmer.dart';
 
-class SearchBarView extends StatelessWidget {
+class SearchBarView extends StatefulWidget {
   const SearchBarView({super.key});
+
+  @override
+  State<SearchBarView> createState() => _SearchBarViewState();
+}
+
+class _SearchBarViewState extends State<SearchBarView> {
+  final _formKey = GlobalKey<FormState>();
+  final _cityController = TextEditingController();
+  final _distanceController = TextEditingController();
+  final _checkinController = TextEditingController();
+  final _checkoutController = TextEditingController();
+  final _roomController = TextEditingController();
+  final _guestController = TextEditingController();
+
+  @override
+  void dispose() {
+    _cityController.dispose();
+    _distanceController.dispose();
+    _checkinController.dispose();
+    _checkoutController.dispose();
+    _roomController.dispose();
+    _guestController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +40,7 @@ class SearchBarView extends StatelessWidget {
         child: Column(
           children: [
             Form(
-              key: context.read<HotelBloc>().formKey,
+              key: _formKey,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -24,37 +48,37 @@ class SearchBarView extends StatelessWidget {
                     flex: 2,
                     child: InputField(
                       labelText: 'City',
-                      controller: context.read<HotelBloc>().cityController,
+                      controller: _cityController,
                     ),
                   ),
                   Expanded(
                     child: InputField(
                       labelText: 'Distance',
-                      controller: HotelBloc.distanceController,
+                      controller: _distanceController,
                     ),
                   ),
                   Expanded(
                     child: InputField(
                       labelText: 'Checkin',
-                      controller: HotelBloc.checkinController,
+                      controller: _checkinController,
                     ),
                   ),
                   Expanded(
                     child: InputField(
                       labelText: 'Checkout',
-                      controller: HotelBloc.checkoutController,
+                      controller: _checkoutController,
                     ),
                   ),
                   Expanded(
                     child: InputField(
                       labelText: 'Rooms',
-                      controller: HotelBloc.roomController,
+                      controller: _roomController,
                     ),
                   ),
                   Expanded(
                     child: InputField(
                       labelText: 'Guests',
-                      controller: HotelBloc.guestController,
+                      controller: _guestController,
                     ),
                   ),
                 ],
@@ -70,19 +94,21 @@ class SearchBarView extends StatelessWidget {
                   builder: (context, state) {
                     return ElevatedButton(
                       onPressed: () {
-                        if (context
-                                .read<HotelBloc>()
-                                .formKey
-                                .currentState
-                                ?.validate() ??
-                            false) {
-                          context.read<HotelBloc>().add(const SearchHotel());
+                        if (_formKey.currentState?.validate() ?? false) {
+                          context.read<HotelBloc>().add(
+                            SearchHotel(
+                              city: _cityController.text,
+                              distance:
+                                  int.tryParse(_distanceController.text) ?? 0,
+                              checkin: _checkinController.text,
+                              checkout: _checkoutController.text,
+                              rooms: int.tryParse(_roomController.text) ?? 1,
+                            ),
+                          );
                         }
                       },
                       child: state is HotelsSearching
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
+                          ? const CircularProgressIndicator(color: Colors.white)
                           : const Text(
                               'Search',
                               style: TextStyle(
@@ -103,11 +129,7 @@ class SearchBarView extends StatelessWidget {
 }
 
 class FilterTile extends StatefulWidget {
-  const FilterTile({
-    required this.title,
-    required this.filters,
-    super.key,
-  });
+  const FilterTile({required this.title, required this.filters, super.key});
 
   final String title;
   final List<FilterModel> filters;
@@ -126,10 +148,7 @@ class _FilterTileState extends State<FilterTile> {
           padding: const EdgeInsets.all(16),
           child: Text(
             widget.title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
         ListView.builder(
@@ -173,15 +192,9 @@ class ShimmerLoader extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Container(
-                        width: 50,
-                        height: 50,
-                        color: Colors.white,
-                      ),
+                      Container(width: 50, height: 50, color: Colors.white),
                       const Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8,
-                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 8),
                       ),
                       Expanded(
                         child: Column(
@@ -193,9 +206,7 @@ class ShimmerLoader extends StatelessWidget {
                               color: Colors.white,
                             ),
                             const Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 2,
-                              ),
+                              padding: EdgeInsets.symmetric(vertical: 2),
                             ),
                             Container(
                               width: 80,
@@ -203,9 +214,7 @@ class ShimmerLoader extends StatelessWidget {
                               color: Colors.white,
                             ),
                             const Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 2,
-                              ),
+                              padding: EdgeInsets.symmetric(vertical: 2),
                             ),
                             Container(
                               width: 40,
@@ -235,15 +244,9 @@ class ShimmerLoader extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Container(
-                        width: 300,
-                        height: 200,
-                        color: Colors.white,
-                      ),
+                      Container(width: 300, height: 200, color: Colors.white),
                       const Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8,
-                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 8),
                       ),
                       Expanded(
                         child: Column(
@@ -255,9 +258,7 @@ class ShimmerLoader extends StatelessWidget {
                               color: Colors.white,
                             ),
                             const Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 2,
-                              ),
+                              padding: EdgeInsets.symmetric(vertical: 2),
                             ),
                             Container(
                               width: MediaQuery.of(context).size.width,
@@ -265,9 +266,7 @@ class ShimmerLoader extends StatelessWidget {
                               color: Colors.white,
                             ),
                             const Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 2,
-                              ),
+                              padding: EdgeInsets.symmetric(vertical: 2),
                             ),
                             Container(
                               width: MediaQuery.of(context).size.width / 3,
@@ -299,6 +298,16 @@ class RatingAndReviewForm extends StatefulWidget {
 }
 
 class _RatingAndReviewFormState extends State<RatingAndReviewForm> {
+  final _formKey = GlobalKey<FormState>();
+  final _reviewController = TextEditingController();
+  double _rating = 2.5;
+
+  @override
+  void dispose() {
+    _reviewController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -311,32 +320,30 @@ class _RatingAndReviewFormState extends State<RatingAndReviewForm> {
       ),
       padding: const EdgeInsets.all(16),
       child: Form(
-        key: context.read<HotelBloc>().reviewFormKey,
+        key: _formKey,
         child: Column(
           children: [
             RatingBar.builder(
-              initialRating: context.read<HotelBloc>().rating,
+              initialRating: _rating,
               minRating: 0.5,
               allowHalfRating: true,
               itemPadding: const EdgeInsets.symmetric(horizontal: 4),
-              itemBuilder: (context, _) => const Icon(
-                Icons.star,
-                color: Colors.blueAccent,
-              ),
+              itemBuilder: (context, _) =>
+                  const Icon(Icons.star, color: Colors.blueAccent),
               onRatingUpdate: (rating) {
-                context.read<HotelBloc>().rating = rating;
+                setState(() {
+                  _rating = rating;
+                });
               },
             ),
             const SizedBox(height: 16),
             TextFormField(
               minLines: 2,
               maxLines: 3,
-              controller: context.read<HotelBloc>().reviewController,
+              controller: _reviewController,
               validator: (value) =>
                   value == null || value.isEmpty ? "Value can't be null" : null,
-              decoration: const InputDecoration(
-                labelText: 'Your Review',
-              ),
+              decoration: const InputDecoration(labelText: 'Your Review'),
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -346,21 +353,20 @@ class _RatingAndReviewFormState extends State<RatingAndReviewForm> {
                 borderRadius: BorderRadius.circular(50),
                 child: ElevatedButton(
                   onPressed: () {
-                    if (context
-                            .read<HotelBloc>()
-                            .reviewFormKey
-                            .currentState
-                            ?.validate() ??
-                        false) {
-                      context.read<HotelBloc>().add(AddReview(widget.id));
+                    if (_formKey.currentState?.validate() ?? false) {
+                      context.read<HotelBloc>().add(
+                        AddReview(
+                          hotelId: widget.id,
+                          rating: _rating,
+                          review: _reviewController.text,
+                        ),
+                      );
+                      _reviewController.clear();
                     }
                   },
                   child: const Text(
                     'Submit',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

@@ -30,6 +30,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   await runZonedGuarded(
     () async {
+      WidgetsFlutterBinding.ensureInitialized();
       await Storage.init();
       runApp(await builder());
     },

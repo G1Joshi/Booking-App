@@ -12,7 +12,22 @@ class GetAllHotels extends HotelEvent {
 }
 
 class SearchHotel extends HotelEvent {
-  const SearchHotel();
+  const SearchHotel({
+    required this.city,
+    required this.distance,
+    required this.checkin,
+    required this.checkout,
+    required this.rooms,
+  });
+
+  final String city;
+  final int distance;
+  final String checkin;
+  final String checkout;
+  final int rooms;
+
+  @override
+  List<Object> get props => [city, distance, checkin, checkout, rooms];
 }
 
 class FilterHotel extends HotelEvent {
@@ -26,16 +41,46 @@ class GetHotelDetails extends HotelEvent {
 }
 
 class AddBooking extends HotelEvent {
-  const AddBooking(this.hotelId, this.roomId);
+  const AddBooking({
+    required this.hotelId,
+    required this.roomId,
+    required this.checkin,
+    required this.checkout,
+    required this.roomCount,
+    required this.guestCount,
+  });
 
   final int hotelId;
   final int roomId;
+  final String checkin;
+  final String checkout;
+  final int roomCount;
+  final int guestCount;
+
+  @override
+  List<Object> get props => [
+    hotelId,
+    roomId,
+    checkin,
+    checkout,
+    roomCount,
+    guestCount,
+  ];
 }
 
 class AddReview extends HotelEvent {
-  const AddReview(this.hotelId);
+  const AddReview({
+    required this.hotelId,
+    required this.rating,
+    required this.review,
+  });
 
   final int hotelId;
+  final double rating;
+  final String review;
+
+  @override
+  List<Object> get props => [hotelId, rating, review];
 }
 
 class DeleteReview extends HotelEvent {

@@ -125,17 +125,10 @@ class HotelRepository {
     }
   }
 
-  Future<bool> addReview(
-    int hotelId,
-    double rating,
-    String review,
-  ) async {
+  Future<bool> addReview(int hotelId, double rating, String review) async {
     final response = await _client.post(
       path: '${HotelsApi.base}/$hotelId${ReviewsApi.base}',
-      data: {
-        'rating': rating,
-        'review': review,
-      },
+      data: {'rating': rating, 'review': review},
     );
     final data = GeneralResponse.fromJson(response);
 
