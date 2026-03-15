@@ -1,7 +1,6 @@
 import 'package:booking_frontend/data/data.dart';
 import 'package:booking_models/booking_models.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'hotel_event.dart';
@@ -11,18 +10,18 @@ class HotelBloc extends Bloc<HotelEvent, HotelState> {
   HotelBloc() : super(const HotelInitial()) {
     on<GetAllHotels>((event, emit) async {
       emit(const HotelsLoading());
-      hotels = await repository.readAll();
+      final hotels = await _repository.readAll();
       emit(HotelsLoaded(hotels));
     });
 
     on<SearchHotel>((event, emit) async {
       emit(const HotelsSearching());
-      hotels = await repository.search(
-        cityController.text,
-        int.parse(distanceController.text),
-        checkinController.text,
-        checkoutController.text,
-        int.parse(roomController.text),
+      final hotels = await _repository.search(
+        event.city,
+        event.distance,
+        event.checkin,
+        event.checkout,
+        event.rooms,
       );
       emit(HotelsLoaded(hotels));
     });
@@ -49,10 +48,12 @@ class HotelBloc extends Bloc<HotelEvent, HotelState> {
       rating = rating.split(',').skip(1).join(',');
       propertyType = propertyType.split(',').skip(1).join(',');
       budget = budget.split(',').skip(1).join(',');
+
+      List<Hotel> hotels;
       if (star == '' && rating == '' && propertyType == '' && budget == '') {
-        hotels = await repository.readAll();
+        hotels = await _repository.readAll();
       } else {
-        hotels = hotels = await repository.filter(
+        hotels = await _repository.filter(
           star,
           rating,
           propertyType,
@@ -64,52 +65,39 @@ class HotelBloc extends Bloc<HotelEvent, HotelState> {
 
     on<GetHotelDetails>((event, emit) async {
       emit(const HotelsLoading());
-      final hotel = await repository.read(event.id);
+      final hotel = await _repository.read(event.id);
       emit(HotelDetailsLoaded(hotel));
     });
 
     on<AddBooking>((event, emit) async {
       emit(const HotelsLoading());
-      await repository.addBooking(
+      await _repository.addBooking(
         event.hotelId,
         event.roomId,
-        checkinController.text,
-        checkoutController.text,
-        int.parse(roomController.text),
-        int.parse(guestController.text),
+        event.checkin,
+        event.checkout,
+        event.roomCount,
+        event.guestCount,
       );
       add(GetHotelDetails(event.hotelId));
     });
 
     on<AddReview>((event, emit) async {
       emit(const HotelsLoading());
-      await repository.addReview(
+      await _repository.addReview(
         event.hotelId,
-        rating,
-        reviewController.text,
+        event.rating,
+        event.review,
       );
-      reviewController.clear();
       add(GetHotelDetails(event.hotelId));
     });
 
     on<DeleteReview>((event, emit) async {
       emit(const HotelsLoading());
-      await repository.deleteReview(event.hotelId, event.reviewId);
+      await _repository.deleteReview(event.hotelId, event.reviewId);
       add(GetHotelDetails(event.hotelId));
     });
   }
 
-  final formKey = GlobalKey<FormState>();
-  final reviewFormKey = GlobalKey<FormState>();
-  static final distanceController = TextEditingController();
-  static final checkinController = TextEditingController();
-  static final checkoutController = TextEditingController();
-  static final roomController = TextEditingController();
-  static final guestController = TextEditingController();
-  final cityController = TextEditingController();
-  final reviewController = TextEditingController();
-
-  final repository = HotelRepository();
-  List<Hotel> hotels = <Hotel>[];
-  double rating = 2.5;
+  final _repository = HotelRepository();
 }

@@ -2,7 +2,6 @@ import 'package:booking_frontend/config/config.dart';
 import 'package:booking_frontend/data/data.dart';
 import 'package:booking_models/booking_models.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
@@ -19,7 +18,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         } else {
           emit(const AuthInitial());
         }
-      } catch (error) {
+      } on Object catch (error) {
         emit(AuthError(error.toString()));
       }
     });
@@ -28,7 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(const AuthLoading());
       try {
         emit(const RegistrationStarted());
-      } catch (error) {
+      } on Object catch (error) {
         emit(AuthError(error.toString()));
       }
     });
@@ -36,25 +35,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SignUp>((event, emit) async {
       emit(const AuthLoading());
       try {
-        final response = await repository.signUp(
+        final response = await _repository.signUp(
           User(
-            id: getId(),
-            name: nameController.text,
-            email: emailController.text,
-            password: passwordController.text,
-            profileImage: getAvatar(nameController.text),
-            phone: int.parse(phoneController.text),
-            dateOfBirth: dobController.text,
-            city: cityController.text,
-            state: stateController.text,
-            country: countryController.text,
-            pincode: int.parse(pincodeController.text),
+            id: _getId(),
+            name: event.name,
+            email: event.email,
+            password: event.password,
+            profileImage: _getAvatar(event.name),
+            phone: event.phone,
+            dateOfBirth: event.dob,
+            city: event.city,
+            state: event.state,
+            country: event.country,
+            pincode: event.pincode,
           ),
         );
         if (response) {
           emit(const SignedUp());
         }
-      } catch (error) {
+      } on Object catch (error) {
         emit(AuthError(error.toString()));
       }
     });
@@ -63,7 +62,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(const AuthLoading());
       try {
         emit(const LoginStarted());
-      } catch (error) {
+      } on Object catch (error) {
         emit(AuthError(error.toString()));
       }
     });
@@ -71,10 +70,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SignIn>((event, emit) async {
       emit(const AuthLoading());
       try {
-        final token = await repository.signIn(
+        final token = await _repository.signIn(
           LoginRequest(
-            email: emailController.text,
-            password: passwordController.text,
+            email: event.email,
+            password: event.password,
           ),
         );
         if (token != null) {
@@ -83,7 +82,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         } else {
           emit(const SignedOut());
         }
-      } catch (error) {
+      } on Object catch (error) {
         emit(AuthError(error.toString()));
       }
     });
@@ -93,34 +92,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         await Storage.prefs.clear();
         emit(const SignedOut());
-      } catch (error) {
+      } on Object catch (error) {
         emit(AuthError(error.toString()));
       }
     });
   }
 
-  String getAvatar(String name) {
+  String _getAvatar(String name) {
     final initials = name.isNotEmpty
         ? name.trim().split(' ').map((e) => e[0]).take(2).join()
         : 'U';
-    final avatarUrl =
-        'https://ui-avatars.com/api/?name=$initials&background=random&size=128';
-    return avatarUrl;
+    const avatarUrl = 'https://ui-avatars.com/api/?name=';
+    return '$avatarUrl$initials&background=random&size=128';
   }
 
-  String getId() {
+  String _getId() {
     return const Uuid().v4();
   }
 
-  final nameController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final phoneController = TextEditingController();
-  final dobController = TextEditingController();
-  final cityController = TextEditingController();
-  final stateController = TextEditingController();
-  final countryController = TextEditingController();
-  final pincodeController = TextEditingController();
-
-  final repository = AuthRepository();
+  final _repository = AuthRepository();
 }

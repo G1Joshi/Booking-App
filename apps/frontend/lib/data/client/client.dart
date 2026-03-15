@@ -11,17 +11,28 @@ class Client {
   late Dio _dio;
 
   void initClient() {
-    final accessToken = Storage.prefs.getString('access_token');
     final dioOptions = BaseOptions(
       baseUrl: baseUrl,
       contentType: Headers.jsonContentType,
       headers: {
         Headers.acceptHeader: Headers.jsonContentType,
-        HttpHeaders.authorizationHeader: 'Bearer $accessToken',
       },
     );
 
     _dio = Dio(dioOptions);
+
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          final accessToken = Storage.prefs.getString('access_token');
+          if (accessToken != null) {
+            options.headers[HttpHeaders.authorizationHeader] =
+                'Bearer $accessToken';
+          }
+          return handler.next(options);
+        },
+      ),
+    );
 
     _dio.interceptors.add(LogInterceptor());
   }
@@ -46,10 +57,7 @@ class Client {
     Map<String, dynamic>? data,
   }) async {
     try {
-      final response = await _dio.post<Map<String, dynamic>>(
-        path,
-        data: data,
-      );
+      final response = await _dio.post<Map<String, dynamic>>(path, data: data);
       return response.data ?? {};
     } catch (_) {
       rethrow;
@@ -61,10 +69,7 @@ class Client {
     Map<String, dynamic>? data,
   }) async {
     try {
-      final response = await _dio.put<Map<String, dynamic>>(
-        path,
-        data: data,
-      );
+      final response = await _dio.put<Map<String, dynamic>>(path, data: data);
       return response.data ?? {};
     } catch (_) {
       rethrow;

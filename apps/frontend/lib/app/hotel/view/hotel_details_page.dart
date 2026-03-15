@@ -178,9 +178,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                                       children: [
                                         const TextSpan(
                                           text: 'Rooms Starting From: ',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                          ),
+                                          style: TextStyle(fontSize: 18),
                                         ),
                                         TextSpan(
                                           text: '₹${hotel.roomsStartingPrice}',
@@ -250,12 +248,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
   ClipRRect roomImage(String image) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
-      child: Image.network(
-        image,
-        fit: BoxFit.cover,
-        height: 50,
-        width: 130,
-      ),
+      child: Image.network(image, fit: BoxFit.cover, height: 50, width: 130),
     );
   }
 
@@ -315,21 +308,14 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                         width: 4,
                         padding: const EdgeInsets.all(4),
                         color: Colors.blue.shade900,
-                        child: const Text(
-                          '',
-                          style: TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
+                        child: const Text('', style: TextStyle(fontSize: 16)),
                       ),
                       Container(
                         padding: const EdgeInsets.all(4),
                         color: Colors.blue.shade100,
                         child: Text(
                           room.description,
-                          style: const TextStyle(
-                            fontSize: 16,
-                          ),
+                          style: const TextStyle(fontSize: 16),
                         ),
                       ),
                     ],
@@ -349,9 +335,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                       children: [
                         const TextSpan(
                           text: 'Room Price: ',
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
+                          style: TextStyle(fontSize: 18),
                         ),
                         TextSpan(
                           text: '₹${room.price}',
@@ -425,9 +409,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                         color: Colors.blue.shade600,
                         child: Text(
                           review.rating.toStringAsFixed(1),
-                          style: const TextStyle(
-                            color: Colors.white,
-                          ),
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
                     ),
@@ -443,12 +425,7 @@ class _HotelDetailsViewState extends State<HotelDetailsView> {
                 ),
               ],
             ),
-            subtitle: Text(
-              review.review,
-              style: const TextStyle(
-                fontSize: 16,
-              ),
-            ),
+            subtitle: Text(review.review, style: const TextStyle(fontSize: 16)),
             trailing: SizedBox(
               height: double.infinity,
               child: ElevatedButton(
