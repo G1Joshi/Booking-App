@@ -1,78 +1,29 @@
-// ignore_for_file: non_constant_identifier_names
-
+import 'package:booking_backend/database/query_helper.dart';
 import 'package:booking_backend/database/tables.dart';
 import 'package:booking_models/booking_models.dart';
 import 'package:postgres/postgres.dart';
 
 class DetailsDb {
-  static String get table => Tables.details;
+  static final _crud = CrudDb<Details>(
+    table: Tables.details,
+    fromJson: Details.fromJson,
+    toJson: _toJson,
+  );
 
-  static Future<void> create(
-    Connection connection,
-    Details? data,
-  ) async {
-    var keys = '';
-    var values = '';
-    data?.toJson().keys.forEach((key) {
-      if (key != 'id') {
-        if (keys != '') {
-          keys += ', ';
-          values += ', ';
-        }
-        keys += key;
-        values += '@$key';
-      }
-    });
-    await connection.execute(
-      'INSERT INTO $table ($keys) '
-      'VALUES ($values)',
-      parameters: data?.toJson(),
-    );
-  }
+  static Map<String, dynamic> _toJson(Details data) => data.toJson();
 
-  static Future<Details> read(
-    Connection connection,
-    String id,
-  ) async {
-    final result = await connection.execute(
-      'SELECT * FROM $table '
-      "WHERE hotel_id = '$id'",
-    );
-    final data = result
-        .map((row) => Details.fromJson(row.toColumnMap()))
-        .toList();
-    return data.first;
-  }
+  static Future<void> create(Connection connection, Details? data) =>
+      _crud.create(connection, data);
+
+  static Future<Details> read(Connection connection, String id) =>
+      _crud.read(connection, id);
 
   static Future<void> update(
     Connection connection,
     Details? data,
     String id,
-  ) async {
-    var values = '';
-    data?.toJson().forEach((key, value) {
-      if (values != '') values += ', ';
-      if (!key.contains('id')) {
-        value = value.toString().replaceAll('[', '{');
-        value = value.toString().replaceAll(']', '}');
-      }
-      values += "$key = '$value'";
-    });
+  ) => _crud.update(connection, data, id);
 
-    await connection.execute(
-      'UPDATE $table '
-      'SET $values '
-      "WHERE hotel_id = '$id'",
-    );
-  }
-
-  static Future<void> delete(
-    Connection connection,
-    String id,
-  ) async {
-    await connection.execute(
-      'DELETE FROM $table '
-      "WHERE hotel_id = '$id'",
-    );
-  }
+  static Future<void> delete(Connection connection, String id) =>
+      _crud.delete(connection, id);
 }
